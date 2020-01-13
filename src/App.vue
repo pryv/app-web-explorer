@@ -24,7 +24,7 @@
 export default {
   name: 'App',
   data: () => ({
-    title: 'App-web-mfa',
+    title: 'App-web-skeleton',
   }),
   errorCaptured (err, vm, info) {
     alert(`[Vue warn]: Unexpected error in ${info}:

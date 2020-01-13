@@ -29,8 +29,6 @@
       </v-btn>
     </v-form>
 
-    <v-divider class="mt-3 mb-2" />
-
     <Alerts
       id="alert"
       :successMsg="success"
@@ -71,7 +69,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.submitting = true;
         try {
-          const res = await this.ctx.pryv.login(this.username, this.password, this.ctx.appId);
+          await this.ctx.pryv.login(this.username, this.password, this.ctx.appId);
           this.success = 'Login successful.';
         } catch (err) {
           this.error = err.toString();

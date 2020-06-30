@@ -1,51 +1,61 @@
 <template>
-    <div class="bg-white shadow h-100 w-100">
-        <br>
-
-        <div>
-            <br><br>
+        <div style="text-align: left;">
             <span id="pryv-button"></span><br>
-            <br>
         </div>
-    </div>
 </template>
 
 <script>
     import Pryv from 'pryv';
     import PryvModel from '@/models/pryv';
+
     export default {
+        name: 'WebButton',
         data () {
             return {
                 pryvModel: new PryvModel(),
-                serviceInfoUrl : 'https://reg.pryv.me/service/info',
-                connection:null,
-
+                serviceInfoUrl : 'https://reg.pryv.me/service/info'
             }
         },
         async created() {
             await this.pryvModel.fetchServiceInfo();
             this.loadButton();
         },
+
         methods : {
             async create() {
                 await this.pryvModel.fetchServiceInfo();
             },
             async loadButton() {
-                //const pryvDomain = 'pryv.me';
-
                 var service = await Pryv.Browser.setupAuth(loadSettings(), this.serviceInfoUrl);
                 console.log(service);
             }
-        }
+        },
     }
 
     function pryvAuthStateChange(state) { // called each time the authentication state changed
         console.log('##pryvAuthStateChange', state);
+        let connection = null;
         if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
-            this.connection = new Pryv.Connection(state.apiEndpoint);
+            connection = new Pryv.Connection(state.apiEndpoint);
+            if(connection)
+            {
+                sessionStorage.setItem("token", connection.token);
+                //self.$emit("authenticated", true);
+                //self.$router.push("access");
+            }
+            else
+            {
+                console.log("Error with Web Login");
+            }
         }
         if (state.id === Pryv.Browser.AuthStates.LOGOUT) {
-            this.connection = null;
+            connection = null;
+            if(connection)
+            {
+                sessionStorage.removeItem("token");
+                //this.$emit("authenticated", false);
+                //this.$router.push("home");
+            }
         }
     }
 
@@ -55,7 +65,7 @@
             // eslint-disable-next-line no-undef
             onStateChange: pryvAuthStateChange, // event Listener for Authentication steps
             authRequest: { // See: https://api.pryv.com/reference/#auth-request
-                requestingAppId: 'lib-js-test',
+                requestingAppId: 'web-app-explorer',
                 languageCode: 'fr', // optional (default english)
                 requestedPermissions: [
                     {
@@ -73,7 +83,6 @@
             }
         };
     }
-
 </script>
 
 <!-- styling for the component -->

@@ -3,10 +3,11 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
-import Vuex from 'vuex'
-Vue.use(Vuex)
 
 Vue.config.productionTip = false
+
+import Pryv from 'pryv'
+Vue.prototype.$pryv = Pryv
 new Vue({
   router,
   render: h => h(App)

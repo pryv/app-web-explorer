@@ -4,7 +4,7 @@ import superagent from 'superagent';
 import url from 'url';
 
 // eslint-disable-next-line
-import config from '@/utils/config';
+import config from '@/utilities/config';
 
 const DEFAULT_DOMAIN = config.pryv.domain;
 //const APP_ID = 'pryv-web-explorer';

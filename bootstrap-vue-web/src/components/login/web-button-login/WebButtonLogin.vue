@@ -26,7 +26,7 @@
                 await this.pryvModel.fetchServiceInfo();
             },
             async loadButton() {
-                var service = await Pryv.Browser.setupAuth(loadSettings(), this.serviceInfoUrl);
+                var service = await Pryv.Browser.setupAuth(loadSettings(this), this.serviceInfoUrl);
                 console.log(service);
             }
         },
@@ -39,7 +39,7 @@
             connection = new Pryv.Connection(state.apiEndpoint);
             if(connection)
             {
-                //this.$sessionStorage.token = connection.token;this.$sessionStorage.connection = connection;
+                this.$sessionStorage.token = connection.token;this.$sessionStorage.connection = connection;
                 sessionStorage.setItem("token", connection.token);
                 sessionStorage.setItem("connection", connection);
 
@@ -63,11 +63,11 @@
         }
     }
 
-    function loadSettings() {
+    function loadSettings(that) {
         return {
             spanButtonID: 'pryv-button', // span id the DOM that will be replaced by the Service specific button
             // eslint-disable-next-line no-undef
-            onStateChange: pryvAuthStateChange, // event Listener for Authentication steps
+            onStateChange: pryvAuthStateChange.bind(that), // event Listener for Authentication steps
             authRequest: { // See: https://api.pryv.com/reference/#auth-request
                 requestingAppId: 'web-app-explorer',
                 languageCode: 'fr', // optional (default english)

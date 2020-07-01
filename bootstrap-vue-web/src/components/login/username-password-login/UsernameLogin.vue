@@ -81,8 +81,9 @@
                     const connection = await service.login(this.username, this.password, appId);
                     if(connection)
                     {
-                        sessionStorage.setItem("token", connection.token);
-                        this.$emit("authenticated", true);
+                        //sessionStorage.setItem("token", connection.token);
+                        this.$sessionStorage.token = connection.token;
+                        this.$sessionStorage.connection = connection;
                         this.$router.push("access");
                     }
                     else

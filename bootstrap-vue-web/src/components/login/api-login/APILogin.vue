@@ -50,8 +50,10 @@
                     const connection =  new this.$pryv.Connection(this.endpoint);
                     if(connection)
                     {
-                        sessionStorage.setItem("token", connection.token);
-                        this.$emit("authenticated", true);
+                        //sessionStorage.setItem("token", connection.token);
+                        this.$sessionStorage.token = connection.token;
+                        this.$sessionStorage.connection = connection;
+                        //this.$emit("authenticated", true);
                         this.$router.push("access");
                     }
                     else

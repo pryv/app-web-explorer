@@ -39,8 +39,10 @@
             connection = new Pryv.Connection(state.apiEndpoint);
             if(connection)
             {
+                //this.$sessionStorage.token = connection.token;this.$sessionStorage.connection = connection;
                 sessionStorage.setItem("token", connection.token);
-                //self.$emit("authenticated", true);
+                sessionStorage.setItem("connection", connection);
+
                 //self.$router.push("access");
             }
             else
@@ -48,11 +50,13 @@
                 console.log("Error with Web Login");
             }
         }
-        if (state.id === Pryv.Browser.AuthStates.LOGOUT) {
+        if (state.id === Pryv.Browser.AuthStates.INITIALIZED) {
             connection = null;
             if(connection)
             {
+                //this.$sessionStorage.token = null;
                 sessionStorage.removeItem("token");
+                sessionStorage.removeItem("session");
                 //this.$emit("authenticated", false);
                 //this.$router.push("home");
             }

@@ -5,10 +5,15 @@ import Home from '../views/Home.vue'
 Vue.use(VueRouter)
 
   const routes = [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home,
+    },
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/login',
@@ -16,7 +21,10 @@ Vue.use(VueRouter)
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+    beforeEnter: (to, from, next) => {
+      isNotAuthenticated(to,from,next);
+    }
   },
     {
       path: '/about',
@@ -24,7 +32,11 @@ Vue.use(VueRouter)
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "login" */ '../views/About.vue')
+      component: () => import(/* webpackChunkName: "login" */ '../views/About.vue'),
+      beforeEnter: (to, from, next) => {
+        isAuthenticated(to,from,next);
+      }
+
     },
     {
       path: '/test',
@@ -32,7 +44,10 @@ Vue.use(VueRouter)
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "login" */ '../views/Test.vue')
+      component: () => import(/* webpackChunkName: "login" */ '../views/Test.vue'),
+      beforeEnter: (to, from, next) => {
+        isAuthenticated(to,from,next);
+      }
     },
     {
       path: '/access',
@@ -40,14 +55,45 @@ Vue.use(VueRouter)
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "login" */ '../views/Access.vue')
-    }
+      component: () => import(/* webpackChunkName: "login" */ '../views/Access.vue'),
+      beforeEnter: (to, from, next) => {
+        isAuthenticated(to,from,next);
+      }
+    },
 ]
 
 const router = new VueRouter({
   mode: 'history', //todo hash or history mode
   base: process.env.BASE_URL,
-  routes
+  routes,
 })
+
+function isAuthenticated(to,from,next)
+{
+  if(sessionStorage.getItem("token"))
+  {
+    next();
+  }
+  else{
+    next({
+      name: "Login" // back to safety route //
+    });
+  }
+}
+
+function isNotAuthenticated(to,from,next) {
+  {
+    if(!sessionStorage.getItem("token"))
+    {
+      next();
+    }
+    else{
+      next({
+        name: "Access" // back to safety route //
+      });
+    }
+  }
+
+}
 
 export default router

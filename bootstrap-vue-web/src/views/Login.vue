@@ -5,19 +5,19 @@
                 <h4>Login Panel</h4>
             </div>
             <b-card class="card-style shadow">
-                <Label :parent-data="APILogin"></Label>
+                <Label :href="href_api" :parent-data="APILogin"></Label>
                 <APILogin></APILogin>
             </b-card>
             <b-card class="card-style shadow">
-                <Label :parent-data="ButtonLogin"></Label>
+                <Label :href="href_web" :parent-data="ButtonLogin"></Label>
                 <WebButton></WebButton>
             </b-card>
             <b-card class="card-style shadow">
-                <Label :parent-data="PasswordLogin"></Label>
+                <Label :href="href_manual" :parent-data="PasswordLogin"></Label>
                 <UsernameLogin></UsernameLogin>
             </b-card>
             <b-card class="card-style shadow" style="border: none">
-                <Label :parent-data="ServiceInfoURL"></Label>
+                <Label :href="href_service_info" :parent-data="ServiceInfoURL"></Label>
                 <ServiceInfo></ServiceInfo>
             </b-card>
         </div>
@@ -37,7 +37,11 @@
                 APILogin:"Login Using API",
                 ButtonLogin : "Login using Web Button",
                 PasswordLogin : "Login using Username, Password",
-                ServiceInfoURL : "Service Info URL"
+                ServiceInfoURL : "Service Info URL",
+                href_api:"https://github.com/pryv/lib-js#using-an-api-endpoint",
+                href_web:"https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button",
+                href_manual:"https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only",
+                href_service_info : "https://github.com/pryv/lib-js#usage-of-pryvservice"
             }
         },
         methods: {

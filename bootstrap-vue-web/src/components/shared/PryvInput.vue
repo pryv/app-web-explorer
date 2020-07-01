@@ -7,6 +7,7 @@
             :value="value"
             :rules="[rules.required]"
             type="text"
+            :disabled="disabled === true"
     ></b-input>
 </template>
 
@@ -17,7 +18,8 @@
             {
                 value: { type: String, default: '' },
                 placeholder:{ type: String},
-                id:{type:String}
+                id:{type:String},
+                disabled:{type: Boolean, default:false}
             },
         data: () => ({
             rules: {

@@ -7,7 +7,7 @@
 <script>
     import Pryv from 'pryv';
     import PryvModel from '@/models/pryv';
-
+    import ACCESS_INFO_API from "../../../utilities/api"
     export default {
         name: 'WebButton',
         data () {
@@ -28,22 +28,22 @@
             async loadButton() {
                 var service = await Pryv.Browser.setupAuth(loadSettings(this), this.serviceInfoUrl);
                 console.log(service);
-            }
+            },
         },
     }
 
-    function pryvAuthStateChange(state) { // called each time the authentication state changed
+    async function pryvAuthStateChange(state) { // called each time the authentication state changed
         console.log('##pryvAuthStateChange', state);
         let connection = null;
         if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
             connection = new Pryv.Connection(state.apiEndpoint);
             if(connection)
             {
-                this.$sessionStorage.token = connection.token;this.$sessionStorage.connection = connection;
-                sessionStorage.setItem("token", connection.token);
-                sessionStorage.setItem("connection", connection);
-
-                //self.$router.push("access");
+                const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
+                if(result)
+                {
+                    this.$emit("authenticated", connection , result[0]);
+                }
             }
             else
             {
@@ -55,8 +55,6 @@
             if(connection)
             {
                 //this.$sessionStorage.token = null;
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("session");
                 //this.$emit("authenticated", false);
                 //this.$router.push("home");
             }

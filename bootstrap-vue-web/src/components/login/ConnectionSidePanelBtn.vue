@@ -1,12 +1,8 @@
 <template>
     <b-row>
-        <b-button v-if="!isLoggedIn"  @click="$router.push('login')" class="w-100" style="text-align: left" variant="light">
+        <b-button  @click="$router.push('login')" class="w-100" style="text-align: left" variant="light">
             <b-icon icon="plus" font-scale="1.5"></b-icon>
             Connection
-        </b-button>
-        <b-button v-if="isLoggedIn" @click="$router.push('access')" class="w-100" style="text-align: left" variant="light">
-            <b-icon icon="plus" font-scale="1.5"></b-icon>
-            Access
         </b-button>
         <!--<b-button @click="$router.push('about')" class="w-100" style="text-align: left" variant="light">
             <b-icon icon="plus" font-scale="1.5"></b-icon>

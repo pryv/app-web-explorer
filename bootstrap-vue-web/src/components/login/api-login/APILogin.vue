@@ -23,6 +23,7 @@
     import PryvBtn from "../../shared/PryvBtn";
     import PryvInput from "../../shared/PryvInput";
     import PryvAlert from "../../shared/PryvAlert";
+    import ACCESS_INFO_API from "../../../utilities/api"
     export default {
         name: "APILogin",
         components: {PryvInput, PryvBtn, PryvAlert},
@@ -37,7 +38,7 @@
             }
         },
         methods :{
-            loginAPI : function()
+            loginAPI :async function()
             {
                 if(!this.endpoint)
                 {
@@ -50,11 +51,11 @@
                     const connection =  new this.$pryv.Connection(this.endpoint);
                     if(connection)
                     {
-                        //sessionStorage.setItem("token", connection.token);
-                        this.$sessionStorage.token = connection.token;
-                        this.$sessionStorage.connection = connection;
-                        //this.$emit("authenticated", true);
-                        this.$router.push("access");
+                        const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
+                        if(result)
+                        {
+                            this.$emit("authenticated", connection , result[0]);
+                        }
                     }
                     else
                     {

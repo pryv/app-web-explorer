@@ -24,7 +24,7 @@
 </template>
 <script>
     export default {
-        name:"testnew"
+        name:"testnew",
         data:()=>(
             {
                 title:"my title test new",

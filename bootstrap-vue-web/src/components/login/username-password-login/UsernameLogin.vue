@@ -36,6 +36,7 @@
     import PryvInput from "../../shared/PryvInput"
     import PryvPassword from "../../shared/PryvPassword";
     import PryvAlert from "../../shared/PryvAlert";
+    import ACCESS_INFO_API from "../../../utilities/api"
     export default {
         name:"UsernameLogin",
         components: {PryvAlert, PryvPassword, PryvBtn,PryvInput},
@@ -81,10 +82,11 @@
                     const connection = await service.login(this.username, this.password, appId);
                     if(connection)
                     {
-                        //sessionStorage.setItem("token", connection.token);
-                        this.$sessionStorage.token = connection.token;
-                        this.$sessionStorage.connection = connection;
-                        this.$router.push("access");
+                        const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
+                        if(result)
+                        {
+                            this.$emit("authenticated", connection , result[0]);
+                        }
                     }
                     else
                     {

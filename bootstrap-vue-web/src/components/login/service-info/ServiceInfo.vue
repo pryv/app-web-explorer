@@ -17,7 +17,7 @@
                 <div class="service-info-content">
                     "register": {{register}} <br>
                     "access": {{access}} <br>
-                    "api": {{api}} <br>
+                    "api": {{api_v}} <br>
                     "name": {{name}} <br>
                     "home": {{home}} <br>
                     "support": {{support}} <br>
@@ -53,7 +53,7 @@
                 disabled:true,
                 register:'',
                 access:'',
-                api:'',
+                api_v:'',
                 name:'',
                 home:'',
                 support:'',
@@ -68,7 +68,7 @@
             const serviceInfo = (await service.info());
             this.register = serviceInfo.register;
             this.access = serviceInfo.access;
-            this.api = serviceInfo.api;
+            this.api_v = serviceInfo.api;
             this.name = serviceInfo.name;
             this.home = serviceInfo.home;
             this.support = serviceInfo.support;

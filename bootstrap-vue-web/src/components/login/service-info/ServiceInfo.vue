@@ -62,8 +62,18 @@
                 assets:''
             }
         },
-        async created() {
-            const serviceInfoUrl = 'https://reg.pryv.me/service/info';
+
+        async mounted() {
+            //todo make service info more concrete
+            console.log("router query");
+            console.log(this.$route.query);
+            var serviceInfoUrl = 'https://reg.pryv.me/service/info';
+            if(this.$route.query && this.$route.query.pryvServiceInfoUrl)
+            {
+                serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
+                this.$store.commit('UPDATE_SERVICE_INFO', this.serviceInfoUrl);
+            }
+            //
             const service = new this.$pryv.Service(serviceInfoUrl);
             const serviceInfo = (await service.info());
             this.register = serviceInfo.register;

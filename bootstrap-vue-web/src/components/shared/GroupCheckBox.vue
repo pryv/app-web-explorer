@@ -6,8 +6,8 @@
                     :key="keyv"
                     :name="opts"
                     :main="keyv"
-                    v-model="selectedStreams[keyv]"
-                    @clickAll="clickAll($event, keyv)"
+                    :value="selectedStreams[keyv]"
+                    @clickAll="clickAll"
             ></StreamCheckBox>
         </b-form-group>
     </div>
@@ -19,12 +19,15 @@
     export default {
         name: "GroupCheckBox",
         components: {StreamCheckBox},
-        data(){
-            return {
-                selectedStreams:{}
-            }
-        },
         computed: {
+            selectedStreams: {
+                get() {
+                    return this.$store.state.selectedStreams
+                },
+                set(value) {
+                    this.$store.commit('UPDATE_SELECTED_ENDPOINTS', value)
+                }
+            },
             loggedInUsernamesf() {
                 var username_arr = JSON.parse(this.$sessionStorage.access_info_arr);
                 var usernames = {};
@@ -46,22 +49,36 @@
             },
         },
         methods: {
-            clickAll(e, keyv) {
-                if (e && e.includes(keyv)) {
-                    var checked = new Array();
-                    checked = this.loggedInUsernamesf[keyv].map(
-                        opt => {
-                            return opt.value
-                        }
-                    );
-
-                    checked.push(keyv);
-                    // this.$set(this.selectedStreams,keyv , checked);
+            clickAll(e) {
+                var key = e["key"]; // endpoint token
+                var event = e["event"] // clicked token or null if unclicked
+                var value = e["value"]; // clicked token or clicked token + stream id
+                var checked = Object.assign({}, this.selectedStreams);
+                if (event) {
+                    if (key === value) {
+                        checked[key] = this.loggedInUsernamesf[key].map(
+                            opt => {
+                                return opt.value
+                            }
+                        );
+                        checked[key].push(key);
+                    } else {
+                        if (!checked[key])
+                            checked[key] = [];
+                        checked[key].push(value);
+                    }
+                } else {
+                    if (key === value) {
+                        checked[key] = [];
+                    } else {
+                        checked[key] = this.selectedStreams[key].filter(opt => (opt != value)).map(opt => opt)
+                    }
                 }
+                this.selectedStreams = Object.assign({}, checked)
+                console.log(this.selectedStreams);
             },
         },
     }
-
 </script>
 
 <style scoped>

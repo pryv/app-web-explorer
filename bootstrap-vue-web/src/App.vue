@@ -1,34 +1,35 @@
 <template>
-  <div id="app">
-    <DashboardLayout/>
-  </div>
+    <div id="app">
+        <DashboardLayout/>
+    </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+    #app {
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
     }
-  }
-}
+
+    #nav {
+        padding: 30px;
+
+        a {
+            font-weight: bold;
+            color: #2c3e50;
+
+            &.router-link-exact-active {
+                color: #42b983;
+            }
+        }
+    }
 </style>
 <script>
-  import DashboardLayout from "./components/layouts/DashboardLayout";
-  export default {
-    components: {DashboardLayout}
-  }
+    import DashboardLayout from "./components/layouts/DashboardLayout";
+
+    export default {
+        components: {DashboardLayout},
+    }
 </script>

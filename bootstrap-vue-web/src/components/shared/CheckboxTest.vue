@@ -4,10 +4,19 @@
             <b-form-checkbox-group
                     class="main"
                     v-model="selected"
-                    :options="loggedInUsernames"
                     plain
                     stacked
-            ></b-form-checkbox-group>
+            >
+                <!--<div class="form-check" :key="opt.value" v-for="opt in loggedInUsernames">
+                <input type="checkbox" :value="opt.value"  autocomplete="off" class="form-check-input">
+                <label class="form-check-label">{{opt.text}}</label>
+                </div>-->
+                <b-form-checkbox
+                        v-for="opt in loggedInUsernames"
+                        :key="opt.value"
+                        :value="opt.value"
+                >{{ opt.text }}</b-form-checkbox>
+            </b-form-checkbox-group>
         </b-form-group>
     </div>
 </template>
@@ -23,6 +32,7 @@
                 var usernames = [];
                 for (let i = 0; i < username_arr.length; i++) {
                     var payload = {};
+                    console.log(username_arr[i]);
                     payload["name"] = username_arr[i].val.name;
                     payload["text"] = username_arr[i].val.name + username_arr[i].val.type;
                     payload["type"] = username_arr[i].val.type;
@@ -78,5 +88,10 @@
         padding-left: 0 !important;
         font-size: 0.75rem !important;
         border-radius: 0rem;
+    }
+
+    .form-check-label
+    {
+        width:100%;
     }
 </style>

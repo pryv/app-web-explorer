@@ -1,6 +1,5 @@
 <template>
     <b-row class="bg-white shadow h-100">
-
     </b-row>
 </template>
 <script>

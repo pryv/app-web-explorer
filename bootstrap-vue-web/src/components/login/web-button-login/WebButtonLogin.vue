@@ -68,11 +68,9 @@
             onStateChange: pryvAuthStateChange.bind(that), // event Listener for Authentication steps
             authRequest: { // See: https://api.pryv.com/reference/#auth-request
                 requestingAppId: 'web-app-explorer',
-                languageCode: 'fr', // optional (default english)
                 requestedPermissions: [
                     {
-                        streamId: 'test',
-                        defaultName: 'test',
+                        streamId: '*',
                         level: 'manage'
                     }
                 ],

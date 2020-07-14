@@ -24,35 +24,32 @@
 </template>
 <script>
     export default {
-        name:"testnew",
-        data:()=>(
+        name: "testnew",
+        data: () => (
             {
-                title:"my title test new",
-                item:'',
-                items:[
-                    {title:"item 1", checked:true},
-                    {title:"item 2", checked:true},
-                    {title:"item 3", checked:false},
-                    {title:"item 4", checked:true},
+                title: "my title test new",
+                item: '',
+                items: [
+                    {title: "item 1", checked: true},
+                    {title: "item 2", checked: true},
+                    {title: "item 3", checked: false},
+                    {title: "item 4", checked: true},
                 ],
-                price:100
+                price: 100
             }
         ),
         methods: {
-            moneyFormatted : function(price)
-            {
-                return '$'+price+'.00';
+            moneyFormatted: function (price) {
+                return '$' + price + '.00';
             }
         },
-        computed:{
+        computed: {
             tax: function () {
                 return this.price * 0.1
             },
-            total : function () {
+            total: function () {
                 return parseInt(this.price) + this.tax;
             }
         }
-
-
     }
 </script>

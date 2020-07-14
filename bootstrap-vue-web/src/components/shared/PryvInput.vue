@@ -16,10 +16,10 @@
         name: "PryvInput",
         props:
             {
-                value: { type: String, default: '' },
-                placeholder:{ type: String},
-                id:{type:String},
-                disabled:{type: Boolean, default:false}
+                value: {type: String, default: ''},
+                placeholder: {type: String},
+                id: {type: String},
+                disabled: {type: Boolean, default: false}
             },
         data: () => ({
             rules: {
@@ -31,7 +31,7 @@
 </script>
 
 <style scoped>
-    .pryv-input{
+    .pryv-input {
         font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 12px;
         line-height: 20px;

@@ -16,7 +16,7 @@
 </script>
 
 <style scoped>
-    .pryv-btn{
+    .pryv-btn {
         float: left;
         font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 12px;

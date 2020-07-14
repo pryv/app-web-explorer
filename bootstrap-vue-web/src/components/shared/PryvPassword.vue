@@ -15,9 +15,9 @@
     export default {
         name: "PryvPassword",
         props: {
-            value: { type: String, default: '' },
-            placeholder:{ type: String},
-            id:{type:String}
+            value: {type: String, default: ''},
+            placeholder: {type: String},
+            id: {type: String}
         },
         data: () => ({
             visiblePass: false,
@@ -27,7 +27,7 @@
 </script>
 
 <style scoped>
-    .pryv-input{
+    .pryv-input {
         font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 12px;
         line-height: 20px;

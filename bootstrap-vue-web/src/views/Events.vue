@@ -51,7 +51,7 @@
                 fetchData: [],
                 show: true,
                 message: "No info available to display.",
-                typesSet : new Set(),
+                typesSet: new Set(),
             }
         },
         computed: {
@@ -66,10 +66,10 @@
                 return this.filters;
             },
             types: {
-                get () {
+                get() {
                     return this.$store.state.types
                 },
-                set (value) {
+                set(value) {
                     this.$store.commit('SET_TYPES', value)
                 }
             }
@@ -120,8 +120,10 @@
                         console.log(this.filters);
                         try {
                             const result = await connection.getEventsStreamed(this.queryParams, this.forEachEvent);
+                            const resultTypes = await connection.getEventsStreamed({}, this.getTypeForEachEvent);
                             console.log("results");
                             console.log(result)
+                            console.log(resultTypes)
                         } catch (e) {
                             console.log(e);
                         }
@@ -131,9 +133,12 @@
 
             forEachEvent(event) {
                 this.fetchData.push(event);
+            },
+
+            getTypeForEachEvent(event) {
                 this.typesSet.add(event.type);
                 this.types = this.typesSet;
-            },
+            }
         }
     }
 

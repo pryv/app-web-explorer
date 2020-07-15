@@ -181,60 +181,62 @@
                 ></b-form-input>
             </b-col>
         </b-row>
-            <b-row>
-                <b-col cols="1">
-                    <b-form-checkbox
-                            v-model="valueTypeCheck"
-                            name="checkbox-1"
-                            value=true
-                            unchecked-value=false
-                            @change="enableTypes"
-                    >
-                        Types
-                    </b-form-checkbox>
-                </b-col>
-                <b-col cols="2">
-                    <b-button
-                            :disabled="this.valueTypeCheck === 'false'"
-                            id="submitBtn"
-                            @click="$bvModal.show('modal-scoped')"
-                            style="font-size: 0.75rem;"
-                    >Modify Types</b-button>
-                </b-col>
+        <b-row>
+            <b-col cols="1">
+                <b-form-checkbox
+                        v-model="valueTypeCheck"
+                        name="checkbox-1"
+                        value=true
+                        unchecked-value=false
+                        @change="enableTypes"
+                >
+                    Types
+                </b-form-checkbox>
+            </b-col>
+            <b-col cols="2">
+                <b-button
+                        :disabled="this.valueTypeCheck === 'false'"
+                        id="submitBtn"
+                        @click="$bvModal.show('modal-scoped')"
+                        style="font-size: 0.75rem;"
+                >Modify Types
+                </b-button>
+            </b-col>
 
-                <b-modal id="modal-scoped">
-                    <template v-slot:modal-header>
-                        <!-- Emulate built in modal header close button action -->
-                        <h5>Types Filter</h5>
-                    </template>
-                    <template v-slot:default>
-                        <!-- Emulate built in modal header close button action -->
-                        <b-form-group :label="typesLabel">
-                            <b-form-checkbox-group
-                                    id="checkbox-group-1"
-                                    v-model="selected"
-                                    :options="optionsTypes"
-                                    name="flavour-1"
-                            ></b-form-checkbox-group>
-                        </b-form-group>
-                    </template>
+            <b-modal id="modal-scoped">
+                <template v-slot:modal-header>
+                    <!-- Emulate built in modal header close button action -->
+                    <h5>Types Filter</h5>
+                </template>
+                <template v-slot:default>
+                    <!-- Emulate built in modal header close button action -->
+                    <b-form-group :label="typesLabel">
+                        <b-form-checkbox-group
+                                id="checkbox-group-1"
+                                v-model="selected"
+                                :options="optionsTypes"
+                                name="flavour-1"
+                        ></b-form-checkbox-group>
+                    </b-form-group>
+                </template>
 
-                    <template v-slot:modal-footer="{ ok, cancel }">
-                        <!-- Emulate built in modal footer ok and cancel button actions -->
-                        <b-button size="sm" variant="success" @click="setTypeFilters(ok)">
-                            OK
-                        </b-button>
-                        <b-button size="sm" variant="danger" @click="cancelTypeFilters(cancel)">
-                            Cancel
-                        </b-button>
-                    </template>
-                </b-modal>
+                <template v-slot:modal-footer="{ ok, cancel }">
+                    <!-- Emulate built in modal footer ok and cancel button actions -->
+                    <b-button size="sm" variant="success" @click="setTypeFilters(ok)">
+                        OK
+                    </b-button>
+                    <b-button size="sm" variant="danger" @click="cancelTypeFilters(cancel)">
+                        Cancel
+                    </b-button>
+                </template>
+            </b-modal>
         </b-row>
     </b-card>
 </template>
 
 <script>
     import {mapState} from 'vuex';
+
     export default {
         name: "FilterPanel",
         computed: {
@@ -247,11 +249,9 @@
                 }
             },
             ...mapState(['types']),
-            optionsTypes(){
-                alert(this.types.size)
+            optionsTypes() {
                 var options = [];
-                for (let item of this.types)
-                {
+                for (let item of this.types) {
                     var payload = {};
                     payload["text"] = item;
                     payload["value"] = item;
@@ -261,9 +261,8 @@
                 console.log(options)
                 return options;
             },
-            typesLabel()
-            {
-                if(this.types.size > 0)
+            typesLabel() {
+                if (this.types.size > 0)
                     return "Select multiple types to filter"
                 else
                     return "You have selected no endpoints to view"
@@ -284,7 +283,7 @@
                 valueSortCheck: 'false',
                 valueModifiedCheck: 'false',
                 valueLimitCheck: 'false',
-                valueTypeCheck : 'false',
+                valueTypeCheck: 'false',
                 optionsState: [
                     {value: null, text: 'Select the state'},
                     {value: 'default', text: 'DEFAULT'},
@@ -296,7 +295,7 @@
                     {value: true, text: 'TRUE'},
                     {value: false, text: 'FALSE'}
                 ],
-                modalShow : false,
+                modalShow: false,
                 selected: [], // Must be an array reference!
             }
         },
@@ -419,13 +418,11 @@
                     this.removeFilterAttr("types")
                 }
             },
-            cancelTypeFilters(cancel)
-            {
+            cancelTypeFilters(cancel) {
                 cancel();
             },
-            setTypeFilters(ok)
-            {
-                if (this.selected.length > 0 ) {
+            setTypeFilters(ok) {
+                if (this.selected.length > 0) {
                     this.updateFilters("types", this.selected)
                 } else {
                     this.removeFilterAttr("types")

@@ -34,7 +34,6 @@ class Pryv {
       });
     return res.body;
   }
-
 }
 
 module.exports = Pryv;

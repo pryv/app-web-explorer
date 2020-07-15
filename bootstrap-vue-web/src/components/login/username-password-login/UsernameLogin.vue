@@ -85,7 +85,7 @@
                         const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
                         if(result)
                         {
-                            this.$emit("authenticated", connection , result[0]);
+                            this.$emit("authenticated", connection , result[0], false);
                         }
                     }
                     else

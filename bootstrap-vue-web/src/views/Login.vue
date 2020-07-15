@@ -82,7 +82,7 @@
             }
         },
         methods: {
-            addToSessionStorageConnectionArray(id, value) {
+            addToSessionStorageConnectionArray(id, value, cookie) {
                 var existing = this.$sessionStorage.connection_arr;
                 existing = existing ? JSON.parse(existing) : [];
                 if (existing.filter(e => e.key === id).length > 0) {
@@ -90,7 +90,8 @@
                 }
                 existing.push({
                     key: id,
-                    val: value
+                    val: value,
+                    cookie : cookie
                 });
                 // Save back to session
                 this.$sessionStorage.connection_arr = JSON.stringify(existing);
@@ -112,13 +113,12 @@
                 this.$sessionStorage.access_info_arr = JSON.stringify(existing);
                 return true
             },
-            updateSessionStorage(connection, access_info) {
+            updateSessionStorage(connection, access_info,cookie) {
 
-                if (this.addToSessionStorageConnectionArray(connection.token, connection) &&
+                if (this.addToSessionStorageConnectionArray(connection.token, connection, cookie) &&
                     this.addToSessionStorageAccessInfoArray(connection.token, access_info))
-                    this.$router.push("access");
-
-            }
+                    this.$router.push("events");
+            },
         }
     }
 </script>

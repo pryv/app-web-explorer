@@ -66,6 +66,9 @@
             displayStreams: function () {
                 return this.name.filter(i => i.value)
             },
+            currentRouteName() {
+                return this.$route.name;
+            }
         },
         watch: {
             value: {
@@ -84,6 +87,10 @@
                 this.$emit('clickAll', payload);
             },
             viewAccessInfo(val) {
+                if(this.currentRouteName != "Info")
+                {
+                    this.$router.push("info")
+                }
                 this.$store.commit('SET_ACCESS_INFO', val);
             }
         }

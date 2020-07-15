@@ -11,7 +11,8 @@ const store = new Vuex.Store({
         accessInfo: "",
         selectedStreams: {},
         connection: {},
-        filters: {}
+        filters: {},
+        types:new Set(),
     },
     mutations: {
         UPDATE_CHECKBOX: (state, selected) => {
@@ -28,9 +29,11 @@ const store = new Vuex.Store({
         },
         UPDATE_FILTERS: (state, selectedFilters) => {
             state.filters = selectedFilters;
+        },
+        SET_TYPES:(state, loadTypes) => {
+            state.types = loadTypes;
         }
     },
-    actions: {},
     getters: {
         getSelected() {
             return this.state.selected;
@@ -46,6 +49,9 @@ const store = new Vuex.Store({
         },
         getSelectedFilters() {
             return this.state.filters;
+        },
+        getSelectedTypes() {
+            return this.state.types;
         }
     }
 });

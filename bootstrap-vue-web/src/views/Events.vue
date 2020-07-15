@@ -51,7 +51,7 @@
                 fetchData: [],
                 show: true,
                 message: "No info available to display.",
-                events: []
+                typesSet : new Set(),
             }
         },
         computed: {
@@ -64,6 +64,14 @@
             },
             queryParams() {
                 return this.filters;
+            },
+            types: {
+                get () {
+                    return this.$store.state.types
+                },
+                set (value) {
+                    this.$store.commit('SET_TYPES', value)
+                }
             }
         },
         async created() {
@@ -81,6 +89,7 @@
             async displayEvents() {
                 var connectionArr = JSON.parse(this.$sessionStorage.connection_arr);
                 this.fetchData = [];
+                this.typesSet = new Set();
                 if (!this.selectedStreams) {
                     return;
                 }
@@ -89,10 +98,11 @@
                 for (var i = 0; i < connectionArr.length; i++) {
                     // eslint-disable-next-line no-prototype-builtins
                     if (this.selectedStreams.hasOwnProperty(connectionArr[i].key) && this.selectedStreams[connectionArr[i].key].length > 0) {
-                        const connObj = connectionArr[i].val;
+                        const connObj = connectionArr[i].val
                         var url = connObj.endpoint.replace(/(^\w+:|^)\/\//, '');
                         var endpoint = 'https://' + connObj.token + '@' + url
                         const connection = new this.$pryv.Connection(endpoint);
+
                         let streams = [];
                         for (let j = 0; j < this.selectedStreams[connectionArr[i].key].length; j++) {
                             if (this.selectedStreams[connectionArr[i].key][j] === connectionArr[i].key)
@@ -104,6 +114,8 @@
                         }
                         if (streams.length > 0)
                             this.queryParams["streams"] = streams;
+                        else
+                            delete this.queryParams["streams"];
                         console.log("query params");
                         console.log(this.filters);
                         try {
@@ -119,6 +131,8 @@
 
             forEachEvent(event) {
                 this.fetchData.push(event);
+                this.typesSet.add(event.type);
+                this.types = this.typesSet;
             },
         }
     }

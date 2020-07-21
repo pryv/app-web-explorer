@@ -1,32 +1,30 @@
 <template>
-        <div style="text-align: left;">
-            <span id="pryv-button"></span><br>
-        </div>
+    <div style="text-align: left;">
+        <span id="pryv-button"></span><br>
+    </div>
 </template>
 
 <script>
     import Pryv from 'pryv';
     import PryvModel from '@/models/pryv';
-    import ACCESS_INFO_API from "../../../utilities/api"
+    import {mapState} from 'vuex';
     export default {
         name: 'WebButton',
         data () {
             return {
                 pryvModel: new PryvModel(),
-                serviceInfoUrl : 'https://reg.pryv.me/service/info'
             }
         },
-        async created() {
-            await this.pryvModel.fetchServiceInfo();
+        computed:{
+            ...mapState(['serviceInfo']),
+        },
+        async mounted() {
             this.loadButton();
         },
 
         methods : {
-            async create() {
-                await this.pryvModel.fetchServiceInfo();
-            },
             async loadButton() {
-                var service = await Pryv.Browser.setupAuth(loadSettings(this), this.serviceInfoUrl);
+                var service = await Pryv.Browser.setupAuth(loadSettings(this), this.serviceInfo);
                 console.log(service);
             },
         },
@@ -39,11 +37,7 @@
             connection = new Pryv.Connection(state.apiEndpoint);
             if(connection)
             {
-                const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
-                if(result)
-                {
-                    this.$emit("authenticated", connection , result[0], true);
-                }
+                this.$emit("authenticated", connection, true);
             }
             else
             {
@@ -54,9 +48,7 @@
             connection = null;
             if(connection)
             {
-                //this.$sessionStorage.token = null;
-                //this.$emit("authenticated", false);
-                //this.$router.push("home");
+                //todo logout
             }
         }
     }
@@ -79,19 +71,7 @@
                         'type': 'note/txt', 'content': 'This is a consent message.'
                     }
                 },
-                // referer: 'my test with lib-js', // optional string to track registration source
             }
         };
     }
 </script>
-
-<!-- styling for the component -->
-<style>
-    #InvitationDisplay {
-        width:100%;
-        height:100%;
-    }
-    table {
-        margin: 0 auto; /* or margin: 0 auto 0 auto */
-    }
-</style>

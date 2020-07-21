@@ -5,8 +5,7 @@
                 <PryvInput
                         :id="id"
                         :placeholder="placeholder"
-                        @updateInput="updateServiceInfoUrl"
-                        v-model="serviceinfourl"
+                        v-model="this.serviceInfo"
                         :disabled="disabled"
                 ></PryvInput>
             </b-input-group>
@@ -24,10 +23,6 @@
                     "terms": {{terms}} <br>
                     "eventTypes": {{eventTypes}}<br>
                     "assets-": {{assets}}<br>
-                    <!--todo remove this line
-                    "assets": {<br>
-                    <span style="margin-left: 5%;">"definitions": "https://pryv.github.io/assets-pryv.me/index.json"</span><br>
-                    }-->
                 </div>
             </b-card>
         </div>
@@ -37,19 +32,26 @@
 
 <script>
     import PryvInput from "../../shared/PryvInput";
-    import Constants from "../../../utilities"
-
+    import {constants} from '../../../utilities/constants'
     export default {
         name: "APILogin",
         components: { PryvInput},
+        computed: {
+            serviceInfo: {
+                get() {
+                    return this.$store.state.serviceInfo
+                },
+                set(value) {
+                    this.$store.commit('UPDATE_SERVICE_INFO', value);
+                }
+            },
+        },
         data() {
             return {
-                endpoint: Constants.DEFAULT_SERVICE_INFO_URL,
-                btncontent:"Login",
+                endpoint: constants.DEFAULT_SERVICE_INFO_URL,
                 id:"input-service-info-url",
                 placeholder:"Enter Service Endpoint",
                 ServiceInfo: "Service Info",
-                serviceinfourl : "https://reg.pryv.me/service/info",
                 disabled:true,
                 register:'',
                 access:'',
@@ -63,33 +65,24 @@
             }
         },
 
-        async mounted() {
-            //todo make service info more concrete
-            console.log("router query");
-            console.log(this.$route.query);
-            var serviceInfoUrl = 'https://reg.pryv.me/service/info';
+        async created() {
             if(this.$route.query && this.$route.query.pryvServiceInfoUrl)
             {
-                serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
-                this.$store.commit('UPDATE_SERVICE_INFO', this.serviceInfoUrl);
+                const serviceInfoUrl = this.$route.query.pryvServiceInfoUrl
+                if(serviceInfoUrl)
+                    this.serviceInfo = serviceInfoUrl;
             }
-            //
-            const service = new this.$pryv.Service(serviceInfoUrl);
-            const serviceInfo = (await service.info());
-            this.register = serviceInfo.register;
-            this.access = serviceInfo.access;
-            this.api_v = serviceInfo.api;
-            this.name = serviceInfo.name;
-            this.home = serviceInfo.home;
-            this.support = serviceInfo.support;
-            this.terms = serviceInfo.terms;
-            this.eventTypes = serviceInfo.eventTypes;
-            this.assets = serviceInfo.assets;
-        },
-        methods :{
-            updateServiceInfoUrl : function (val) {
-                this.endpoint = val;
-            }
+            const service = new this.$pryv.Service(this.serviceInfo);
+            const serviceInfoVar = (await service.info());
+            this.register = serviceInfoVar.register;
+            this.access = serviceInfoVar.access;
+            this.api_v = serviceInfoVar.api;
+            this.name = serviceInfoVar.name;
+            this.home = serviceInfoVar.home;
+            this.support = serviceInfoVar.support;
+            this.terms = serviceInfoVar.terms;
+            this.eventTypes = serviceInfoVar.eventTypes;
+            this.assets = serviceInfoVar.assets;
         }
     }
 </script>

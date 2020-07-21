@@ -1,7 +1,11 @@
 <template>
     <div style="max-width: 450px;min-width: 200px;">
-        <b-row class="pt-2" align-v="center">
-            <b-img src="../../assets/img/logo-pryv.png" center alt="Responsive image"></b-img>
+        <b-row align-v="center" class="pt-2">
+            <b-img
+                    alt="Responsive image"
+                    center
+                    src="../../assets/img/logo-pryv.png"
+            ></b-img>
         </b-row>
         <br>
         <ConnectionSidePanelBtn/>

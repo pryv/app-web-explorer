@@ -4,7 +4,7 @@ import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import  './cookies'
+import './cookies'
 
 Vue.config.productionTip = false
 
@@ -16,6 +16,8 @@ Vue.prototype.$sessionStorage = new Vue({
         token_arr: window.sessionStorage.getItem("token_arr"),
         connection_arr: window.sessionStorage.getItem('connection_arr'),
         access_info_arr: window.sessionStorage.getItem('access_info_arr'),
+        endpoint_arr : window.sessionStorage.getItem('endpoint_arr')
+
     },
     watch: {
         token_arr(value) {
@@ -26,6 +28,9 @@ Vue.prototype.$sessionStorage = new Vue({
         },
         access_info_arr(value) {
             window.sessionStorage.setItem('access_info_arr', value)
+        },
+        endpoint_arr(value) {
+            window.sessionStorage.setItem('endpoint_arr', value)
         }
     },
 })

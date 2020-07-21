@@ -2,7 +2,7 @@
     <div>
         <b-form-group>
             <StreamCheckBox
-                    v-for="(opts, keyv) in loggedInUsernamesf"
+                    v-for="(opts, keyv) in streamList"
                     :key="keyv"
                     :name="opts"
                     :main="keyv"
@@ -15,11 +15,18 @@
 
 <script>
     import StreamCheckBox from "./StreamCheckBox";
-
+    import {mapState} from 'vuex';
     export default {
         name: "GroupCheckBox",
         components: {StreamCheckBox},
+        data() {
+            return {
+                loggedInUsernames: {}
+            }
+        },
         computed: {
+            ...mapState(['streams_map']),
+            ...mapState(['access_info_map']),
             selectedStreams: {
                 get() {
                     return this.$store.state.selectedStreams
@@ -28,24 +35,16 @@
                     this.$store.commit('UPDATE_SELECTED_ENDPOINTS', value)
                 }
             },
-            loggedInUsernamesf() {
-                var username_arr = JSON.parse(this.$sessionStorage.access_info_arr);
-                var usernames = {};
-                if (!username_arr) return;
-                for (let i = 0; i < username_arr.length; i++) {
-                    usernames[username_arr[i].key] = [];
-                    var payload = {};
-                    payload["main"] = username_arr[i].val.name;
-                    payload["type"] = username_arr[i].val.type;
-                    if (username_arr[i].val.permissions) {
-                        for (let j = 0; j < username_arr[i].val.permissions.length; j++) {
-                            payload["value"] = username_arr[i].key + username_arr[i].val.permissions[j].streamId;
-                            payload["text"] = username_arr[i].val.permissions[j].streamId;
-                        }
-                    }
-                    usernames[username_arr[i].key].push(payload);
-                }
-                return usernames;
+            streamList() {
+                return this.loggedInUsernames;
+            }
+        },
+        watch: {
+            streams_map() {
+                this.displayStreams();
+            },
+            access_info_map() {
+                this.displayStreams();
             },
         },
         methods: {
@@ -56,7 +55,7 @@
                 var checked = Object.assign({}, this.selectedStreams);
                 if (event) {
                     if (key === value) {
-                        checked[key] = this.loggedInUsernamesf[key].map(
+                        checked[key] = this.streamList[key].map(
                             opt => {
                                 return opt.value
                             }
@@ -75,8 +74,25 @@
                     }
                 }
                 this.selectedStreams = Object.assign({}, checked)
-                console.log(this.selectedStreams);
             },
+            displayStreams() {
+                var usernames = {};
+                for (const [key, value] of Object.entries(this.access_info_map)) {
+                    usernames[key] = [];
+                    const streams = this.streams_map[key];
+                    if (streams) {
+                        for (let i = 0; i < streams.length; i++) {
+                            const payload = {};
+                            payload["main"] = value.name;
+                            payload["type"] = value.type;
+                            payload["value"] = streams[i].id;
+                            payload["text"] = streams[i].name;
+                            usernames[key].push(payload);
+                        }
+                    }
+                }
+                this.loggedInUsernames = usernames
+            }
         },
     }
 </script>

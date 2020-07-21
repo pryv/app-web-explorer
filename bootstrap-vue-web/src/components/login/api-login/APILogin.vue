@@ -1,19 +1,19 @@
 <template>
     <div>
         <div>
-            <PryvAlert :show="show" :message="message" ></PryvAlert>
+            <PryvAlert :message="message" :show="show"></PryvAlert>
         </div>
         <div>
             <b-form>
                 <div class="mb-4 mb-sm-0">
                     <PryvInput
                             :id="id"
-                            :placeholder="placeholder"
-                            v-model="endpoint"
+                            :placeholder="placeHolder"
                             @inputevent="updateEndpoint"
+                            v-model="endPoint"
                     ></PryvInput>
                 </div>
-                <PryvBtn :content="btncontent" @click="loginAPI"></PryvBtn>
+                <PryvBtn :content="btnContent" @click="loginAPI"></PryvBtn>
             </b-form>
         </div>
     </div>
@@ -23,61 +23,47 @@
     import PryvBtn from "../../shared/PryvBtn";
     import PryvInput from "../../shared/PryvInput";
     import PryvAlert from "../../shared/PryvAlert";
-    import ACCESS_INFO_API from "../../../utilities/api"
+
     export default {
         name: "APILogin",
         components: {PryvInput, PryvBtn, PryvAlert},
         data() {
             return {
-                endpoint: '',
-                btncontent:"Login",
-                id:"inline-form-input-endpoint",
-                placeholder:"Enter API Endpoint",
-                show:false,
-                message:''
+                endPoint: '',
+                btnContent: "Login",
+                id: "inline-form-input-endpoint",
+                placeHolder: "Enter API Endpoint",
+                show: false,
+                message: ''
             }
         },
-        methods :{
-            loginAPI :async function()
-            {
-                if(!this.endpoint)
-                {
-                    this.show=true;
+        methods: {
+            loginAPI: async function () {
+                if (!this.endPoint) {
+                    this.show = true;
                     this.message = "Please enter the API endpoint"
                     return;
                 }
-                //'https://ck6bwmcar00041ep87c8ujf90@drtom.pryv.me';
-                try{
-                    const connection =  new this.$pryv.Connection(this.endpoint);
-                    if(connection)
-                    {
-                        const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
-                        if(result)
-                        {
-                            this.$emit("authenticated", connection , result[0], false);
-                        }
-                    }
-                    else
-                    {
-                        this.show=true;
+                try {
+                    const connection = new this.$pryv.Connection(this.endPoint);
+                    if (connection) {
+                        this.$emit("authenticated", connection, false);
+                    } else {
+                        this.show = true;
                         this.message = "Please enter the valid API endpoint"
-                        this.endpoint = '';
+                        this.endPoint = '';
                         console.log("Endpoint is not valid.");
-                        return;
                     }
-                }
-                catch (e) {
+                } catch (e) {
                     this.show = true;
                     this.message = e.message;
-                    this.endpoint = '';
+                    this.endPoint = '';
                     console.log(e.message);
                 }
             },
-            updateEndpoint(value)
-            {
-                this.endpoint = value;
-                if(this.endpoint && this.show)
-                {
+            updateEndpoint(value) {
+                this.endPoint = value;
+                if (this.endPoint && this.show) {
                     this.show = false;
                     this.message = '';
                 }

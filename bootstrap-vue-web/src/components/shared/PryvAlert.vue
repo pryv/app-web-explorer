@@ -1,5 +1,8 @@
 <template>
-    <b-alert :show="show === true" variant="danger">{{message}}</b-alert>
+    <b-alert
+            :show="show === true"
+            variant="danger">{{message}}
+    </b-alert>
 </template>
 
 <script>

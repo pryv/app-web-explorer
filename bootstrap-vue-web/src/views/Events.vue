@@ -1,28 +1,49 @@
 <template>
     <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
         <div class="bg-white py-2" style="width: 80%;">
-            <div class="card-style" style="border: none;padding: 0.5%;text-align: left;">
+            <div class="card-style events-card">
                 <h4>Events Panel</h4>
             </div>
+            <b-row>
+                <b-col cols="9">
+                    <h4>Events Panel</h4>
+                </b-col>
+                <!--<b-col cols="1">
+                    <LoadStreams></LoadStreams>
+                </b-col>
+                <b-col cols="1">
+                    <LoadEvents></LoadEvents>
+                </b-col>-->
+            </b-row>
             <FilterPanel></FilterPanel>
             <br>
             <div>
                 <b-card no-body>
-                    <PryvAlert v-if="fetchData.length == 0" :show="show" :message="message"></PryvAlert>
+                    <PryvAlert
+                            v-if="fetchData.length == 0"
+                            :show="show"
+                            :message="message"
+                    ></PryvAlert>
                     <b-tabs card>
-                        <b-tab title="JSON VIEW" active>
+                        <b-tab
+                                title="JSON VIEW"
+                                active>
                             <b-card-text style="text-align: left">
                                 <vue-json-pretty
                                         :path="'res'"
-                                        :data="this.displayJSON"
-                                >
+                                        :data="this.displayJSON">
                                 </vue-json-pretty>
                             </b-card-text>
                         </b-tab>
                         <b-tab title="TABLE VIEW">
                             <b-card-text>
                                 <div>
-                                    <b-table responsive striped hover :items="fetchData"></b-table>
+                                    <b-table
+                                            responsive
+                                            striped
+                                            hover
+                                            :items="fetchData">
+                                    </b-table>
                                 </div>
                             </b-card-text>
                         </b-tab>
@@ -37,7 +58,10 @@
     import {mapState} from 'vuex';
     import VueJsonPretty from 'vue-json-pretty'
     import PryvAlert from "../components/shared/PryvAlert";
-    import FilterPanel from "../components/shared/FilterPanel";
+    import FilterPanel from "../components/filters/FilterPanel";
+    import { filterTagsSort, states} from "../utilities/constants";
+    //import LoadEvents from "../components/load/LoadEvents";
+    //import LoadStreams from "../components/load/LoadStreams";
 
     export default {
         name: "Events",
@@ -57,13 +81,10 @@
         computed: {
             ...mapState(['selectedStreams']),
             ...mapState(['filters']),
+            ...mapState(["events_map"]),
             displayJSON() {
                 const display = (this.fetchData.length > 0) ? this.fetchData : "No events to display";
                 return display;
-
-            },
-            queryParams() {
-                return this.filters;
             },
             types: {
                 get() {
@@ -80,70 +101,101 @@
         watch: {
             selectedStreams() {
                 this.displayEvents();
+                this.filterEvents(this.fetchData)
             },
             filters() {
                 this.displayEvents();
+                this.filterEvents(this.fetchData);
             }
         },
         methods: {
-            async displayEvents() {
-                var connectionArr = JSON.parse(this.$sessionStorage.connection_arr);
+            displayEvents() {
                 this.fetchData = [];
                 this.typesSet = new Set();
                 if (!this.selectedStreams) {
                     return;
                 }
-                console.log("Display Events");
-                console.log(this.selectedStreams)
-                for (var i = 0; i < connectionArr.length; i++) {
-                    // eslint-disable-next-line no-prototype-builtins
-                    if (this.selectedStreams.hasOwnProperty(connectionArr[i].key) && this.selectedStreams[connectionArr[i].key].length > 0) {
-                        const connObj = connectionArr[i].val
-                        var url = connObj.endpoint.replace(/(^\w+:|^)\/\//, '');
-                        var endpoint = 'https://' + connObj.token + '@' + url
-                        const connection = new this.$pryv.Connection(endpoint);
-
-                        let streams = [];
-                        for (let j = 0; j < this.selectedStreams[connectionArr[i].key].length; j++) {
-                            if (this.selectedStreams[connectionArr[i].key][j] === connectionArr[i].key)
-                                continue;
-                            let stream = this.selectedStreams[connectionArr[i].key][j].replace(connectionArr[i].key, '');
-                            if (stream === "*")
-                                continue;
-                            streams.push(stream);
-                        }
-                        if (streams.length > 0)
-                            this.queryParams["streams"] = streams;
-                        else
-                            delete this.queryParams["streams"];
-                        console.log("query params");
-                        console.log(this.filters);
-                        try {
-                            const result = await connection.getEventsStreamed(this.queryParams, this.forEachEvent);
-                            const resultTypes = await connection.getEventsStreamed({}, this.getTypeForEachEvent);
-                            console.log("results");
-                            console.log(result)
-                            console.log(resultTypes)
-                        } catch (e) {
-                            console.log(e);
-                        }
+                for (const [key, value] of Object.entries(this.selectedStreams)) {
+                    for (let i = 0; i < value.length; i++) {
+                        console.log("display events" + key + value);
+                        var selectedEvents = (this.events_map[key].filter(event => event.streamId == value[i]))
+                        if (selectedEvents.length > 0)
+                            this.fetchData.push(...selectedEvents);
                     }
                 }
             },
+            filterEvents(selectedEvents) {
+                Object.keys(this.filters).sort();
+                Object.keys(this.filters).forEach(e => {
+                    switch (e) {
+                        case filterTagsSort.FROM :
+                            var copyFrom = selectedEvents.filter(function (x) {
+                                //Events time should be higher than to time
+                                return (x.time > this.filters[e])
+                            }.bind(this))
+                            selectedEvents = [...copyFrom];
+                            break
+                        case filterTagsSort.TO :
+                            var copyTo = selectedEvents.filter(function (x) {
+                                //Events time should be less than to time
+                                return (x.time < this.filters[e])
+                            }.bind(this))
+                            selectedEvents = [...copyTo];
+                            break
+                        case filterTagsSort.TYPES :
 
-            forEachEvent(event) {
-                this.fetchData.push(event);
+                            var copyTypes = selectedEvents.filter(function (x) {
+                                //duration null is equal to running events
+                                return (this.filters[e].includes(x.type))
+                            }.bind(this))
+                            selectedEvents = [...copyTypes];
+                            break
+                        case filterTagsSort.RUNNING :
+                            var copyRunning = selectedEvents.filter(function (x) {
+                                //duration null is equal to running events
+                                return (x.duration === null)
+                            }.bind(this))
+                            selectedEvents = [...copyRunning];
+                            break
+                        case filterTagsSort.STATE :
+                            var copyStates = selectedEvents.filter(function (x) {
+                                //events in trashed state only returns the trashed attribute
+                                return states.TRASHED in x && states.TRASHED === this.filters[e] ||
+                                    !(states.DEFAULT in x) && states.DEFAULT === this.filters[e] ||
+                                    states.ALL === this.filters[e]
+                            }.bind(this))
+                            selectedEvents = [...copyStates];
+                            break
+                        case filterTagsSort.MODIFIED_SINCE :
+                            var copyModified = selectedEvents.filter(function (x) {
+                                return (x.time > this.filters[e])
+                            }.bind(this))
+                            selectedEvents = [...copyModified];
+                            break
+                        case filterTagsSort.LIMIT :
+                            var limit = parseInt(this.filters[e]);
+                            selectedEvents = selectedEvents.slice(0, limit);
+                            break;
+                        case filterTagsSort.SORT :
+                            //sort ascending and descending using time attribute
+                            if (this.filters[e] === true)
+                                selectedEvents.sort((a, b) => (a.time > b.time) ? 1 : ((b.time > a.time) ? -1 : 0));
+                            else
+                                selectedEvents.sort((a, b) => (a.time < b.time) ? 1 : ((b.time < a.time) ? -1 : 0));
+                            break
+                    }
+                });
+                this.fetchData = [...selectedEvents]
             },
-
-            getTypeForEachEvent(event) {
-                this.typesSet.add(event.type);
-                this.types = this.typesSet;
-            }
         }
     }
 
 </script>
 
 <style scoped>
-
+    .events-card {
+        border: none;
+        padding: 0.5%;
+        text-align: left;
+    }
 </style>

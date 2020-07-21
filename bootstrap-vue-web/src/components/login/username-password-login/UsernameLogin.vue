@@ -36,7 +36,7 @@
     import PryvInput from "../../shared/PryvInput"
     import PryvPassword from "../../shared/PryvPassword";
     import PryvAlert from "../../shared/PryvAlert";
-    import ACCESS_INFO_API from "../../../utilities/api"
+    import {mapState} from 'vuex';
     export default {
         name:"UsernameLogin",
         components: {PryvAlert, PryvPassword, PryvBtn,PryvInput},
@@ -53,7 +53,9 @@
                 message:''
             }
         },
-
+        computed:{
+            ...mapState(['serviceInfo']),
+        },
         methods:{
             async login() {
                 if(!this.username && !this.password)
@@ -75,18 +77,14 @@
                     return;
                 }
 
-                const serviceInfoUrl = 'https://reg.pryv.me/service/info';
+                const serviceInfoUrl = this.serviceInfo;
                 const appId = 'web-app-explorer';
                 const service = new this.$pryv.Service(serviceInfoUrl);
                 try{
                     const connection = await service.login(this.username, this.password, appId);
                     if(connection)
                     {
-                        const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
-                        if(result)
-                        {
-                            this.$emit("authenticated", connection , result[0], false);
-                        }
+                        this.$emit("authenticated", connection , false);
                     }
                     else
                     {

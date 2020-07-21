@@ -1,6 +1,10 @@
 <template functional>
-    <b-button v-text="props.content" class="pryv-btn mt-2" variant="danger" v-on:click="listeners.click">
-    </b-button>
+    <b-button
+            v-text="props.content"
+            class="pryv-btn mt-2"
+            variant="danger"
+            v-on:click="listeners.click"
+    ></b-button>
 </template>
 
 <script>

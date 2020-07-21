@@ -9,18 +9,22 @@
         >
             <b-row class="px-3">
                 <div cols="10">
-                    <b-form-checkbox
-                            class="font-weight-bold main"
-                            key="main"
-                            :main="main"
-                            :value="main"
-                            @change="checkAll($event, main ,main)"
-                    >{{ name[0].main }}
-                    </b-form-checkbox>
-                </div>
+                     <b-form-checkbox
+                             :key="main"
+                             :value="main"
+                             @change="checkAll($event, main ,main)"
+                             class="font-weight-bold main"
+                     >{{  nameComputed  }}
+                     </b-form-checkbox>
+                 </div>
                 <div cols="2">
-                    <span :main="main" @click="viewAccessInfo(main)"><b-icon-info-square-fill
-                            style="float: right; margin-top: 0.2em;cursor: pointer"></b-icon-info-square-fill></span>
+                    <span
+                            :main="main"
+                            @click="viewAccessInfo(main)">
+                        <b-icon-info-square-fill
+                                class="info-btn">
+                        </b-icon-info-square-fill
+                        ></span>
                 </div>
             </b-row>
             <b-form-checkbox
@@ -55,6 +59,14 @@
             }
         },
         computed: {
+            nameComputed(){
+                if(this.name && this.name[0])
+                {
+                    return this.name[0].main
+                }
+                else
+                    return ''
+            },
             role: {
                 get: function () {
                     return this.value;
@@ -87,8 +99,7 @@
                 this.$emit('clickAll', payload);
             },
             viewAccessInfo(val) {
-                if(this.currentRouteName != "Info")
-                {
+                if (this.currentRouteName != "Info") {
                     this.$router.push("info")
                 }
                 this.$store.commit('SET_ACCESS_INFO', val);
@@ -126,4 +137,11 @@
     .main {
         padding-left: 0 !important;
     }
+
+    .info-btn {
+        float: right;
+        margin-top: 0.2em;
+        cursor: pointer
+    }
+
 </style>

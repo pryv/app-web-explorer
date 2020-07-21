@@ -7,7 +7,12 @@
                         <h4>Access Info Panel</h4>
                     </b-col>
                     <b-col cols="1">
-                        <PryvBtn v-if="infoJSON" @click="backToEvents" style="margin-top: 0;" :content="btncontent"></PryvBtn>
+                        <PryvBtn
+                                v-if="infoJSON"
+                                @click="backToEvents"
+                                style="margin-top: 0;"
+                                :content="btncontent"
+                        ></PryvBtn>
                     </b-col>
                 </b-row>
             </div>
@@ -16,19 +21,20 @@
                     <vue-json-pretty
                             :path="'res'"
                             :data="this.infoJSON"
-                    >
-                    </vue-json-pretty>
+                    ></vue-json-pretty>
                     <b-row class="justify-content-center">
-                        <PryvBtn v-if="infoJSON" @click="logout" style="margin-top: 0;" :content="btncontentDisconnect">
-                        </PryvBtn>
+                        <PryvBtn
+                                v-if="infoJSON"
+                                @click="logout"
+                                style="margin-top: 0;"
+                                :content="btncontentDisconnect"
+                        ></PryvBtn>
                     </b-row>
                 </b-card>
                 <b-card style="text-align: left" v-else>
                     {{message}}
                 </b-card>
-
             </div>
-
         </div>
     </div>
 </template>
@@ -42,13 +48,45 @@
         name: "Info",
         computed: {
             ...mapState(['accessInfo']),
+            connections_map: {
+                get() {
+                    return this.$store.state.connections_map
+                },
+                set(value) {
+                    this.$store.commit('DELETE_CONNECTIONS_MAP', value)
+                }
+            },
+            streams_map: {
+                get() {
+                    return this.$store.state.streams_map
+                },
+                set(value) {
+                    this.$store.commit('DELETE_STREAMS_MAP', value)
+                }
+            },
+            access_info_map: {
+                get() {
+                    return this.$store.state.access_info_map
+                },
+                set(value) {
+                    this.$store.commit('DELETE_ACCESS_INFO_MAP', value)
+                }
+            },
+            events_map: {
+                get() {
+                    return this.$store.state.events_map
+                },
+                set(value) {
+                    this.$store.commit('DELETE_EVENTS_MAP', value)
+                }
+            },
             infoJSON: {
                 get: function () {
-                    var accessInfoArr = JSON.parse(this.$sessionStorage.access_info_arr);
-                    let obj = accessInfoArr.find(o => o.key === this.accessInfo);
-                    if(obj === null)
-                        return "";
-                    return obj.val;
+                    for (const [key, value] of Object.entries(this.access_info_map)) {
+                        if(key === this.accessInfo)
+                            return value;
+                    }
+                    return ""
                 }
             },
         },
@@ -65,30 +103,53 @@
         },
         methods: {
             displayAccessData() {
-                var accessInfoArr = JSON.parse(this.$sessionStorage.access_info_arr);
-                let obj = accessInfoArr.find(o => o.key === this.accessInfo);
-                this.infoJSON = obj.val;
-                console.log(obj);
+                for (const [key, value] of Object.entries(this.access_info_map)) {
+                    if (key.includes(this.accessInfo))
+                        this.infoJSON = value;
+                }
+            },
+            currentRouteName() {
+                return this.$route.name;
             },
             backToEvents()
             {
-                this.$router.push("events");
+                if (this.currentRouteName != "events") {
+                    this.$router.push("events")
+                }
             },
+            //todo restructure the logout funcitionality
             logout()
             {
-                var accessInfoArr = JSON.parse(this.$sessionStorage.access_info_arr).filter( obj  => obj.key != this.accessInfo);
-                console.log(accessInfoArr);
-                var connArr = JSON.parse(this.$sessionStorage.connection_arr);
-                let obj = connArr.find(o => o.key === this.accessInfo);
+                var endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
+                let obj = endpointArr.find(o => o.key === this.accessInfo);
                 if(obj.cookie)
                 {
-                    this.$cookie.delete('pryv-libjs-web-app-explorer');
+                    var test = this.$cookies.remove('pryv-libjs-web-app-explorer', '/',{domain: '.l.rec.la'});
+                    console.log("remove cookies")
+                    console.log(test);
                 }
-                connArr = connArr.filter( obj  => obj.key != this.accessInfo);
+                endpointArr = endpointArr.filter( obj  => obj.key != this.accessInfo);
+                this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);
 
-                this.$sessionStorage.access_info_arr = JSON.stringify(accessInfoArr);
-                this.$sessionStorage.connection_arr = JSON.stringify(connArr);
-                this.$router.push("events");
+                var connections_map_cloned = Object.assign({}, this.connections_map);
+                delete connections_map_cloned[this.accessInfo]
+                this.connections_map = connections_map_cloned;
+
+                var access_info_map_cloned = Object.assign({}, this.access_info_map);
+                delete access_info_map_cloned[this.accessInfo]
+                this.access_info_map = access_info_map_cloned;
+
+                var streams_map_cloned = Object.assign({}, this.streams_map);
+                delete streams_map_cloned[this.accessInfo]
+                this.streams_map = streams_map_cloned;
+
+                var events_map_cloned = Object.assign({}, this.events_map);
+                delete events_map_cloned[this.accessInfo]
+                this.events_map = events_map_cloned;
+                if(Object.keys(this.connections_map).length === 0)
+                    this.$router.push("login");
+                else
+                    this.$router.push("events");
             }
         },
         watch: {

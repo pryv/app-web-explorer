@@ -2,7 +2,14 @@
     <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
         <div class="bg-white py-2" style="width: 80%;">
             <div class="card-style" style="border: none;padding: 0.5%;text-align: left;">
-                <h4>Login Panel</h4>
+                <b-row>
+                    <b-col cols="10">
+                        <h4>Login Panel</h4>
+                    </b-col>
+                    <b-col cols="1">
+                        <PryvBtn v-if="showBtn" @click="backToEvents" style="margin-top: 0;" :content="btnContent"></PryvBtn>
+                    </b-col>
+                </b-row>
             </div>
             <div>
                 <b-tabs content-class="mt-3" fill>
@@ -61,14 +68,76 @@
 </template>
 
 <script>
+    import PryvBtn from "../components/shared/PryvBtn";
     import APILogin from "../components/login/api-login/APILogin";
     import Label from "../components/shared/PryvLabel";
     import WebButton from "../components/login/web-button-login/WebButtonLogin";
     import UsernameLogin from "../components/login/username-password-login/UsernameLogin";
     import ServiceInfo from "../components/login/service-info/ServiceInfo";
-
+    import GET_STREAMS_API from "../utilities/api";
+    import ACCESS_INFO_API from "../utilities/api"
     export default {
-        components: {ServiceInfo, UsernameLogin, WebButton, Label, APILogin},
+        components: {ServiceInfo, UsernameLogin, WebButton, Label, APILogin, PryvBtn},
+        computed:{
+            connections_map: {
+                get() {
+                    return this.$store.state.connections_map
+                },
+                set([key, value]) {
+                    if(!this.connections_map[key])
+                    {
+                        this.$store.commit('ADD_CONNECTIONS_MAP', [key, value])
+                    }
+                }
+            },
+            streams_map: {
+                get() {
+                    return this.$store.state.streams_map
+                },
+                set([key, value]) {
+                    if(!this.streams_map[key])
+                    {
+                        this.$store.commit('ADD_STREAMS_MAP', [key, value])
+                    }
+                }
+            },
+            access_info_map: {
+                get() {
+                    return this.$store.state.access_info_map
+                },
+                set([key, value]) {
+                    if(!this.access_info_map[key])
+                    {
+                        this.$store.commit('ADD_ACCESS_INFO_MAP', [key, value])
+                    }
+                }
+            },
+            events_map: {
+                get() {
+                    return this.$store.state.events_map
+                },
+                set([key, value]) {
+                    if(!this.events_map[key])
+                    {
+                        this.$store.commit('ADD_EVENTS_MAP', [key, value])
+                    }
+                }
+            },
+            types: {
+                get() {
+                    return this.$store.state.types
+                },
+                set(value) {
+                    this.$store.commit('SET_TYPES', value)
+                }
+            },
+            showBtn:function () {
+                if(this.connections_map)
+                    return Object.keys(this.connections_map).length > 0
+                else
+                    return false;
+            },
+        },
         data() {
             return {
                 APILogin: "Login Using API",
@@ -79,46 +148,113 @@
                 href_web: "https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button",
                 href_manual: "https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only",
                 href_service_info: "https://github.com/pryv/lib-js#usage-of-pryvservice",
+                events:[],
+                typesSet: new Set(),
+                btnContent:'Back'
             }
         },
         methods: {
-            addToSessionStorageConnectionArray(id, value, cookie) {
-                var existing = this.$sessionStorage.connection_arr;
+            addAPIEndpointsToSessionStorage(connection, cookie) {
+                var existing = this.$sessionStorage.endpoint_arr;
                 existing = existing ? JSON.parse(existing) : [];
-                if (existing.filter(e => e.key === id).length > 0) {
+                if (existing.filter(e => e.key === connection.apiEndpoint).length > 0) {
                     return false;
                 }
                 existing.push({
-                    key: id,
-                    val: value,
+                    key: connection.apiEndpoint,
                     cookie : cookie
                 });
-                // Save back to session
-                this.$sessionStorage.connection_arr = JSON.stringify(existing);
+                this.$sessionStorage.endpoint_arr = JSON.stringify(existing);
                 return true;
             },
-            addToSessionStorageAccessInfoArray(id, value) {
-                var existing = this.$sessionStorage.access_info_arr;
-                existing = existing ? JSON.parse(existing) : [];
-
-                if (existing.filter(e => e.key === id).length > 0) {
+            addConnectionToStore(connection)
+            {
+                this.connections_map = [connection.apiEndpoint, connection];
+                return true;
+            },
+            async addStreamsToStore(connection)
+            {
+                try{
+                    const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
+                    if(result)
+                        this.streams_map = [connection.apiEndpoint, result[0].streams]
+                }
+                catch (e) {
+                    console.log("Error occurred when retrieving streams")
+                    console.log(e);
                     return false;
                 }
-
-                existing.push({
-                    key: id,
-                    val: value
-                });
-                // Save back to session
-                this.$sessionStorage.access_info_arr = JSON.stringify(existing);
-                return true
+                return true;
             },
-            updateSessionStorage(connection, access_info,cookie) {
-
-                if (this.addToSessionStorageConnectionArray(connection.token, connection, cookie) &&
-                    this.addToSessionStorageAccessInfoArray(connection.token, access_info))
-                    this.$router.push("events");
+            async addAccessInfoToStore(connection)
+            {
+                try {
+                    const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
+                    if (result)
+                    {
+                        console.log("result")
+                        console.log(result)
+                        this.access_info_map = [connection.apiEndpoint, result[0]];
+                        console.log(this.access_info_map);
+                    }
+                }
+                catch (e) {
+                    console.log("Error occurred when retrieving access info")
+                    console.log(e);
+                    return false;
+                }
+                return true;
             },
+            async addEventsToStore(connection)
+            {
+                this.events = [];
+                var queryParams = {};
+                try {
+                    const result = await connection.getEventsStreamed(queryParams, this.forEachEvent);
+                    this.events_map = [connection.apiEndpoint, this.events];
+                    console.log(result);
+                } catch (e) {
+                    console.log("Error occurred when retrieving events")
+                    console.log(e);
+                    return false;
+                }
+                return true;
+            },
+            forEachEvent(event) {
+                this.events.push(event);
+                this.typesSet.add(event.type);
+                this.types = this.typesSet;
+            },
+            updateStore(connection)
+            {
+                if(this.addConnectionToStore(connection) &&
+                this.addStreamsToStore(connection) &&
+                this.addAccessInfoToStore(connection) &&
+                this.addEventsToStore(connection))
+                {
+                    console.log("successfully loaded");
+                    return true;
+                }
+                return false;
+            },
+            updateSessionStorage(connection, cookie) {
+                if (this.addAPIEndpointsToSessionStorage(connection, cookie))
+                {
+                    if(this.updateStore(connection))
+                        this.$router.push("events");
+                    else
+                        alert("some error occured when logging")
+                }
+            },
+            currentRouteName() {
+                return this.$route.name;
+            },
+            backToEvents()
+            {
+                if (this.currentRouteName != "events") {
+                    this.$router.push("events")
+                }
+            }
         }
     }
 </script>

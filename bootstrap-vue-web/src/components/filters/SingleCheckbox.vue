@@ -3,14 +3,13 @@
         <input
                 :checked="checked"
                 name="checkbox-1"
-                @change="fireParentEvent( $event.target.checked)"
+                @change="$emit('change', $event.target.checked)"
                 type="checkbox"
         />
         <label>
             {{content}}
         </label>
     </span>
-
 </template>
 
 <script>
@@ -22,16 +21,10 @@
         },
         props: {
             content: {
-                required: true,
                 type: String
             },
             checked:{
                 required : true
-            }
-        },
-        methods:{
-            fireParentEvent : function(val){
-                this.$emit('change', val);
             }
         }
     }

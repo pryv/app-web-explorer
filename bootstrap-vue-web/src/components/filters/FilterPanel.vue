@@ -146,8 +146,6 @@
                     return this.$store.state.filters
                 },
                 set(value) {
-                    console.log("update filters");
-                    console.log(value);
                     this.$store.commit('UPDATE_FILTERS', value)
                 }
             },
@@ -160,8 +158,6 @@
                     payload["value"] = item;
                     options.push(payload);
                 }
-                console.log("options array")
-                console.log(options)
                 return options;
             },
             typesMessage() {

@@ -14,10 +14,10 @@
             </b-form-group>
         </template>
         <template v-slot:modal-footer="{ ok, cancel }">
-            <b-button size="sm" variant="success" @click="this.$emit('clickOk', ok)">
+            <b-button size="sm" variant="success" @click="$emit('clickOk', ok)">
                 OK
             </b-button>
-            <b-button size="sm" variant="danger" @click="this.$emit('clickCancel', cancel);">
+            <b-button size="sm" variant="danger" @click="$emit('clickCancel', cancel)">
                 Cancel
             </b-button>
         </template>
@@ -51,7 +51,7 @@
                     this.$emit('listchange', value)
                 }
             }
-        },
+        }
     }
 </script>
 

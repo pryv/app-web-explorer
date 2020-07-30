@@ -7,7 +7,7 @@
         :streamObjectArray="streamObjectArray"
         :endpoint="endpoint"
         :selectedStreamsObjectArray="selectedStreamsObjectArray[endpoint]"
-        @clickAll="clickAll"
+        @allCheckBoxesClicked="allCheckBoxesClicked"
         @selectedStreamsObjectArrayUpdate="setSelectedStreamsObjectArray"
       ></StreamCheckBox>
     </b-form-group>
@@ -46,11 +46,11 @@ export default {
     },
   },
   methods: {
-    clickAll(e) {
-      var key = e.key; // endpoint token
-      var event = e.event; // clicked token or null if unclicked
-      var value = e.value; // clicked token or clicked token + stream id
-      var clonedSelectedStreamsObjectArray = Object.assign(
+    allCheckBoxesClicked(e) {
+      const key = e.key; // endpoint token
+      const event = e.event; // clicked token or null if unclicked
+      const value = e.value; // clicked token or clicked token + stream id
+      const clonedSelectedStreamsObjectArray = Object.assign(
         {},
         this.selectedStreamsObjectArray
       );
@@ -73,8 +73,7 @@ export default {
         } else {
           clonedSelectedStreamsObjectArray[
             key
-          ] = this.selectedStreamsObjectArray[key]
-            .filter(opt => opt != value);
+          ] = this.selectedStreamsObjectArray[key].filter(opt => opt != value);
         }
       }
       this.selectedStreamsObjectArray = Object.assign(
@@ -83,7 +82,7 @@ export default {
       );
     },
     displayStreams() {
-      var customUserObjectArray = {};
+      const customUserObjectArray = {};
       for (const [key, value] of Object.entries(this.access_info_map)) {
         customUserObjectArray[key] = [];
         const streams = this.streams_map[key];

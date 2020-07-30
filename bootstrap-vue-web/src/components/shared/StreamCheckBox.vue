@@ -12,7 +12,7 @@
           <b-form-checkbox
             :key="endpoint"
             :value="endpoint"
-            @change="checkAll($event, endpoint, endpoint)"
+            @change="allCheckBoxesClicked($event, endpoint, endpoint)"
             class="font-weight-bold main"
             >{{ accessInfoName }}
           </b-form-checkbox>
@@ -27,7 +27,7 @@
         v-for="stream in displayStreams"
         :key="stream.streamId"
         :value="stream.streamId"
-        @change="checkAll($event, stream.streamId, endpoint)"
+        @change="allCheckBoxesClicked($event, stream.streamId, endpoint)"
         >{{ stream.streamName }}
       </b-form-checkbox>
     </b-form-checkbox-group>
@@ -65,27 +65,27 @@ export default {
         return this.selectedStreamsObjectArray;
       },
       set: function(value) {
-        var payload={};
+        var payload = {};
         payload["endpoint"] = this.endpoint;
-        payload["streams"]  = value;
+        payload["streams"] = value;
         this.$emit("selectedStreamsObjectArrayUpdate", payload);
       },
     },
   },
   methods: {
-    checkAll(e, val, index) {
+    allCheckBoxesClicked(e, val, index) {
       var payload = {};
       payload["event"] = e;
       payload["value"] = val;
       payload["key"] = index;
-      this.$emit("clickAll", payload);
+      this.$emit("allCheckBoxesClicked", payload);
     },
     viewAccessInfo(val) {
       if (this.currentRouteName != "Info") {
         this.$router.push("info");
       }
       this.$store.commit("SET_ACCESS_INFO", val);
-    }
+    },
   },
 };
 </script>

@@ -7,7 +7,7 @@
         :streamObjectArray="streamObjectArray"
         :endpoint="endpoint"
         :selectedStreamsObjectArray="selectedStreamsObjectArray[endpoint]"
-        @allCheckBoxesClicked="allCheckBoxesClicked"
+        @checkBoxClicked="checkBoxClicked"
         @selectedStreamsObjectArrayUpdate="setSelectedStreamsObjectArray"
       ></StreamCheckBox>
     </b-form-group>
@@ -46,34 +46,38 @@ export default {
     },
   },
   methods: {
-    allCheckBoxesClicked(e) {
-      const key = e.key; // endpoint token
-      const event = e.event; // clicked token or null if unclicked
-      const value = e.value; // clicked token or clicked token + stream id
+    checkBoxClicked(e) {
       const clonedSelectedStreamsObjectArray = Object.assign(
         {},
         this.selectedStreamsObjectArray
       );
-      if (event) {
-        if (key === value) {
+      if (e.eventClickedOrUnClicked) {
+        if (e.endpointClicked === e.clickedEndpointAndStreamId) {
           clonedSelectedStreamsObjectArray[
-            key
-          ] = this.computedAccessInfoObjectArray[key].map(opt => {
+            e.endpointClicked
+          ] = this.computedAccessInfoObjectArray[e.endpointClicked].map(opt => {
             return opt.streamId;
           });
-          clonedSelectedStreamsObjectArray[key].push(key);
+          clonedSelectedStreamsObjectArray[e.endpointClicked].push(
+            e.endpointClicked
+          );
         } else {
-          if (!clonedSelectedStreamsObjectArray[key])
-            clonedSelectedStreamsObjectArray[key] = [];
-          clonedSelectedStreamsObjectArray[key].push(value);
+          if (!clonedSelectedStreamsObjectArray[e.endpointClicked])
+            clonedSelectedStreamsObjectArray[e.endpointClicked] = [];
+          clonedSelectedStreamsObjectArray[e.endpointClicked].push(
+            e.clickedEndpointAndStreamId
+          );
         }
       } else {
-        if (key === value) {
-          clonedSelectedStreamsObjectArray[key] = [];
+        if (e.endpointClicked === e.clickedEndpointAndStreamId) {
+          clonedSelectedStreamsObjectArray[e.endpointClicked] = [];
         } else {
           clonedSelectedStreamsObjectArray[
-            key
-          ] = this.selectedStreamsObjectArray[key].filter(opt => opt != value);
+            e.endpointClicked
+          ] = this.selectedStreamsObjectArray[e.endpointClicked].filter(
+            endpointAndStreamId =>
+              endpointAndStreamId != e.clickedEndpointAndStreamId
+          );
         }
       }
       this.selectedStreamsObjectArray = Object.assign(
@@ -83,16 +87,17 @@ export default {
     },
     displayStreams() {
       const customUserObjectArray = {};
-      for (const [key, value] of Object.entries(this.access_info_map)) {
+      for (const [key, accessInfo] of Object.entries(this.access_info_map)) {
         customUserObjectArray[key] = [];
         const streams = this.streams_map[key];
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
-            const payload = {};
-            payload["accessInfoName"] = value.name;
-            payload["accessInfoType"] = value.type;
-            payload["streamId"] = streams[i].id;
-            payload["streamName"] = streams[i].name;
+            const payload = {
+              accessInfoName: accessInfo.name,
+              accessInfoType: accessInfo.type,
+              streamId: streams[i].id,
+              streamName: streams[i].name,
+            };
             customUserObjectArray[key].push(payload);
           }
         }

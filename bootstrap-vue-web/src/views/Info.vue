@@ -11,7 +11,7 @@
               v-if="infoJSON"
               @click="backToEvents"
               class="mt-0"
-              :content="btncontent"
+              :content="btnContent"
             ></PryvBtn>
           </b-col>
         </b-row>
@@ -26,7 +26,7 @@
             <PryvBtn
               class="mt-0"
               @click="logout"
-              :content="btncontentDisconnect"
+              :content="btnContentDisconnect"
             ></PryvBtn>
           </b-row>
         </b-card>
@@ -81,10 +81,12 @@ export default {
     },
     infoJSON: {
       get: function() {
-        for (const [key, value] of Object.entries(this.access_info_map)) {
-          if (key === this.accessInfo) return value;
-        }
-        return "";
+        return Object.keys(this.access_info_map)
+          .filter(key => key === this.accessInfo)
+          .reduce((obj, key) => {
+            obj[key] = this.access_info_map[key];
+            return obj;
+          }, {});
       },
     },
   },
@@ -94,9 +96,9 @@ export default {
   },
   data() {
     return {
-      btncontent: "Back",
+      btnContent: "Back",
       message: "Please select an endpoint to view the access data",
-      btncontentDisconnect: "Disconnect",
+      btnContentDisconnect: "Disconnect",
     };
   },
   methods: {

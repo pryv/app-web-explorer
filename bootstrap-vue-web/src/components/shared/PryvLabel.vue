@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <b-row>
     <b-col cols="1" class="p-0">
       <a target="_blank" :href="href">

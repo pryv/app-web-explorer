@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <b-input
     class="pryv-input"
     :id="id"
@@ -7,6 +7,7 @@
     :value="value"
     type="text"
     :disabled="disabled"
+    required
   ></b-input>
 </template>
 

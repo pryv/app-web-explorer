@@ -25,7 +25,6 @@
           <b-row class="justify-content-center">
             <PryvBtn
               class="mt-0"
-              v-if="infoJSON"
               @click="logout"
               :content="btncontentDisconnect"
             ></PryvBtn>

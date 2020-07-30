@@ -26,7 +26,7 @@
                                     <b-collapse id="collapse-1" class="mt-2">
                                         <b-card class="card-style shadow" style="border: none">
                                             <Label :href="href_service_info" :parent-data="ServiceInfoURL"></Label>
-                                            <ServiceInfo></ServiceInfo>
+                                            <ServiceInfo id="token_based_login"></ServiceInfo>
                                         </b-card>
                                     </b-collapse>
                                 </div>
@@ -46,7 +46,7 @@
                                     <b-collapse id="collapse-2" class="mt-2">
                                         <b-card class="card-style shadow" style="border: none">
                                             <Label :href="href_service_info" :parent-data="ServiceInfoURL"></Label>
-                                            <ServiceInfo></ServiceInfo>
+                                            <ServiceInfo id="username_based_login"></ServiceInfo>
                                         </b-card>
                                     </b-collapse>
                                 </div>

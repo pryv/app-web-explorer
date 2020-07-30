@@ -2,12 +2,13 @@
   <div>
     <b-form-group>
       <StreamCheckBox
-        v-for="(opts, keyv) in streamList"
-        :key="keyv"
-        :name="opts"
-        :main="keyv"
-        :value="selectedStreams[keyv]"
+        v-for="(accessInfoObject, endpoint) in computedAccessInfoObjectArray"
+        :key="endpoint"
+        :accessInfoObject="accessInfoObject"
+        :endpoint="endpoint"
+        :selectedStreamsObjectArray="selectedStreamsObjectArray[endpoint]"
         @clickAll="clickAll"
+        @selectedStreamsObjectArrayUpdate="setSelectedStreamsObjectArray"
       ></StreamCheckBox>
     </b-form-group>
   </div>
@@ -21,13 +22,13 @@ export default {
   components: { StreamCheckBox },
   data() {
     return {
-      loggedInUsernames: {},
+      accessInfoObjectArray: {},
     };
   },
   computed: {
     ...mapState(["streams_map"]),
     ...mapState(["access_info_map"]),
-    selectedStreams: {
+    selectedStreamsObjectArray: {
       get() {
         return this.$store.state.selectedStreams;
       },
@@ -35,65 +36,73 @@ export default {
         this.$store.commit("UPDATE_SELECTED_ENDPOINTS", value);
       },
     },
-    streamList() {
-      return this.loggedInUsernames;
+    computedAccessInfoObjectArray() {
+      return this.accessInfoObjectArray;
     },
   },
   watch: {
     streams_map() {
       this.displayStreams();
     },
-    access_info_map() {
-      this.displayStreams();
-    },
   },
   methods: {
     clickAll(e) {
-      var key = e["key"]; // endpoint token
-      var event = e["event"]; // clicked token or null if unclicked
-      var value = e["value"]; // clicked token or clicked token + stream id
-      var checked = Object.assign({}, this.selectedStreams);
+      var key = e.key; // endpoint token
+      var event = e.event; // clicked token or null if unclicked
+      var value = e.value; // clicked token or clicked token + stream id
+      var clonedSelectedStreamsObjectArray = Object.assign(
+        {},
+        this.selectedStreamsObjectArray
+      );
       if (event) {
         if (key === value) {
-          checked[key] = this.streamList[key].map(opt => {
-            return opt.value;
+          clonedSelectedStreamsObjectArray[
+            key
+          ] = this.computedAccessInfoObjectArray[key].map(opt => {
+            return opt.streamId;
           });
-          checked[key].push(key);
+          clonedSelectedStreamsObjectArray[key].push(key);
         } else {
-          if (!checked[key]) checked[key] = [];
-          checked[key].push(value);
+          if (!clonedSelectedStreamsObjectArray[key])
+            clonedSelectedStreamsObjectArray[key] = [];
+          clonedSelectedStreamsObjectArray[key].push(value);
         }
       } else {
         if (key === value) {
-          checked[key] = [];
+          clonedSelectedStreamsObjectArray[key] = [];
         } else {
-          checked[key] = this.selectedStreams[key]
-            .filter(opt => opt != value)
-            .map(opt => opt);
+          clonedSelectedStreamsObjectArray[
+            key
+          ] = this.selectedStreamsObjectArray[key]
+            .filter(opt => opt != value);
         }
       }
-      this.selectedStreams = Object.assign({}, checked);
+      this.selectedStreamsObjectArray = Object.assign(
+        {},
+        clonedSelectedStreamsObjectArray
+      );
     },
     displayStreams() {
-      var usernames = {};
+      var customUserObjectArray = {};
       for (const [key, value] of Object.entries(this.access_info_map)) {
-        usernames[key] = [];
+        customUserObjectArray[key] = [];
         const streams = this.streams_map[key];
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
             const payload = {};
-            payload["main"] = value.name;
-            payload["type"] = value.type;
-            payload["value"] = streams[i].id;
-            payload["text"] = streams[i].name;
-            usernames[key].push(payload);
+            payload["accessInfoName"] = value.name;
+            payload["accessInfoType"] = value.type;
+            payload["streamId"] = streams[i].id;
+            payload["streamName"] = streams[i].name;
+            customUserObjectArray[key].push(payload);
           }
         }
       }
-      this.loggedInUsernames = usernames;
+      this.accessInfoObjectArray = customUserObjectArray;
+    },
+    setSelectedStreamsObjectArray(payload) {
+      this.selectedStreamsObjectArray[payload.endpoint] = payload.streams;
     },
   },
 };
 </script>
-
-<style scoped></style>

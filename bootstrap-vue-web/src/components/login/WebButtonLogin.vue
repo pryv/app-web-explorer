@@ -26,7 +26,6 @@ export default {
 };
 
 async function pryvAuthStateChange(state) {
-  // called each time the authentication state changed
   console.log("##pryvAuthStateChange", state);
   let connection = null;
   if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {

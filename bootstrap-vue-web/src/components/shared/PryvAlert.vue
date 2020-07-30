@@ -1,6 +1,6 @@
 <template>
     <b-alert
-            :show="show === true"
+            :show="show"
             variant="danger">{{message}}
     </b-alert>
 </template>

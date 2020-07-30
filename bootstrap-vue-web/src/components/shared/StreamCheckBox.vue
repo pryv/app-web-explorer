@@ -41,7 +41,7 @@ export default {
     selectedStreamsObjectArray: {
       type: Array,
     },
-    accessInfoObject: {
+    streamObjectArray: {
       type: Array,
     },
     endpoint: {
@@ -50,12 +50,12 @@ export default {
   },
   computed: {
     accessInfoName() {
-      if (this.accessInfoObject && this.accessInfoObject[0]) {
-        return this.accessInfoObject[0].accessInfoName;
+      if (this.streamObjectArray && this.streamObjectArray[0]) {
+        return this.streamObjectArray[0].accessInfoName;
       } else return "";
     },
     displayStreams: function() {
-      return this.accessInfoObject.filter(i => i.streamName);
+      return this.streamObjectArray.filter(e => e.streamName);
     },
     currentRouteName() {
       return this.$route.name;

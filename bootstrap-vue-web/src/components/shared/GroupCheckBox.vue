@@ -2,9 +2,9 @@
   <div>
     <b-form-group>
       <StreamCheckBox
-        v-for="(accessInfoObject, endpoint) in computedAccessInfoObjectArray"
+        v-for="(streamObjectArray, endpoint) in computedAccessInfoObjectArray"
         :key="endpoint"
-        :accessInfoObject="accessInfoObject"
+        :streamObjectArray="streamObjectArray"
         :endpoint="endpoint"
         :selectedStreamsObjectArray="selectedStreamsObjectArray[endpoint]"
         @clickAll="clickAll"

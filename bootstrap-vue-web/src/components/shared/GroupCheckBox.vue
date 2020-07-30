@@ -44,6 +44,9 @@ export default {
     streams_map() {
       this.displayStreams();
     },
+    access_info_map() {
+      this.displayStreams();
+    },
   },
   methods: {
     checkBoxClicked(e) {

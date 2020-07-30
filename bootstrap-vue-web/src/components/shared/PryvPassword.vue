@@ -6,7 +6,7 @@
             :value="value"
             :appendIcon="visiblePass ? 'lock_open' : 'lock'"
             :type="visiblePass ? 'text' : 'password'"
-            @input="$emit('inputpassword', $event)"
+            @input="$emit('passwordInput', $event)"
             @click:append="() => (visiblePass = !visiblePass)"
     ></b-input>
 </template>

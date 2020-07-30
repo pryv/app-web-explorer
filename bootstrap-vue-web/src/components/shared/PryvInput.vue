@@ -3,7 +3,7 @@
             class="pryv-input"
             :id="id"
             :placeholder="placeholder"
-            @input="$emit('inputevent', $event)"
+            @input="$emit('textInput', $event)"
             :value="value"
             :rules="[rules.required]"
             type="text"

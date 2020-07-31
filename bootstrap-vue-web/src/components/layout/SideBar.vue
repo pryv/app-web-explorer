@@ -18,7 +18,7 @@ import ConnectionSidePanelBtn from "../login/ConnectionSidePanelBtn";
 import GroupCheckBox from "../shared/GroupCheckBox";
 
 export default {
-  name: "SideBarLayout",
+  name: "SideBar",
   components: { ConnectionSidePanelBtn, GroupCheckBox },
   props: {
     msg: String,

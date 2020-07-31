@@ -3,7 +3,7 @@
       <b-container class="vh-100" fluid>
         <b-row class="h-100" style="background-color: green">
           <b-col class="shadow bg-white" md="auto" style="overflow-y: auto;">
-           <SideBarLayout></SideBarLayout>
+           <SideBar></SideBar>
           </b-col>
           <b-col style="background-color:whitesmoke">
             <MainLayout></MainLayout>
@@ -36,8 +36,8 @@
 
 
 import MainLayout from "./components/layout/MainLayout";
-import SideBarLayout from "./components/layout/SideBarLayout";
+import SideBar from "./components/layout/SideBar";
 export default {
-  components: { SideBarLayout, MainLayout  },
+  components: { SideBar, MainLayout  },
 };
 </script>

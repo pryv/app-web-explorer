@@ -86,7 +86,7 @@ export default {
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
-          this.forEachEvent
+          this.addEachEvent
         );
         this.events_map = [connection.token + connection.endpoint, this.events];
         console.log(result);
@@ -97,7 +97,7 @@ export default {
       }
       return true;
     },
-    forEachEvent(event) {
+    addEachEvent(event) {
       this.events.push(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;

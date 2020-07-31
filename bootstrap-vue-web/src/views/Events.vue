@@ -106,8 +106,7 @@ export default {
       }
     },
     filterEvents(selectedEvents) {
-      Object.keys(this.filters).sort();
-      Object.keys(this.filters).forEach(e => {
+      Object.keys(this.filters).sort().forEach(e => {
         switch (e) {
           case filterTagsSort.FROM: {
             const copyFrom = selectedEvents.filter(

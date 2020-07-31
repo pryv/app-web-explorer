@@ -66,8 +66,8 @@ export default {
       },
       set: function(value) {
         const payload = {
-          endpoint: this.endpoint,
-          streams: value,
+          "endpoint" : this.endpoint,
+          "streams":value
         };
         this.$emit("selectedStreamsObjectArrayUpdate", payload);
       },
@@ -76,9 +76,9 @@ export default {
   methods: {
     checkBoxClicked(e, value, index) {
       const payload = {
-        eventClickedOrUnClicked: e,
-        clickedEndpointAndStreamId: value,
-        endpointClicked: index,
+        "eventClickedOrUnClicked":e,
+        "clickedEndpointAndStreamId":value,
+        "endpointClicked":index
       };
       this.$emit("checkBoxClicked", payload);
     },

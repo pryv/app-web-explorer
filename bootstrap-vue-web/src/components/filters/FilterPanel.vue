@@ -4,29 +4,29 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="fromLabel"
-          @change="enableDateFrom"
+          @change="clickCheckboxToEnableFilter(fromLabelToSort, $event)"
           v-model="valueFromCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="4">
         <TimePickerFilter
-          :disabled="this.valueFromCheck === false"
+          :disabled="!this.valueFromCheck"
           :value="valueFrom"
-          @updateFilter="updateFilterFromDate"
+          @updateFilter="selectFiltersRelatedToDates(fromLabelToSort, $event)"
         ></TimePickerFilter>
       </b-col>
       <b-col cols="2">
         <EnableCheckbox
           :content="toLabel"
-          @change="enableDateTo"
+          @change="clickCheckboxToEnableFilter(toLabelToSort, $event)"
           v-model="valueToCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="4">
         <TimePickerFilter
-          :disabled="this.valueToCheck === false"
+          :disabled="!this.valueToCheck"
           :value="valueTo"
-          @updateFilter="updateFilterToDate"
+          @updateFilter="selectFiltersRelatedToDates(toLabelToSort, $event)"
         ></TimePickerFilter>
       </b-col>
     </b-row>
@@ -34,67 +34,71 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="runningLabel"
-          @change="updateFilterRunning"
+          @change="selectFilterStateOrSort(runningLabelToSort, $event)"
           v-model="valueRunning"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="2">
         <EnableCheckbox
           :content="stateLabel"
-          @change="enableState"
+          @change="clickCheckboxToEnableFilter(stateLabelToSort, $event)"
           v-model="valueStateCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="3">
         <DropboxFilter
-          :disabled="this.valueStateCheck === false"
+          :disabled="!this.valueStateCheck"
           :options="optionsState"
           :valueSelected="valueState"
-          @input="updateFilterState"
+          @input="selectFilterStateOrSort(stateLabelToSort, $event)"
         />
       </b-col>
       <b-col cols="2">
         <EnableCheckbox
           :content="sortLabel"
-          @change="enableSort"
+          @change="clickCheckboxToEnableFilter(sortLabelToSort, $event)"
           v-model="valueSortCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="3">
         <DropboxFilter
-          :disabled="this.valueSortCheck === false"
+          :disabled="!this.valueSortCheck"
           :options="optionsSort"
           :valueSelected="valueSort"
-          @input="updateFilterSort"
+          @input="selectFilterStateOrSort(sortLabelToSort, $event)"
         />
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="2">
         <EnableCheckbox
-          :conent="modifiedSinceLabel"
-          @change="enableDateModified"
+          :content="modifiedSinceLabel"
+          @change="
+            clickCheckboxToEnableFilter(modifiedSinceLabelToSort, $event)
+          "
           v-model="valueModifiedCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="4">
         <TimePickerFilter
-          :disabled="this.valueModifiedCheck === false"
+          :disabled="!this.valueModifiedCheck"
           :value="valueModified"
-          @updateFilter="updateFilterModifiedDate"
+          @updateFilter="
+            selectFiltersRelatedToDates(modifiedSinceLabelToSort, $event)
+          "
         ></TimePickerFilter>
       </b-col>
       <b-col cols="2">
         <EnableCheckbox
           :content="limitLabel"
-          @change="enableLimit"
+          @change="clickCheckboxToEnableFilter(limitLabelToSort, $event)"
           v-model="valueLimitCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="3">
         <b-form-input
-          :disabled="this.valueLimitCheck === false"
-          @change="updateFilterLimit"
+          :disabled="!this.valueLimitCheck"
+          @input="selectFilterLimit"
           placeholder="Enter the limit"
           style="font-size: 0.75rem !important;"
           type="text"
@@ -106,13 +110,13 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="typeLabel"
-          @change="enableTypes"
+          @change="clickCheckboxToEnableFilter(typeLabelToSort, $event)"
           v-model="valueTypeCheck"
         ></EnableCheckbox>
       </b-col>
       <b-col cols="2">
         <b-button
-          :disabled="this.valueTypeCheck === false"
+          :disabled="!this.valueTypeCheck"
           @click="$bvModal.show('modal-scoped')"
           id="submitBtn"
           style="font-size: 0.75rem;padding:0.25rem"
@@ -144,6 +148,7 @@ export default {
   name: "FilterPanel",
   components: { ModalFilter, TimePickerFilter, EnableCheckbox, DropboxFilter },
   computed: {
+    ...mapState(["types"]),
     updatedFilters: {
       get() {
         return this.$store.state.filters;
@@ -152,33 +157,31 @@ export default {
         this.$store.commit("UPDATE_FILTERS", value);
       },
     },
-    ...mapState(["types"]),
     optionsTypes() {
-      var options = [];
+      const options = [];
       for (let item of this.types) {
-        var payload = {};
-        payload["text"] = item;
-        payload["value"] = item;
+        const payload = {
+          text: item,
+          value: item,
+        };
         options.push(payload);
       }
       return options;
     },
     typesMessage() {
-      if (this.types.size > 0) return "Select multiple types to filter";
-      else return "You have selected no endpoints to view";
+      return this.types.size > 0
+        ? "Select multiple types to filter"
+        : "You have selected no endpoints to view";
     },
-  },
-  created() {
-    this.valueFromCheck = false;
   },
   data() {
     return {
-      valueFrom: "",
-      valueTo: "",
+      valueFrom: null,
+      valueTo: null,
       valueRunning: false,
       valueState: null,
       valueSort: null,
-      valueModified: "",
+      valueModified: null,
       valueLimit: "",
       optionsState: [
         { value: null, text: "Select the state" },
@@ -192,7 +195,7 @@ export default {
         { value: false, text: "FALSE" },
       ],
       modalShow: false,
-      selected: [], // Must be an array reference!
+      selected: [],
       fromLabel: filterTags.FROM,
       toLabel: filterTags.TO,
       stateLabel: filterTags.STATE,
@@ -201,6 +204,14 @@ export default {
       limitLabel: filterTags.LIMIT,
       typeLabel: filterTags.TYPES,
       runningLabel: filterTags.RUNNING,
+      fromLabelToSort: filterTagsSort.FROM,
+      toLabelToSort: filterTagsSort.TO,
+      stateLabelToSort: filterTagsSort.STATE,
+      sortLabelToSort: filterTagsSort.SORT,
+      modifiedSinceLabelToSort: filterTagsSort.MODIFIED_SINCE,
+      limitLabelToSort: filterTagsSort.LIMIT,
+      typeLabelToSort: filterTagsSort.TYPES,
+      runningLabelToSort: filterTagsSort.RUNNING,
       valueFromCheck: false,
       valueToCheck: false,
       valueStateCheck: false,
@@ -208,7 +219,6 @@ export default {
       valueModifiedCheck: false,
       valueLimitCheck: false,
       valueTypeCheck: false,
-      //modal data
       modalTitle: "Select Types to Filter",
     };
   },
@@ -216,103 +226,105 @@ export default {
     setSelected(value) {
       this.selected = value;
     },
-    updateFilterFromDate(ctx) {
-      this.valueFrom = ctx.selectedYMD;
-      if (this.valueFrom != "") {
-        let datum = Date.parse(this.valueFrom);
-        this.updateFilters(filterTagsSort.FROM, datum / 1000);
-      } else this.removeFilterAttr(filterTagsSort.FROM);
-    },
-    updateFilterToDate(ctx) {
-      this.valueTo = ctx.selectedYMD;
-      if (this.valueTo != "") {
-        let datum = Date.parse(this.valueTo);
-        this.updateFilters(filterTagsSort.TO, datum / 1000);
-      } else this.removeFilterAttr(filterTagsSort.TO);
-    },
-    updateFilterRunning(value) {
-      this.valueRunning = value;
-      if (this.valueRunning === true)
-        this.updateFilters(filterTagsSort.RUNNING, true);
-      else this.removeFilterAttr(filterTagsSort.RUNNING);
-    },
-    updateFilterLimit(value) {
-      if (value === "") {
-        this.removeFilterAttr(filterTagsSort.LIMIT);
-        return;
+    selectFiltersRelatedToDates(type, ctx) {
+      console.log(type);
+      console.log(ctx.selectedYMD);
+      ctx.selectedYMD
+        ? this.updateSelectedFiltersArray(
+            type,
+            Date.parse(ctx.selectedYMD) / 1000
+          )
+        : this.removeFromSelectedFiltersArray(type);
+      switch (type) {
+        case filterTagsSort.FROM:
+          this.valueFrom = ctx.selectedYMD;
+          break;
+        case filterTagsSort.TO:
+          this.valueTo = ctx.selectedYMD;
+          break;
+        case filterTagsSort.MODIFIED_SINCE:
+          this.valueModified = ctx.selectedYMD;
+          break;
       }
+    },
+    selectFilterStateOrSort(type, value) {
+      value
+        ? this.updateSelectedFiltersArray(type, value)
+        : this.removeFromSelectedFiltersArray(type);
+      switch (type) {
+        case filterTagsSort.SORT:
+          this.valueSort = value;
+          break;
+        case filterTagsSort.STATE:
+          this.valueState = value;
+          break;
+        case filterTagsSort.RUNNING:
+          this.valueRunning = value;
+          break;
+      }
+    },
+    selectFilterLimit(value) {
+      alert(value);
       if (isNaN(value)) {
         this.valueLimit = "";
         return;
       }
       this.valueLimit = value;
-      if (this.valueLimit != "")
-        this.updateFilters(filterTagsSort.LIMIT, parseInt(value));
+      this.valueLimit !== ""
+        ? this.updateSelectedFiltersArray(filterTagsSort.LIMIT, parseInt(value))
+        : this.removeFromSelectedFiltersArray(filterTagsSort.LIMIT);
     },
-    updateFilterState(value) {
-      this.valueState = value;
-      if (this.valueState != null)
-        this.updateFilters(filterTagsSort.STATE, this.valueState);
-      else this.removeFilterAttr(filterTagsSort.STATE);
-    },
-    updateFilterSort(value) {
-      this.valueSort = value;
-      if (this.valueSort != null)
-        this.updateFilters(filterTagsSort.SORT, this.valueSort);
-      else this.removeFilterAttr(filterTagsSort.SORT);
-    },
-    updateFilterModifiedDate(ctx) {
-      this.valueModified = ctx.selectedYMD;
-      if (this.valueModified != "") {
-        let datum = Date.parse(this.valueModified);
-        this.updateFilters(filterTagsSort.MODIFIED_SINCE, datum / 1000);
-      } else this.removeFilterAttr(filterTagsSort.MODIFIED_SINCE);
-    },
-    updateFilters(key, value) {
-      var filteredData = Object.assign({}, this.updatedFilters);
+    updateSelectedFiltersArray(key, value) {
+      alert(key);
+      alert(value);
+      const filteredData = Object.assign({}, this.updatedFilters);
       filteredData[key] = value;
       this.updatedFilters = Object.assign({}, filteredData);
+      console.log("after updated");
+      console.log(this.updatedFilters);
     },
-    removeFilterAttr(key) {
-      var filteredData = Object.assign({}, this.updatedFilters);
-      delete filteredData[key];
+    removeFromSelectedFiltersArray(key) {
+      const filteredData = Object.assign({}, this.updatedFilters);
+      if (filteredData[key]) delete filteredData[key];
       this.updatedFilters = Object.assign({}, filteredData);
+      console.log("after deleted");
+      console.log(this.updatedFilters);
     },
-    enableDateFrom(value) {
-      if (value === false) this.valueFrom = "";
+    clickCheckboxToEnableFilter(type, value) {
+      if (!value)
+        switch (type) {
+          case filterTagsSort.FROM:
+            this.valueFrom = "";
+            break;
+          case filterTagsSort.TO:
+            this.valueTo = "";
+            break;
+          case filterTagsSort.STATE:
+            this.valueState = null;
+            break;
+          case filterTagsSort.SORT:
+            this.valueSort = null;
+            break;
+          case filterTagsSort.MODIFIED_SINCE:
+            this.valueModified = "";
+            break;
+          case filterTagsSort.LIMIT:
+            this.valueLimit = "";
+            break;
+          case filterTagsSort.TYPES:
+            this.selected = [];
+            break;
+        }
     },
-    enableDateTo(value) {
-      if (value === false) this.valueTo = "";
-    },
-    enableState(value) {
-      if (value === false) this.valueState = null;
-    },
-    enableSort(value) {
-      if (value === false) this.valueSort = null;
-    },
-    enableDateModified(value) {
-      if (value === false) this.valueModified = "";
-    },
-    enableLimit(value) {
-      if (value === false) {
-        this.valueLimit = "";
-        this.removeFilterAttr(filterTagsSort.LIMIT);
-      }
-    },
-    enableTypes(value) {
-      if (value === false) {
-        this.selected = [];
-        this.removeFilterAttr(filterTagsSort.TYPES);
-      }
-    },
+
     cancelTypeFilters(cancel) {
       cancel();
     },
     setTypeFilters(ok) {
       if (this.selected.length > 0) {
-        this.updateFilters(filterTagsSort.TYPES, this.selected);
+        this.updateSelectedFiltersArray(filterTagsSort.TYPES, this.selected);
       } else {
-        this.removeFilterAttr(filterTagsSort.TYPES);
+        this.removeFromSelectedFiltersArray(filterTagsSort.TYPES);
       }
       ok();
     },

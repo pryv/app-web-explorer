@@ -227,8 +227,6 @@ export default {
       this.selected = value;
     },
     selectFiltersRelatedToDates(type, ctx) {
-      console.log(type);
-      console.log(ctx.selectedYMD);
       ctx.selectedYMD
         ? this.updateSelectedFiltersArray(
             type,
@@ -264,7 +262,6 @@ export default {
       }
     },
     selectFilterLimit(value) {
-      alert(value);
       if (isNaN(value)) {
         this.valueLimit = "";
         return;
@@ -275,20 +272,14 @@ export default {
         : this.removeFromSelectedFiltersArray(filterTagsSort.LIMIT);
     },
     updateSelectedFiltersArray(key, value) {
-      alert(key);
-      alert(value);
       const filteredData = Object.assign({}, this.updatedFilters);
       filteredData[key] = value;
       this.updatedFilters = Object.assign({}, filteredData);
-      console.log("after updated");
-      console.log(this.updatedFilters);
     },
     removeFromSelectedFiltersArray(key) {
       const filteredData = Object.assign({}, this.updatedFilters);
       if (filteredData[key]) delete filteredData[key];
       this.updatedFilters = Object.assign({}, filteredData);
-      console.log("after deleted");
-      console.log(this.updatedFilters);
     },
     clickCheckboxToDisableFilter(type, value) {
       if (!value)
@@ -316,16 +307,13 @@ export default {
             break;
         }
     },
-
     cancelTypeFilters(cancel) {
       cancel();
     },
     setTypeFilters(ok) {
-      if (this.selected.length > 0) {
-        this.updateSelectedFiltersArray(filterTagsSort.TYPES, this.selected);
-      } else {
-        this.removeFromSelectedFiltersArray(filterTagsSort.TYPES);
-      }
+      this.selected.length > 0
+        ? this.updateSelectedFiltersArray(filterTagsSort.TYPES, this.selected)
+        : this.removeFromSelectedFiltersArray(filterTagsSort.TYPES);
       ok();
     },
   },

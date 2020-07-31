@@ -4,7 +4,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="fromLabel"
-          @change="clickCheckboxToEnableFilter(fromLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(fromLabelToSort, $event)"
           v-model="valueFromCheck"
         ></EnableCheckbox>
       </b-col>
@@ -18,7 +18,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="toLabel"
-          @change="clickCheckboxToEnableFilter(toLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(toLabelToSort, $event)"
           v-model="valueToCheck"
         ></EnableCheckbox>
       </b-col>
@@ -41,7 +41,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="stateLabel"
-          @change="clickCheckboxToEnableFilter(stateLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(stateLabelToSort, $event)"
           v-model="valueStateCheck"
         ></EnableCheckbox>
       </b-col>
@@ -56,7 +56,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="sortLabel"
-          @change="clickCheckboxToEnableFilter(sortLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(sortLabelToSort, $event)"
           v-model="valueSortCheck"
         ></EnableCheckbox>
       </b-col>
@@ -74,7 +74,7 @@
         <EnableCheckbox
           :content="modifiedSinceLabel"
           @change="
-            clickCheckboxToEnableFilter(modifiedSinceLabelToSort, $event)
+            clickCheckboxToDisableFilter(modifiedSinceLabelToSort, $event)
           "
           v-model="valueModifiedCheck"
         ></EnableCheckbox>
@@ -91,7 +91,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="limitLabel"
-          @change="clickCheckboxToEnableFilter(limitLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(limitLabelToSort, $event)"
           v-model="valueLimitCheck"
         ></EnableCheckbox>
       </b-col>
@@ -110,7 +110,7 @@
       <b-col cols="2">
         <EnableCheckbox
           :content="typeLabel"
-          @change="clickCheckboxToEnableFilter(typeLabelToSort, $event)"
+          @change="clickCheckboxToDisableFilter(typeLabelToSort, $event)"
           v-model="valueTypeCheck"
         ></EnableCheckbox>
       </b-col>
@@ -290,7 +290,7 @@ export default {
       console.log("after deleted");
       console.log(this.updatedFilters);
     },
-    clickCheckboxToEnableFilter(type, value) {
+    clickCheckboxToDisableFilter(type, value) {
       if (!value)
         switch (type) {
           case filterTagsSort.FROM:

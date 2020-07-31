@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "EnableCheckbox",
+  name: "Checkbox",
   model: {
     prop: "checked",
     event: "change",

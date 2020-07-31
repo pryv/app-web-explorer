@@ -2,51 +2,51 @@
   <b-card>
     <b-row>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="fromLabel"
           @change="clickCheckboxToDisableFilter(fromLabelToSort, $event)"
           v-model="valueFromCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="4">
-        <TimePickerFilter
+        <TimePicker
           :disabled="!this.valueFromCheck"
           :value="valueFrom"
           @updateFilter="selectFiltersRelatedToDates(fromLabelToSort, $event)"
-        ></TimePickerFilter>
+        ></TimePicker>
       </b-col>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="toLabel"
           @change="clickCheckboxToDisableFilter(toLabelToSort, $event)"
           v-model="valueToCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="4">
-        <TimePickerFilter
+        <TimePicker
           :disabled="!this.valueToCheck"
           :value="valueTo"
           @updateFilter="selectFiltersRelatedToDates(toLabelToSort, $event)"
-        ></TimePickerFilter>
+        ></TimePicker>
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="runningLabel"
           @change="selectFilterStateOrSort(runningLabelToSort, $event)"
           v-model="valueRunning"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="stateLabel"
           @change="clickCheckboxToDisableFilter(stateLabelToSort, $event)"
           v-model="valueStateCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="3">
-        <DropboxFilter
+        <Dropbox
           :disabled="!this.valueStateCheck"
           :options="optionsState"
           :valueSelected="valueState"
@@ -54,14 +54,14 @@
         />
       </b-col>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="sortLabel"
           @change="clickCheckboxToDisableFilter(sortLabelToSort, $event)"
           v-model="valueSortCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="3">
-        <DropboxFilter
+        <Dropbox
           :disabled="!this.valueSortCheck"
           :options="optionsSort"
           :valueSelected="valueSort"
@@ -71,29 +71,29 @@
     </b-row>
     <b-row>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="modifiedSinceLabel"
           @change="
             clickCheckboxToDisableFilter(modifiedSinceLabelToSort, $event)
           "
           v-model="valueModifiedCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="4">
-        <TimePickerFilter
+        <TimePicker
           :disabled="!this.valueModifiedCheck"
           :value="valueModified"
           @updateFilter="
             selectFiltersRelatedToDates(modifiedSinceLabelToSort, $event)
           "
-        ></TimePickerFilter>
+        ></TimePicker>
       </b-col>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="limitLabel"
           @change="clickCheckboxToDisableFilter(limitLabelToSort, $event)"
           v-model="valueLimitCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="3">
         <b-form-input
@@ -108,11 +108,11 @@
     </b-row>
     <b-row>
       <b-col cols="2">
-        <EnableCheckbox
+        <Checkbox
           :content="typeLabel"
           @change="clickCheckboxToDisableFilter(typeLabelToSort, $event)"
           v-model="valueTypeCheck"
-        ></EnableCheckbox>
+        ></Checkbox>
       </b-col>
       <b-col cols="2">
         <b-button
@@ -123,7 +123,7 @@
           >Modify Types
         </b-button>
       </b-col>
-      <ModalFilter
+      <Modal
         :label="typesMessage"
         :options="optionsTypes"
         :title="modalTitle"
@@ -131,22 +131,22 @@
         @clickCancel="cancelTypeFilters"
         @clickOk="setTypeFilters"
         @listchange="setSelected"
-      ></ModalFilter>
+      ></Modal>
     </b-row>
   </b-card>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import EnableCheckbox from "./SingleCheckbox";
-import DropboxFilter from "./DropboxFilter";
-import TimePickerFilter from "./TimePickerFilter";
-import ModalFilter from "./ModalFilter";
+import Checkbox from "../shared/Checkbox";
+import Dropbox from "../shared/Dropbox";
+import TimePicker from "../shared/TimePicker";
+import Modal from "../shared/Modal";
 import { filterTags, filterTagsSort, states } from "../../utilities/constants";
 
 export default {
   name: "FilterPanel",
-  components: { ModalFilter, TimePickerFilter, EnableCheckbox, DropboxFilter },
+  components: { Modal, TimePicker, Checkbox, Dropbox },
   computed: {
     ...mapState(["types"]),
     updatedFilters: {

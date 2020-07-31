@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  name: "ModalFilter",
+  name: "Modal",
   props: {
     title: {
       required: true,

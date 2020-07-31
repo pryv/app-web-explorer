@@ -14,7 +14,6 @@
             @textInput="updateUsername"
           ></PryvInput>
         </b-input-group>
-
         <label class="sr-only" for="inline-form-input-password">Password</label>
         <b-input-group
           class="input-group-width mb-4 mb-sm-0 w-40"

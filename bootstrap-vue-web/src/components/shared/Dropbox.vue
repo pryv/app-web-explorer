@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "DropboxFilter",
+  name: "Dropbox",
   props: {
     valueSelected: {
       required: true,

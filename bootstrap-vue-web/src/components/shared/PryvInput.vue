@@ -1,5 +1,5 @@
 <template functional>
-  <b-input
+  <b-form-input
     class="pryv-input"
     :id="id"
     :placeholder="placeholder"
@@ -8,7 +8,7 @@
     type="text"
     :disabled="disabled"
     required
-  ></b-input>
+  ></b-form-input>
 </template>
 
 <script>

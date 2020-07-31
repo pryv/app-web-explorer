@@ -65,7 +65,7 @@ export default {
   props: {
     id: {
       type: String,
-    }
+    },
   },
   async created() {
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {

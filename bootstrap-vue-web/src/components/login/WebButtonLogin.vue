@@ -1,5 +1,5 @@
 <template>
-  <div style="text-align: left;"><span id="pryv-button"></span><br /></div>
+  <div class="text-left"><span id="pryv-button"></span><br /></div>
 </template>
 
 <script>
@@ -17,7 +17,7 @@ export default {
   methods: {
     async loadButton() {
       var service = await Pryv.Browser.setupAuth(
-        loadSettings(this),
+        loadSettings.call(this),
         this.serviceInfo
       );
       console.log(service);
@@ -44,11 +44,10 @@ async function pryvAuthStateChange(state) {
   }
 }
 
-function loadSettings(that) {
+function loadSettings() {
   return {
     spanButtonID: "pryv-button", // span id the DOM that will be replaced by the Service specific button
-    // eslint-disable-next-line no-undef
-    onStateChange: pryvAuthStateChange.bind(that), // event Listener for Authentication steps
+    onStateChange: pryvAuthStateChange.bind(this), // event Listener for Authentication steps
     authRequest: {
       requestingAppId: "web-app-explorer",
       requestedPermissions: [

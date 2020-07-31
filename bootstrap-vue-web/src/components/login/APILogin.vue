@@ -11,9 +11,10 @@
             :placeholder="placeHolder"
             @textInput="updateEndpoint"
             v-model="apiEndpoint"
+            :required="requiredInput"
           ></PryvInput>
         </div>
-        <PryvBtn :content="btnContent" @click="loginAPI"></PryvBtn>
+        <PryvBtn :content="btnContent" :type="btnType" @click="loginAPI"></PryvBtn>
       </b-form>
     </div>
   </div>
@@ -35,26 +36,28 @@ export default {
       placeHolder: "Enter API Endpoint",
       show: false,
       alertMessage: "",
+      btnType : "submit",
+      requiredInput : true
     };
   },
   methods: {
     loginAPI: async function() {
-      if (!this.apiEndpoint) {
-        this.show = true;
-        this.alertMessage = "Please enter the API endpoint";
-        return;
-      }
       try {
         const connection = new this.$pryv.Connection(this.apiEndpoint);
         if (connection) {
           this.$emit("authenticated", connection, false);
-        } else {
+        }
+        else{
+          alert("else")
+        }
+      /*  else {
           this.show = true;
           this.alertMessage = "Please enter the valid API endpoint";
           this.apiEndpoint = "";
           console.log("Endpoint is not valid.");
-        }
+        }*/
       } catch (e) {
+        alert(e);
         this.show = true;
         this.alertMessage = e.message;
         this.apiEndpoint = "";

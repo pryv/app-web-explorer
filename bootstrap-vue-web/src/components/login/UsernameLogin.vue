@@ -12,6 +12,7 @@
             :placeholder="placeholder_username"
             v-model="username"
             @textInput="updateUsername"
+            :required="inputRequired"
           ></PryvInput>
         </b-input-group>
         <label class="sr-only" for="inline-form-input-password">Password</label>
@@ -26,7 +27,12 @@
             @passwordInput="updatePassword"
           ></PryvPassword>
         </b-input-group>
-        <PryvBtn :content="btncontent" @click="login" id="submitBtn"></PryvBtn>
+        <PryvBtn
+          :content="btncontent"
+          :type="btnType"
+          @click="login"
+          id="submitBtn"
+        ></PryvBtn>
       </b-form>
     </div>
   </div>
@@ -53,6 +59,8 @@ export default {
       placeholder_password: "Enter password",
       show: false,
       message: "",
+      inputRequired: true,
+      btnType: "submit",
     };
   },
   computed: {
@@ -60,20 +68,6 @@ export default {
   },
   methods: {
     async login() {
-      if (!this.username && !this.password) {
-        this.show = true;
-        this.message = "Please enter your username and password";
-        return;
-      } else if (!this.username) {
-        this.show = true;
-        this.message = "Please enter your username";
-        return;
-      } else if (!this.password) {
-        this.show = true;
-        this.message = "Please enter your password";
-        return;
-      }
-
       const serviceInfoUrl = this.serviceInfo;
       const appId = "web-app-explorer";
       const service = new this.$pryv.Service(serviceInfoUrl);

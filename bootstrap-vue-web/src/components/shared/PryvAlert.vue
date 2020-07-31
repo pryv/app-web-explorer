@@ -1,18 +1,10 @@
 <template functional>
-  <b-alert :show="show" variant="danger">{{ message }} </b-alert>
+  <b-alert :show="props.show" variant="danger">{{ props.message }} </b-alert>
 </template>
 
 <script>
 export default {
   name: "PryvAlert",
-  props: {
-    show: {
-      type: Boolean,
-    },
-    message: {
-      type: String,
-    },
-  },
 };
 </script>
 

@@ -1,5 +1,5 @@
-<template functional>
-  <b-form-input
+<template>
+  <b-input
     class="pryv-input"
     :id="id"
     :placeholder="placeholder"
@@ -7,8 +7,8 @@
     :value="value"
     type="text"
     :disabled="disabled"
-    required
-  ></b-form-input>
+    :required="required"
+  ></b-input>
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
     placeholder: { type: String },
     id: { type: String },
     disabled: { type: Boolean, default: false },
+    required:{type:Boolean, default : false}
   },
 };
 </script>

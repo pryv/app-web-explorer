@@ -274,12 +274,14 @@ export default {
     updateSelectedFiltersArray(key, value) {
       const filteredData = Object.assign({}, this.updatedFilters);
       filteredData[key] = value;
-      this.updatedFilters = Object.assign({}, filteredData);
+      this.updatedFilters = filteredData;
     },
     removeFromSelectedFiltersArray(key) {
       const filteredData = Object.assign({}, this.updatedFilters);
-      if (filteredData[key]) delete filteredData[key];
-      this.updatedFilters = Object.assign({}, filteredData);
+      if (filteredData[key]) {
+        delete filteredData[key];
+        this.updatedFilters = filteredData;
+      }
     },
     clickCheckboxToDisableFilter(type, value) {
       if (!value)

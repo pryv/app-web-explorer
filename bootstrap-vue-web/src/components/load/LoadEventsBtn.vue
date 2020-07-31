@@ -1,5 +1,5 @@
 <template>
-  <PryvBtn :content="btnContent" @click="loadStreams" id="submitBtn"></PryvBtn>
+  <PryvBtn :content="btnContent" @click="loadEvents" id="submitBtn"></PryvBtn>
 </template>
 
 <script>
@@ -8,44 +8,14 @@ import GET_STREAMS_API from "../../utilities/api";
 import ACCESS_INFO_API from "../../utilities/api";
 
 export default {
-  name: "LoadStreams",
+  name: "LoadEventsBtn",
   components: { PryvBtn },
   data() {
     return {
-      btnContent: "Load Streams",
+      btnContent: "Load Events",
     };
   },
   computed: {
-    connections_map: {
-      get() {
-        return this.$store.state.connections_map;
-      },
-      set([key, value]) {
-        if (!this.connections_map[key]) {
-          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
-        }
-      },
-    },
-    streams_map: {
-      get() {
-        return this.$store.state.streams_map;
-      },
-      set([key, value]) {
-        if (!this.streams_map[key]) {
-          this.$store.commit("ADD_STREAMS_MAP", [key, value]);
-        }
-      },
-    },
-    access_info_map: {
-      get() {
-        return this.$store.state.access_info_map;
-      },
-      set([key, value]) {
-        if (!this.access_info_map[key]) {
-          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
-        }
-      },
-    },
     events_map: {
       get() {
         return this.$store.state.events_map;
@@ -75,7 +45,7 @@ export default {
       }
       return connection;
     },
-    loadStreams() {
+    loadEvents() {
       var existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
       existing.forEach(function(obj) {
@@ -116,7 +86,7 @@ export default {
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
-          this.forEachEvent
+          this.addEachEvent
         );
         this.events_map = [connection.token + connection.endpoint, this.events];
         console.log(result);
@@ -127,18 +97,13 @@ export default {
       }
       return true;
     },
-    forEachEvent(event) {
+    addEachEvent(event) {
       this.events.push(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },
     updateStore(connection) {
-      if (
-        this.addStreamsToStore(connection) &&
-        this.addAccessInfoToStore(connection) &&
-        this.addEventsToStore(connection)
-      )
-        this.$router.push("events");
+      if (this.addEventsToStore(connection)) this.$router.push("events");
       return false;
     },
   },

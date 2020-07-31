@@ -83,10 +83,7 @@ export default {
           );
         }
       }
-      this.selectedStreamsObjectArray = Object.assign(
-        {},
-        clonedSelectedStreamsObjectArray
-      );
+      this.selectedStreamsObjectArray = clonedSelectedStreamsObjectArray
     },
     displayStreams() {
       const customUserObjectArray = {};

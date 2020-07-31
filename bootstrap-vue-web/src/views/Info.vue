@@ -115,20 +115,8 @@ export default {
         this.$router.push("events");
       }
     },
-    //todo restructure the logout funcitionality
-    logout() {
-      let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
-      let obj = endpointArr.find(o => o.key === this.accessInfo);
-      if (obj.cookie) {
-        const test = this.$cookies.remove("pryv-libjs-web-app-explorer", "/", {
-          domain: ".l.rec.la",
-        });
-        console.log("remove cookies");
-        console.log(test);
-      }
-      endpointArr = endpointArr.filter(obj => obj.key != this.accessInfo);
-      this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);
-
+    deleteConnectionData()
+    {
       const connections_map_cloned = Object.assign({}, this.connections_map);
       delete connections_map_cloned[this.accessInfo];
       this.connections_map = connections_map_cloned;
@@ -147,6 +135,21 @@ export default {
       if (Object.keys(this.connections_map).length === 0)
         this.$router.push("login");
       else this.$router.push("events");
+    },
+    //todo restructure the logout funcitionality
+    logout() {
+      let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
+      let obj = endpointArr.find(o => o.key === this.accessInfo);
+      if (obj.cookie) {
+        const test = this.$cookies.remove("pryv-libjs-web-app-explorer", "/", {
+          domain: ".l.rec.la",
+        });
+        console.log("remove cookies");
+        console.log(test);
+      }
+      endpointArr = endpointArr.filter(obj => obj.key != this.accessInfo);
+      this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);
+      this.deleteConnectionData();
     },
   },
   watch: {

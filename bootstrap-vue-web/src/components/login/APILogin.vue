@@ -44,24 +44,11 @@ export default {
     loginAPI: async function() {
       try {
         const connection = new this.$pryv.Connection(this.apiEndpoint);
-        if (connection) {
-          this.$emit("authenticated", connection, false);
-        }
-        else{
-          alert("else")
-        }
-      /*  else {
-          this.show = true;
-          this.alertMessage = "Please enter the valid API endpoint";
-          this.apiEndpoint = "";
-          console.log("Endpoint is not valid.");
-        }*/
+        connection ? this.$emit("authenticated", connection, false) : console.log("Please enter a valid endpoint.");
       } catch (e) {
-        alert(e);
         this.show = true;
         this.alertMessage = e.message;
         this.apiEndpoint = "";
-        return;
       }
     },
     updateEndpoint(value) {

@@ -49,8 +49,9 @@ export default {
       existing = existing ? JSON.parse(existing) : [];
       existing.forEach(function(obj) {
         const connection = this.apiLogin(obj.key);
-        if (connection) this.updateStore(connection);
+        if (connection) this.addEventsToStore(connection);
       });
+      this.$router.push("events");
     },
     async addEventsToStore(connection) {
       this.events = [];
@@ -72,9 +73,6 @@ export default {
       this.events.push(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;
-    },
-    updateStore(connection) {
-      if (this.addEventsToStore(connection)) this.$router.push("events");
     },
   },
 };

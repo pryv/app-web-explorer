@@ -11,7 +11,7 @@ export default {
     ...mapState(["serviceInfo"]),
   },
   async mounted() {
-    this.loadButton();
+    await this.loadButton();
   },
 
   methods: {
@@ -30,17 +30,12 @@ async function pryvAuthStateChange(state) {
   let connection = null;
   if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
     connection = new Pryv.Connection(state.apiEndpoint);
-    if (connection) {
-      this.$emit("authenticated", connection, true);
-    } else {
-      console.log("Error with Web Login");
-    }
+    connection
+      ? this.$emit("authenticated", connection, true)
+      : console.log("Error with Web Login");
   }
   if (state.id === Pryv.Browser.AuthStates.INITIALIZED) {
     connection = null;
-    if (connection) {
-      //todo logout
-    }
   }
 }
 

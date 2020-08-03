@@ -20,8 +20,5 @@ import GroupCheckBox from "../shared/GroupCheckBox";
 export default {
   name: "SideBar",
   components: { ConnectionSidePanelBtn, GroupCheckBox },
-  props: {
-    msg: String,
-  },
 };
 </script>

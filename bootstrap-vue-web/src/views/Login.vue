@@ -21,7 +21,7 @@
           <b-tab title="Token Based Login" active>
             <b-card-text>
               <b-card class="card-style shadow min-height-card">
-                <Label :href="href_web" :parent-data="ButtonLogin"></Label>
+                <PryvLabel :href="href_web" :parentData="ButtonLogin"></PryvLabel>
                 <WebButton @authenticated="updateSessionStorage"></WebButton>
                 <br />
                 <div class="text-left">
@@ -33,10 +33,10 @@
                   </b-button>
                   <b-collapse id="collapse-1" class="mt-2">
                     <b-card class="card-style shadow border-0">
-                      <Label
+                      <PryvLabel
                         :href="href_service_info"
-                        :parent-data="ServiceInfoURL"
-                      ></Label>
+                        :parentData="ServiceInfoURL"
+                      ></PryvLabel>
                       <ServiceInfo id="Web based Login"></ServiceInfo>
                     </b-card>
                   </b-collapse>
@@ -47,7 +47,7 @@
           <b-tab title="Username, Password Login">
             <b-card-text>
               <b-card class="card-style shadow">
-                <Label :href="href_manual" :parent-data="PasswordLogin"></Label>
+                <PryvLabel :href="href_manual" :parentData="PasswordLogin"></PryvLabel>
                 <UsernameLogin
                   @authenticated="updateSessionStorage"
                 ></UsernameLogin>
@@ -61,10 +61,10 @@
                   </b-button>
                   <b-collapse id="collapse-2" class="mt-2">
                     <b-card class="card-style shadow border-0">
-                      <Label
+                      <PryvLabel
                         :href="href_service_info"
-                        :parent-data="ServiceInfoURL"
-                      ></Label>
+                        :parentData="ServiceInfoURL"
+                      ></PryvLabel>
                       <ServiceInfo
                         id="Username,Password based Login"
                       ></ServiceInfo>
@@ -77,7 +77,7 @@
           <b-tab title="API Endpoint Login">
             <b-card-text>
               <b-card class="card-style shadow">
-                <Label :href="href_api" :parent-data="APILogin"></Label>
+                <PryvLabel :href="href_api" :parentData="APILogin"></PryvLabel>
                 <APILogin @authenticated="updateSessionStorage"></APILogin>
               </b-card>
             </b-card-text>
@@ -91,7 +91,7 @@
 <script>
 import PryvBtn from "../components/shared/PryvBtn";
 import APILogin from "../components/login/APILogin";
-import Label from "../components/shared/PryvLabel";
+import PryvLabel from "../components/shared/PryvLabel";
 import WebButton from "../components/login/WebButtonLogin";
 import UsernameLogin from "../components/login/UsernameLogin";
 import ServiceInfo from "../components/login/service-info/ServiceInfo";
@@ -102,7 +102,7 @@ export default {
     ServiceInfo,
     UsernameLogin,
     WebButton,
-    Label,
+    PryvLabel,
     APILogin,
     PryvBtn,
   },

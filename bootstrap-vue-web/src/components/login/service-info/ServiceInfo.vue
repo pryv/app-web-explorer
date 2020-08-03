@@ -11,9 +11,9 @@
       </b-input-group>
     </b-form>
     <div class="pt-2">
-      <h6 style="text-align: left;font-size: smaller">{{ ServiceInfo }}</h6>
+      <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
       <b-card class="card-style service-info-container">
-        <div class="service-info-content">
+        <div class="text-left default-font">
           "register": {{ register }} <br />
           "access": {{ access }} <br />
           "api": {{ api_v }} <br />
@@ -87,15 +87,8 @@ export default {
 };
 </script>
 <style scoped>
-.card-body {
-  padding: 0.5rem !important;
-}
 .service-info-container {
   max-height: 150px;
   overflow-y: auto;
-}
-.service-info-content {
-  text-align: left;
-  font-size: 11px;
 }
 </style>

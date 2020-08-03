@@ -2,8 +2,7 @@
   <b-row>
     <b-button
       @click="$router.push('login')"
-      class="w-100"
-      style="text-align: left"
+      class="w-100 text-left"
       variant="light"
     >
       <b-icon icon="plus" font-scale="1.5"></b-icon>

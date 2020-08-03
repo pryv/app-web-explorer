@@ -130,7 +130,7 @@
         :value="selected"
         @clickCancel="cancelTypeFilters"
         @clickOk="setTypeFilters"
-        @listchange="setSelected"
+        @listChange="setSelected"
       ></Modal>
     </b-row>
   </b-card>
@@ -303,9 +303,11 @@ export default {
             break;
           case filterTagsSort.LIMIT:
             this.valueLimit = "";
+            this.removeFromSelectedFiltersArray(type)
             break;
           case filterTagsSort.TYPES:
             this.selected = [];
+            this.removeFromSelectedFiltersArray(type)
             break;
         }
     },

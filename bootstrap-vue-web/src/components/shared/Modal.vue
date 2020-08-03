@@ -52,7 +52,7 @@ export default {
         return this.value;
       },
       set: function(value) {
-        this.$emit("listchange", value);
+        this.$emit("listChange", value);
       },
     },
   },

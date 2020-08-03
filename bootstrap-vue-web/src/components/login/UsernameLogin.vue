@@ -16,10 +16,7 @@
           ></PryvInput>
         </b-input-group>
         <label class="sr-only" for="inline-form-input-password">Password</label>
-        <b-input-group
-          class="input-group-width mb-4 mb-sm-0 w-40"
-          style="float: right"
-        >
+        <b-input-group class="input-group-width mb-4 mb-sm-0 w-40 float-right">
           <PryvPassword
             :id="id_password"
             :placeholder="placeholder_password"
@@ -28,7 +25,7 @@
           ></PryvPassword>
         </b-input-group>
         <PryvBtn
-          :content="btncontent"
+          :content="btnContent"
           :type="btnType"
           @click="login"
           id="submitBtn"
@@ -52,7 +49,7 @@ export default {
     return {
       username: "",
       password: "",
-      btncontent: "Login",
+      btnContent: "Login",
       id_username: "inline-form-input-username",
       id_password: "inline-form-input-password",
       placeholder_username: "Enter username",
@@ -85,7 +82,6 @@ export default {
           this.username = "";
           this.password = "";
           console.log("Invalid login credentials.");
-          return;
         }
       } catch (e) {
         this.show = true;
@@ -93,7 +89,6 @@ export default {
         this.username = "";
         this.password = "";
         console.log(e.message);
-        return;
       }
     },
     updateUsername(value) {

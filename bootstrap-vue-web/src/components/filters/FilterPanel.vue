@@ -303,11 +303,11 @@ export default {
             break;
           case filterTagsSort.LIMIT:
             this.valueLimit = "";
-            this.removeFromSelectedFiltersArray(type)
+            this.removeFromSelectedFiltersArray(type);
             break;
           case filterTagsSort.TYPES:
             this.selected = [];
-            this.removeFromSelectedFiltersArray(type)
+            this.removeFromSelectedFiltersArray(type);
             break;
         }
     },

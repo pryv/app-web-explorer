@@ -6,7 +6,7 @@
       placeholder="YYYY-MM-DD"
       autocomplete="off"
       :disabled="disabled"
-      style="font-size: 0.75rem !important;"
+      class="default-font"
     ></b-form-input>
     <b-input-group-append>
       <b-form-datepicker
@@ -15,7 +15,7 @@
         right
         locale="en-US"
         aria-controls="example-input"
-        @context="fireParentEvent"
+        @context="$emit('updateFilter', $event)"
         :disabled="disabled"
       ></b-form-datepicker>
     </b-input-group-append>
@@ -31,11 +31,6 @@ export default {
     },
     disabled: {
       required: true,
-    },
-  },
-  methods: {
-    fireParentEvent: function(val) {
-      this.$emit("updateFilter", val);
     },
   },
 };

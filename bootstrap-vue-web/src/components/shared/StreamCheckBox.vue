@@ -1,9 +1,8 @@
 <template>
-  <div style="text-align: left;">
+  <div class="text-left">
     <b-form-checkbox-group
-      style="padding-left: 0;"
       id="flavors"
-      class="ml-4"
+      class="ml-4 pl-0"
       stacked
       v-model="selectedStreamsObjectArrayLocal"
     >
@@ -66,8 +65,8 @@ export default {
       },
       set: function(value) {
         const payload = {
-          "endpoint" : this.endpoint,
-          "streams":value
+          endpoint: this.endpoint,
+          streams: value,
         };
         this.$emit("selectedStreamsMapUpdate", payload);
       },
@@ -76,9 +75,9 @@ export default {
   methods: {
     checkBoxClicked(e, value, index) {
       const payload = {
-        "eventClickedOrUnClicked":e,
-        "clickedEndpointAndStreamId":value,
-        "endpointClicked":index
+        eventClickedOrUnClicked: e,
+        clickedEndpointAndStreamId: value,
+        endpointClicked: index,
       };
       this.$emit("checkBoxClicked", payload);
     },

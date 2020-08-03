@@ -6,10 +6,7 @@
       </a>
     </b-col>
     <b-col cols="11" class="text-left p-0">
-      <h5
-        class="pryv-label pl-3 mb-2"
-        v-text="props.parentData"
-      ></h5>
+      <h5 class="pryv-label pl-3 mb-2" v-text="props.parentData"></h5>
     </b-col>
   </b-row>
 </template>

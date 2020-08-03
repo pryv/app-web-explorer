@@ -8,6 +8,7 @@
     type="password"
     :disabled="disabled"
     required
+    autocomplete="on"
   ></b-form-input>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2" style="width: 80%;">
+    <div class="bg-white py-2 w-80">
       <div class="card-style events-card">
         <h4>Events Panel</h4>
       </div>
@@ -16,15 +16,13 @@
           <b-tabs card>
             <b-tab title="JSON VIEW" active>
               <b-card-text style="text-align: left">
-                <vue-json-pretty :path="'res'" :data="this.displayJSON">
-                </vue-json-pretty>
+                <vue-json-pretty :path="'res'" :data="this.displayJSON" />
               </b-card-text>
             </b-tab>
             <b-tab title="TABLE VIEW">
               <b-card-text>
                 <div>
-                  <b-table responsive striped hover :items="fetchData">
-                  </b-table>
+                  <b-table responsive striped hover :items="fetchData" />
                 </div>
               </b-card-text>
             </b-tab>
@@ -80,15 +78,18 @@ export default {
   },
   watch: {
     selectedStreams() {
-      this.displayEvents();
-      this.filterEvents(this.fetchData);
+      this.selectStreamsOrFilters();
     },
     selectedFilters() {
-      this.displayEvents();
-      this.filterEvents(this.fetchData);
+      this.selectStreamsOrFilters();
     },
   },
   methods: {
+    selectStreamsOrFilters()
+    {
+      this.displayEvents();
+      this.filterEvents();
+    },
     displayEvents() {
       this.fetchData = [];
       this.typesSet = new Set();
@@ -105,93 +106,96 @@ export default {
         }
       }
     },
-    filterEvents(selectedEvents) {
-      if(!this.selectedFilters)
-        return;
-      Object.keys(this.selectedFilters).sort().forEach(e => {
-        switch (e) {
-          case filterTagsSort.FROM: {
-            const copyFrom = selectedEvents.filter(
-              function(x) {
-                //Events time should be higher than to time
-                return x.time > this.selectedFilters[e];
-              }.bind(this)
-            );
-            selectedEvents = [...copyFrom];
-            break;
-          }
-          case filterTagsSort.TO: {
-            const copyTo = selectedEvents.filter(
-              function(x) {
-                //Events time should be less than to time
-                return x.time < this.selectedFilters[e];
-              }.bind(this)
-            );
-            selectedEvents = [...copyTo];
-            break;
-          }
-          case filterTagsSort.TYPES: {
-            const copyTypes = selectedEvents.filter(
-              function(x) {
-                //duration null is equal to running events
-                return this.selectedFilters[e].includes(x.type);
-              }.bind(this)
-            );
-            selectedEvents = [...copyTypes];
-            break;
-          }
-          case filterTagsSort.RUNNING: {
-            const copyRunning = selectedEvents.filter(
-              function(x) {
-                //duration null is equal to running events
-                return x.duration === null;
-              }.bind(this)
-            );
-            selectedEvents = [...copyRunning];
-            break;
-          }
-          case filterTagsSort.STATE: {
-            const copyStates = selectedEvents.filter(
-              function(x) {
-                //events in trashed state only returns the trashed attribute
-                return (
-                  (states.TRASHED in x && states.TRASHED === this.selectedFilters[e]) ||
-                  (!(states.DEFAULT in x) &&
-                    states.DEFAULT === this.selectedFilters[e]) ||
-                  states.ALL === this.selectedFilters[e]
+    filterEvents() {
+      let selectedEvents = this.fetchData;
+      if (!this.selectedFilters) return;
+      Object.keys(this.selectedFilters)
+        .sort()
+        .forEach(e => {
+          switch (e) {
+            case filterTagsSort.FROM: {
+              const copyFrom = selectedEvents.filter(
+                function(x) {
+                  //Events time should be higher than to time
+                  return x.time > this.selectedFilters[e];
+                }.bind(this)
+              );
+              selectedEvents = [...copyFrom];
+              break;
+            }
+            case filterTagsSort.TO: {
+              const copyTo = selectedEvents.filter(
+                function(x) {
+                  //Events time should be less than to time
+                  return x.time < this.selectedFilters[e];
+                }.bind(this)
+              );
+              selectedEvents = [...copyTo];
+              break;
+            }
+            case filterTagsSort.TYPES: {
+              const copyTypes = selectedEvents.filter(
+                function(x) {
+                  //duration null is equal to running events
+                  return this.selectedFilters[e].includes(x.type);
+                }.bind(this)
+              );
+              selectedEvents = [...copyTypes];
+              break;
+            }
+            case filterTagsSort.RUNNING: {
+              const copyRunning = selectedEvents.filter(
+                function(x) {
+                  //duration null is equal to running events
+                  return x.duration === null;
+                }.bind(this)
+              );
+              selectedEvents = [...copyRunning];
+              break;
+            }
+            case filterTagsSort.STATE: {
+              const copyStates = selectedEvents.filter(
+                function(x) {
+                  //events in trashed state only returns the trashed attribute
+                  return (
+                    (states.TRASHED in x &&
+                      states.TRASHED === this.selectedFilters[e]) ||
+                    (!(states.DEFAULT in x) &&
+                      states.DEFAULT === this.selectedFilters[e]) ||
+                    states.ALL === this.selectedFilters[e]
+                  );
+                }.bind(this)
+              );
+              selectedEvents = [...copyStates];
+              break;
+            }
+            case filterTagsSort.MODIFIED_SINCE: {
+              const copyModified = selectedEvents.filter(
+                function(x) {
+                  return x.time > this.selectedFilters[e];
+                }.bind(this)
+              );
+              selectedEvents = [...copyModified];
+              break;
+            }
+            case filterTagsSort.LIMIT: {
+              const limit = parseInt(this.selectedFilters[e]);
+              selectedEvents = selectedEvents.slice(0, limit);
+              break;
+            }
+            case filterTagsSort.SORT:
+              //sort ascending and descending using time attribute
+              if (this.selectedFilters[e] === true)
+                selectedEvents.sort((a, b) =>
+                  a.time > b.time ? 1 : b.time > a.time ? -1 : 0
                 );
-              }.bind(this)
-            );
-            selectedEvents = [...copyStates];
-            break;
+              else
+                selectedEvents.sort((a, b) =>
+                  a.time < b.time ? 1 : b.time < a.time ? -1 : 0
+                );
+              break;
           }
-          case filterTagsSort.MODIFIED_SINCE: {
-            const copyModified = selectedEvents.filter(
-              function(x) {
-                return x.time > this.selectedFilters[e];
-              }.bind(this)
-            );
-            selectedEvents = [...copyModified];
-            break;
-          }
-          case filterTagsSort.LIMIT: {
-            const limit = parseInt(this.selectedFilters[e]);
-            selectedEvents = selectedEvents.slice(0, limit);
-            break;
-          }
-          case filterTagsSort.SORT:
-            //sort ascending and descending using time attribute
-            if (this.selectedFilters[e] === true)
-              selectedEvents.sort((a, b) =>
-                a.time > b.time ? 1 : b.time > a.time ? -1 : 0
-              );
-            else
-              selectedEvents.sort((a, b) =>
-                a.time < b.time ? 1 : b.time < a.time ? -1 : 0
-              );
-            break;
-        }
-      });
+        });
       this.fetchData = [...selectedEvents];
     },
   },

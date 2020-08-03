@@ -180,7 +180,7 @@ export default {
   },
   methods: {
     addAPIEndpointsToSessionStorage(connection, cookie) {
-      var existing = this.$sessionStorage.endpoint_arr;
+      let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
       if (existing.filter(e => e.key === connection.apiEndpoint).length > 0) {
         return false;
@@ -202,8 +202,7 @@ export default {
         if (result)
           this.streams_map = [connection.apiEndpoint, result[0].streams];
       } catch (e) {
-        console.log("Error occurred when retrieving streams");
-        console.log(e);
+        console.log("Error occurred when retrieving streams "+e);
         return false;
       }
       return true;
@@ -212,31 +211,26 @@ export default {
       try {
         const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
         if (result) {
-          console.log("result");
-          console.log(result);
           this.access_info_map = [connection.apiEndpoint, result[0]];
-          console.log(this.access_info_map);
         }
       } catch (e) {
-        console.log("Error occurred when retrieving access info");
-        console.log(e);
+        console.log("Error occurred when retrieving access info "+e);
         return false;
       }
       return true;
     },
     async addEventsToStore(connection) {
       this.events = [];
-      var queryParams = {};
+      let queryParams = {};
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.forEachEvent
         );
+        console.log(result)
         this.events_map = [connection.apiEndpoint, this.events];
-        console.log(result);
       } catch (e) {
-        console.log("Error occurred when retrieving events");
-        console.log(e);
+        console.log("Error occurred when retrieving events "+e);
         return false;
       }
       return true;
@@ -260,15 +254,14 @@ export default {
     },
     updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        if (this.updateStore(connection)) this.$router.push("events");
-        else alert("some error occured when logging");
+        this.updateStore(connection) ? this.$router.push("events") : console.log("Some error occured when loading");
       }
     },
     currentRouteName() {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName != "events") {
+      if (this.currentRouteName !== "events") {
         this.$router.push("events");
       }
     },
@@ -305,23 +298,9 @@ export default {
   border: none;
   border-radius: 0;
 }
-
-tab-style {
-  color: #bd1727;
-  text-decoration: none;
-  background-color: transparent;
-}
 .login-card {
   border: none;
   padding: 0.5%;
-  text-align: left;
-}
-
-.w-80 {
-  width: 80%;
-}
-
-.text-left {
   text-align: left;
 }
 </style>

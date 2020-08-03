@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2 info-header">
+    <div class="bg-white py-2 w-80">
       <div class="card-style info-card">
         <b-row>
           <b-col cols="10">
@@ -111,7 +111,7 @@ export default {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName != "events") {
+      if (this.currentRouteName !== "events") {
         this.$router.push("events");
       }
     },
@@ -146,7 +146,7 @@ export default {
         console.log("remove cookies");
         console.log(test);
       }
-      endpointArr = endpointArr.filter(obj => obj.key != this.accessInfo);
+      endpointArr = endpointArr.filter(obj => obj.key !== this.accessInfo);
       this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);
       this.deleteConnectionData();
     },
@@ -167,8 +167,5 @@ export default {
 }
 .text-info {
   text-align: left;
-}
-.info-header {
-  width: 80%;
 }
 </style>

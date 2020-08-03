@@ -14,7 +14,7 @@ const store = new Vuex.Store({
     streams_map: {},
     access_info_map: {},
     events_map: {},
-    filters: {},
+    selectedFilters: {},
     types: new Set(),
   },
   mutations: {
@@ -30,8 +30,8 @@ const store = new Vuex.Store({
     UPDATE_SELECTED_ENDPOINTS: (state, selectedStreams) => {
       state.selectedStreams = selectedStreams;
     },
-    UPDATE_FILTERS: (state, selectedFilters) => {
-      state.filters = selectedFilters;
+    UPDATE_SELECTED_FILTERS: (state, selectedFilters) => {
+      state.selectedFilters = selectedFilters;
     },
     SET_TYPES: (state, loadTypes) => {
       state.types = loadTypes;

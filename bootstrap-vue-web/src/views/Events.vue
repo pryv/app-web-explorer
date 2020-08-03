@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     ...mapState(["selectedStreams"]),
-    ...mapState(["filters"]),
+    ...mapState(["selectedFilters"]),
     ...mapState(["events_map"]),
     displayJSON() {
       return this.fetchData.length > 0

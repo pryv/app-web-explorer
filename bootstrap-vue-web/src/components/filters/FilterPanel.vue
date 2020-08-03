@@ -10,7 +10,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="!this.valueFromCheck"
+          :disabled="this.valueFromCheck===false"
           :value="valueFrom"
           @updateFilter="selectFiltersRelatedToDates(fromLabelToSort, $event)"
         ></TimePicker>
@@ -24,7 +24,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="!this.valueToCheck"
+          :disabled="this.valueToCheck===false"
           :value="valueTo"
           @updateFilter="selectFiltersRelatedToDates(toLabelToSort, $event)"
         ></TimePicker>
@@ -47,7 +47,7 @@
       </b-col>
       <b-col cols="3">
         <Dropbox
-          :disabled="!this.valueStateCheck"
+          :disabled="this.valueStateCheck===false"
           :options="optionsState"
           :valueSelected="valueState"
           @input="selectFilterStateOrSort(stateLabelToSort, $event)"
@@ -62,7 +62,7 @@
       </b-col>
       <b-col cols="3">
         <Dropbox
-          :disabled="!this.valueSortCheck"
+          :disabled="this.valueSortCheck===false"
           :options="optionsSort"
           :valueSelected="valueSort"
           @input="selectFilterStateOrSort(sortLabelToSort, $event)"
@@ -81,7 +81,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="!this.valueModifiedCheck"
+          :disabled="this.valueModifiedCheck===false"
           :value="valueModified"
           @updateFilter="
             selectFiltersRelatedToDates(modifiedSinceLabelToSort, $event)
@@ -97,10 +97,10 @@
       </b-col>
       <b-col cols="3">
         <b-form-input
-          :disabled="!this.valueLimitCheck"
+          :disabled="this.valueLimitCheck===false"
           @input="selectFilterLimit"
           placeholder="Enter the limit"
-          style="font-size: 0.75rem !important;"
+          class="default-font"
           type="text"
           v-model="valueLimit"
         ></b-form-input>
@@ -116,10 +116,10 @@
       </b-col>
       <b-col cols="2">
         <b-button
-          :disabled="!this.valueTypeCheck"
+          :disabled="this.valueTypeCheck===false"
           @click="$bvModal.show('modal-scoped')"
           id="submitBtn"
-          style="font-size: 0.75rem;padding:0.25rem"
+          class="default-font"
           >Modify Types
         </b-button>
       </b-col>
@@ -151,10 +151,10 @@ export default {
     ...mapState(["types"]),
     updatedFilters: {
       get() {
-        return this.$store.state.filters;
+        return this.$store.state.selectedFilters;
       },
       set(value) {
-        this.$store.commit("UPDATE_FILTERS", value);
+        this.$store.commit("UPDATE_SELECTED_FILTERS", value);
       },
     },
     optionsTypes() {
@@ -170,7 +170,7 @@ export default {
     },
     typesMessage() {
       return this.types.size > 0
-        ? "Select multiple types to filter"
+        ? "Select one or multiple types to filter"
         : "You have selected no endpoints to view";
     },
   },
@@ -323,26 +323,8 @@ export default {
 </script>
 
 <style>
-.mt-3,
-.my-3 {
-  margin-top: 0.5rem !important;
-  font-size: 0.75rem !important;
-}
-
-.b-form-btn-label-control.form-control > label {
-  font-size: 0.75rem !important;
-}
-
-.dropdown-item {
-  font-size: 0.75rem !important;
-}
-
-.input-group > .input-group-append > .btn-group > .btn {
-  font-size: 0.75rem !important;
-  border-radius: 0;
-}
-
-.customized_div {
-  padding: 0 !important;
-}
+  .input-group > .input-group-append > .btn-group > .btn {
+    font-size: 0.75rem;
+    border-radius: 0;
+  }
 </style>

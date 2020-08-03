@@ -132,9 +132,8 @@ export default {
       const events_map_cloned = Object.assign({}, this.events_map);
       delete events_map_cloned[this.accessInfo];
       this.events_map = events_map_cloned;
-      if (Object.keys(this.connections_map).length === 0)
-        this.$router.push("login");
-      else this.$router.push("events");
+
+      Object.keys(this.connections_map).length === 0 ? this.$router.push("login") : this.$router.push("events");
     },
     //todo restructure the logout funcitionality
     logout() {

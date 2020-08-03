@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     apiLogin(endPoint) {
-      var connection = null;
+      let connection = null;
       try {
         connection = new this.$pryv.Connection(endPoint);
       } catch (e) {
@@ -76,10 +76,10 @@ export default {
       return connection;
     },
     loadStreams() {
-      var existing = this.$sessionStorage.endpoint_arr;
+      let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
       existing.forEach(function(obj) {
-        var connection = this.apiLogin(obj.key);
+        const connection = this.apiLogin(obj.key);
         if (connection) this.updateStore(connection);
       });
     },
@@ -89,8 +89,7 @@ export default {
         if (result)
           this.streams_map = [connection.apiEndpoint, result[0].streams];
       } catch (e) {
-        console.log("Error occurred when retrieving streams");
-        console.log(e);
+        console.log("Error occurred when retrieving streams" + e);
         return false;
       }
       return true;
@@ -104,15 +103,14 @@ export default {
             result[0],
           ];
       } catch (e) {
-        console.log("Error occurred when retrieving access info");
-        console.log(e);
+        console.log("Error occurred when retrieving access info" + e);
         return false;
       }
       return true;
     },
     async addEventsToStore(connection) {
       this.events = [];
-      var queryParams = {};
+      let queryParams = {};
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
@@ -121,8 +119,7 @@ export default {
         this.events_map = [connection.token + connection.endpoint, this.events];
         console.log(result);
       } catch (e) {
-        console.log("Error occurred when retrieving events");
-        console.log(e);
+        console.log("Error occurred when retrieving events" + e);
         return false;
       }
       return true;
@@ -139,10 +136,7 @@ export default {
         this.addEventsToStore(connection)
       )
         this.$router.push("events");
-      return false;
     },
   },
 };
 </script>
-
-<style scoped></style>

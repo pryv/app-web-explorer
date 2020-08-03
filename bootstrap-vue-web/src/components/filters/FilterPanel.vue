@@ -10,7 +10,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="this.valueFromCheck===false"
+          :disabled="this.valueFromCheck === false"
           :value="valueFrom"
           @updateFilter="selectFiltersRelatedToDates(fromLabelToSort, $event)"
         ></TimePicker>
@@ -24,7 +24,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="this.valueToCheck===false"
+          :disabled="this.valueToCheck === false"
           :value="valueTo"
           @updateFilter="selectFiltersRelatedToDates(toLabelToSort, $event)"
         ></TimePicker>
@@ -47,7 +47,7 @@
       </b-col>
       <b-col cols="3">
         <Dropbox
-          :disabled="this.valueStateCheck===false"
+          :disabled="this.valueStateCheck === false"
           :options="optionsState"
           :valueSelected="valueState"
           @input="selectFilterStateOrSort(stateLabelToSort, $event)"
@@ -62,7 +62,7 @@
       </b-col>
       <b-col cols="3">
         <Dropbox
-          :disabled="this.valueSortCheck===false"
+          :disabled="this.valueSortCheck === false"
           :options="optionsSort"
           :valueSelected="valueSort"
           @input="selectFilterStateOrSort(sortLabelToSort, $event)"
@@ -81,7 +81,7 @@
       </b-col>
       <b-col cols="4">
         <TimePicker
-          :disabled="this.valueModifiedCheck===false"
+          :disabled="this.valueModifiedCheck === false"
           :value="valueModified"
           @updateFilter="
             selectFiltersRelatedToDates(modifiedSinceLabelToSort, $event)
@@ -97,7 +97,7 @@
       </b-col>
       <b-col cols="3">
         <b-form-input
-          :disabled="this.valueLimitCheck===false"
+          :disabled="this.valueLimitCheck === false"
           @input="selectFilterLimit"
           placeholder="Enter the limit"
           class="default-font"
@@ -116,7 +116,7 @@
       </b-col>
       <b-col cols="2">
         <b-button
-          :disabled="this.valueTypeCheck===false"
+          :disabled="this.valueTypeCheck === false"
           @click="$bvModal.show('modal-scoped')"
           id="submitBtn"
           class="default-font"
@@ -323,8 +323,8 @@ export default {
 </script>
 
 <style>
-  .input-group > .input-group-append > .btn-group > .btn {
-    font-size: 0.75rem;
-    border-radius: 0;
-  }
+.input-group > .input-group-append > .btn-group > .btn {
+  font-size: 0.75rem;
+  border-radius: 0;
+}
 </style>

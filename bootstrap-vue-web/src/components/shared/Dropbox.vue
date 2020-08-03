@@ -3,7 +3,7 @@
     :disabled="disabled"
     :options="options"
     :value="valueSelected"
-    @input="fireParentEvent"
+    @input="$emit('input', $event)"
     class="mb-3 dropbox-filter"
   ></b-form-select>
 </template>
@@ -20,11 +20,6 @@ export default {
     },
     disabled: {
       required: true,
-    },
-  },
-  methods: {
-    fireParentEvent: function(val) {
-      this.$emit("input", val);
     },
   },
 };

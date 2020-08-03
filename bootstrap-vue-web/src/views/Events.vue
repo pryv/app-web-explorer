@@ -83,7 +83,7 @@ export default {
       this.displayEvents();
       this.filterEvents(this.fetchData);
     },
-    filters() {
+    selectedFilters() {
       this.displayEvents();
       this.filterEvents(this.fetchData);
     },
@@ -106,13 +106,15 @@ export default {
       }
     },
     filterEvents(selectedEvents) {
-      Object.keys(this.filters).sort().forEach(e => {
+      if(!this.selectedFilters)
+        return;
+      Object.keys(this.selectedFilters).sort().forEach(e => {
         switch (e) {
           case filterTagsSort.FROM: {
             const copyFrom = selectedEvents.filter(
               function(x) {
                 //Events time should be higher than to time
-                return x.time > this.filters[e];
+                return x.time > this.selectedFilters[e];
               }.bind(this)
             );
             selectedEvents = [...copyFrom];
@@ -122,7 +124,7 @@ export default {
             const copyTo = selectedEvents.filter(
               function(x) {
                 //Events time should be less than to time
-                return x.time < this.filters[e];
+                return x.time < this.selectedFilters[e];
               }.bind(this)
             );
             selectedEvents = [...copyTo];
@@ -132,7 +134,7 @@ export default {
             const copyTypes = selectedEvents.filter(
               function(x) {
                 //duration null is equal to running events
-                return this.filters[e].includes(x.type);
+                return this.selectedFilters[e].includes(x.type);
               }.bind(this)
             );
             selectedEvents = [...copyTypes];
@@ -153,10 +155,10 @@ export default {
               function(x) {
                 //events in trashed state only returns the trashed attribute
                 return (
-                  (states.TRASHED in x && states.TRASHED === this.filters[e]) ||
+                  (states.TRASHED in x && states.TRASHED === this.selectedFilters[e]) ||
                   (!(states.DEFAULT in x) &&
-                    states.DEFAULT === this.filters[e]) ||
-                  states.ALL === this.filters[e]
+                    states.DEFAULT === this.selectedFilters[e]) ||
+                  states.ALL === this.selectedFilters[e]
                 );
               }.bind(this)
             );
@@ -166,20 +168,20 @@ export default {
           case filterTagsSort.MODIFIED_SINCE: {
             const copyModified = selectedEvents.filter(
               function(x) {
-                return x.time > this.filters[e];
+                return x.time > this.selectedFilters[e];
               }.bind(this)
             );
             selectedEvents = [...copyModified];
             break;
           }
           case filterTagsSort.LIMIT: {
-            const limit = parseInt(this.filters[e]);
+            const limit = parseInt(this.selectedFilters[e]);
             selectedEvents = selectedEvents.slice(0, limit);
             break;
           }
           case filterTagsSort.SORT:
             //sort ascending and descending using time attribute
-            if (this.filters[e] === true)
+            if (this.selectedFilters[e] === true)
               selectedEvents.sort((a, b) =>
                 a.time > b.time ? 1 : b.time > a.time ? -1 : 0
               );

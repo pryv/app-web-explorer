@@ -69,7 +69,7 @@ export default {
           "endpoint" : this.endpoint,
           "streams":value
         };
-        this.$emit("selectedStreamsObjectArrayUpdate", payload);
+        this.$emit("selectedStreamsMapUpdate", payload);
       },
     },
   },

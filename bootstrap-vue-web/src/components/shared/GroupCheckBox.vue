@@ -6,9 +6,9 @@
         :key="endpoint"
         :streamObjectArray="streamObjectArray"
         :endpoint="endpoint"
-        :selectedStreamsObjectArray="selectedStreamsObjectArray[endpoint]"
+        :selectedStreamsObjectArray="selectedStreamsMap[endpoint]"
         @checkBoxClicked="checkBoxClicked"
-        @selectedStreamsObjectArrayUpdate="setSelectedStreamsObjectArray"
+        @selectedStreamsMapUpdate="setSelectedStreamsMapUpdate"
       ></StreamCheckBox>
     </b-form-group>
   </div>
@@ -22,13 +22,13 @@ export default {
   components: { StreamCheckBox },
   data() {
     return {
-      accessInfoObjectArray: {},
+      accessInfoMap: {},
     };
   },
   computed: {
     ...mapState(["streams_map"]),
     ...mapState(["access_info_map"]),
-    selectedStreamsObjectArray: {
+    selectedStreamsMap: {
       get() {
         return this.$store.state.selectedStreams;
       },
@@ -37,7 +37,7 @@ export default {
       },
     },
     computedAccessInfoObjectArray() {
-      return this.accessInfoObjectArray;
+      return this.accessInfoMap;
     },
   },
   watch: {
@@ -52,7 +52,7 @@ export default {
     checkBoxClicked(e) {
       const clonedSelectedStreamsObjectArray = Object.assign(
         {},
-        this.selectedStreamsObjectArray
+        this.selectedStreamsMap
       );
       if (e.eventClickedOrUnClicked) {
         if (e.endpointClicked === e.clickedEndpointAndStreamId) {
@@ -77,13 +77,13 @@ export default {
         } else {
           clonedSelectedStreamsObjectArray[
             e.endpointClicked
-          ] = this.selectedStreamsObjectArray[e.endpointClicked].filter(
+          ] = this.selectedStreamsMap[e.endpointClicked].filter(
             endpointAndStreamId =>
-              endpointAndStreamId != e.clickedEndpointAndStreamId
+              endpointAndStreamId !== e.clickedEndpointAndStreamId
           );
         }
       }
-      this.selectedStreamsObjectArray = clonedSelectedStreamsObjectArray
+      this.selectedStreamsMap = clonedSelectedStreamsObjectArray;
     },
     displayStreams() {
       const customUserObjectArray = {};
@@ -102,10 +102,10 @@ export default {
           }
         }
       }
-      this.accessInfoObjectArray = customUserObjectArray;
+      this.accessInfoMap = customUserObjectArray;
     },
-    setSelectedStreamsObjectArray(payload) {
-      this.selectedStreamsObjectArray[payload.endpoint] = payload.streams;
+    setSelectedStreamsMapUpdate(payload) {
+      this.selectedStreamsMap[payload.endpoint] = payload.streams;
     },
   },
 };

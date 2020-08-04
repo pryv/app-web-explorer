@@ -115,8 +115,7 @@ export default {
         this.$router.push("events");
       }
     },
-    deleteConnectionData()
-    {
+    deleteConnectionData() {
       const clonedConnectionsMap = Object.assign({}, this.connectionsMap);
       delete clonedConnectionsMap[this.accessInfo];
       this.connectionsMap = clonedConnectionsMap;
@@ -133,7 +132,9 @@ export default {
       delete clonedEventsMap[this.accessInfo];
       this.eventsMap = clonedEventsMap;
 
-      Object.keys(this.connectionsMap).length === 0 ? this.$router.push("login") : this.$router.push("events");
+      Object.keys(this.connectionsMap).length === 0
+        ? this.$router.push("login")
+        : this.$router.push("events");
     },
     //todo restructure the logout funcitionality
     logout() {

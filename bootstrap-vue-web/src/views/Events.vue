@@ -81,7 +81,7 @@ export default {
   computed: {
     ...mapState(["selectedStreams"]),
     ...mapState(["selectedFilters"]),
-    ...mapState(["events_map"]),
+    ...mapState(["eventsMap"]),
     displayJSON() {
       return this.fetchData.length > 0
         ? this.fetchData
@@ -106,6 +106,9 @@ export default {
     selectedFilters() {
       this.selectStreamsOrFilters();
     },
+    eventsMap() {
+      this.selectStreamsOrFilters();
+    },
   },
   methods: {
     selectStreamsOrFilters()
@@ -122,7 +125,7 @@ export default {
       let selectedEvents = [];
       for (const [key, value] of Object.entries(this.selectedStreams)) {
         for (let i = 0; i < value.length; i++) {
-          selectedEvents = this.events_map[key].filter(
+          selectedEvents = this.eventsMap[key].filter(
             event => event.streamId == value[i]
           );
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);

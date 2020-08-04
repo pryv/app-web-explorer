@@ -21,7 +21,10 @@
           <b-tab title="Token Based Login" active>
             <b-card-text>
               <b-card class="card-style shadow min-height-card">
-                <PryvLabel :href="href_web" :parentData="ButtonLogin"></PryvLabel>
+                <PryvLabel
+                  :href="href_web"
+                  :parentData="ButtonLogin"
+                ></PryvLabel>
                 <WebButton @authenticated="updateSessionStorage"></WebButton>
                 <br />
                 <div class="text-left">
@@ -47,7 +50,10 @@
           <b-tab title="Username, Password Login">
             <b-card-text>
               <b-card class="card-style shadow">
-                <PryvLabel :href="href_manual" :parentData="PasswordLogin"></PryvLabel>
+                <PryvLabel
+                  :href="href_manual"
+                  :parentData="PasswordLogin"
+                ></PryvLabel>
                 <UsernameLogin
                   @authenticated="updateSessionStorage"
                 ></UsernameLogin>
@@ -107,44 +113,36 @@ export default {
     PryvBtn,
   },
   computed: {
-    connections_map: {
+    connectionsMap: {
       get() {
-        return this.$store.state.connections_map;
+        return this.$store.state.connectionsMap;
       },
-      set([key, value]) {
-        if (!this.connections_map[key]) {
-          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_CONNECTIONS_MAP", value);
       },
     },
-    streams_map: {
+    streamsMap: {
       get() {
-        return this.$store.state.streams_map;
+        return this.$store.state.streamsMap;
       },
-      set([key, value]) {
-        if (!this.streams_map[key]) {
-          this.$store.commit("ADD_STREAMS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_STREAMS_MAP", value);
       },
     },
-    access_info_map: {
+    accessInfoMap: {
       get() {
-        return this.$store.state.access_info_map;
+        return this.$store.state.accessInfoMap;
       },
-      set([key, value]) {
-        if (!this.access_info_map[key]) {
-          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_ACCESS_INFO_MAP", value);
       },
     },
-    events_map: {
+    eventsMap: {
       get() {
-        return this.$store.state.events_map;
+        return this.$store.state.eventsMap;
       },
-      set([key, value]) {
-        if (!this.events_map[key]) {
-          this.$store.commit("ADD_EVENTS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_EVENTS_MAP", value);
       },
     },
     types: {
@@ -156,8 +154,8 @@ export default {
       },
     },
     showBtn: function() {
-      return this.connections_map
-        ? Object.keys(this.connections_map).length > 0
+      return this.connectionsMap
+        ? Object.keys(this.connectionsMap).length > 0
         : false;
     },
   },
@@ -193,16 +191,22 @@ export default {
       return true;
     },
     addConnectionToStore(connection) {
-      this.connections_map = [connection.apiEndpoint, connection];
+      const clonedConnectionsMap = Object.assign({}, this.connectionsMap);
+      clonedConnectionsMap[connection.apiEndpoint] = connection;
+      this.connectionsMap = clonedConnectionsMap;
+      console.log(this.connectionsMap);
       return true;
     },
     async addStreamsToStore(connection) {
       try {
         const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
-        if (result)
-          this.streams_map = [connection.apiEndpoint, result[0].streams];
+        if (result) {
+          const clonedStreamsMap = Object.assign({}, this.streamsMap);
+          clonedStreamsMap[connection.apiEndpoint] = result[0].streams;
+          this.streamsMap = clonedStreamsMap;
+        }
       } catch (e) {
-        console.log("Error occurred when retrieving streams "+e);
+        console.log("Error occurred when retrieving streams " + e);
         return false;
       }
       return true;
@@ -211,10 +215,12 @@ export default {
       try {
         const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
         if (result) {
-          this.access_info_map = [connection.apiEndpoint, result[0]];
+          const clonedAccessInfoMap = Object.assign({}, this.accessInfoMap);
+          clonedAccessInfoMap[connection.apiEndpoint] = result[0];
+          this.accessInfoMap = clonedAccessInfoMap;
         }
       } catch (e) {
-        console.log("Error occurred when retrieving access info "+e);
+        console.log("Error occurred when retrieving access info " + e);
         return false;
       }
       return true;
@@ -227,10 +233,12 @@ export default {
           queryParams,
           this.forEachEvent
         );
-        console.log(result)
-        this.events_map = [connection.apiEndpoint, this.events];
+        console.log(result);
+        const clonedEventsMap = Object.assign({}, this.eventsMap);
+        clonedEventsMap[connection.apiEndpoint] = this.events;
+        this.eventsMap = clonedEventsMap;
       } catch (e) {
-        console.log("Error occurred when retrieving events "+e);
+        console.log("Error occurred when retrieving events " + e);
         return false;
       }
       return true;
@@ -254,7 +262,9 @@ export default {
     },
     updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        this.updateStore(connection) ? this.$router.push("events") : console.log("Some error occured when loading");
+        this.updateStore(connection)
+          ? this.$router.push("events")
+          : console.log("Some error occured when loading");
       }
     },
     currentRouteName() {

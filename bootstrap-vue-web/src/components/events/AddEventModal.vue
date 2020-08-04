@@ -39,6 +39,7 @@
 
 <script>
 import { mapState } from "vuex";
+import CREATE_EVENT_API from "../../utilities/api";
 export default {
   name: "AddEventModal",
   data() {
@@ -52,13 +53,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(["connections_map"]),
-    ...mapState(["access_info_map"]),
-    ...mapState(["streams_map"]),
+    ...mapState(["connectionsMap"]),
+    ...mapState(["accessInfoMap"]),
+    ...mapState(["streamsMap"]),
     connectionNames() {
-      let result = Object.keys(this.access_info_map).map(key => {
+      let result = Object.keys(this.accessInfoMap).map(key => {
         const payload = {
-          "value" : this.access_info_map[key].name,
+          "value" : this.accessInfoMap[key].name,
           "text" : key
         };
         return payload;
@@ -70,10 +71,10 @@ export default {
         this.selectedConnection !== null &&
         this.selectedEndpoint !== null
       ) {
-        const filteredObj = Object.keys(this.streams_map).filter(key => key === this.selectedEndpoint);
-        const array = this.streams_map[filteredObj].map(obj => {
+        const filteredObj = Object.keys(this.streamsMap).filter(key => key === this.selectedEndpoint);
+        const array = this.streamsMap[filteredObj].map(obj => {
           const payload = {
-            "value":obj.name,
+            "value":obj.id,
             "text" : filteredObj
           };
           return payload;
@@ -84,25 +85,45 @@ export default {
     },
   },
   methods: {
-    addEvent(ok) {
-      console.log("connecitons map");
-      console.log(this.access_info_map);
-      console.log("streams_map");
-      console.log(this.streams_map);
+    async addEvent(ok) {
       if(this.selectedEndpoint === null)
         return;
-      const connection = this.connections_map[this.selectedEndpoint];
-      console.log("connection obj");
-      console.log(connection);
+      const connection = this.connectionsMap[this.selectedEndpoint];
+      try {
+        const apiObj =  CREATE_EVENT_API.CREATE_EVENT_API;
+        apiObj[0].params = {"streamId": this.selectedStream, "type": this.type, "content": this.content}
+        const result = await connection.api(apiObj);
+        if (result && result[0] && result[0].error)
+        {
+          alert(result[0].error.id + " - "+ result[0].error.message)
+          this.clearForm();
+          return
+        }
+      } catch (e) {
+        console.log("Error occurred when creating events" + e);
+        return;
+      }
       ok();
+    },
+    clearForm()
+    {
+      this.selectedEndpoint = null;
+      this.selectedConnection = null;
+      this.selectedStream = null;
     },
     setEndpoint(value)
     {
-      this.selectedConnection = value;
-      const endpointObj = this.connectionNames.find(
-              x => x.value === this.selectedConnection
-      );
-      this.selectedEndpoint = endpointObj.text;
+      this.selectedConnection = value
+      if(value)
+      {
+        const endpointObj = this.connectionNames.find(
+                x => x.value === this.selectedConnection
+        );
+        this.selectedEndpoint = endpointObj.text;
+      }
+      else
+        this.selectedEndpoint = value;
+
     }
   },
 };

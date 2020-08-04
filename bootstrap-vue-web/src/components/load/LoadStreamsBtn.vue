@@ -5,8 +5,7 @@
 <script>
 import PryvBtn from "../shared/PryvBtn";
 import GET_STREAMS_API from "../../utilities/api";
-import ACCESS_INFO_API from "../../utilities/api";
-
+import { mapState } from "vuex";
 export default {
   name: "LoadStreamsBtn",
   components: { PryvBtn },
@@ -18,44 +17,21 @@ export default {
     };
   },
   computed: {
-    connections_map: {
+    ...mapState(["connectionsMap"]),
+    streamsMap: {
       get() {
-        return this.$store.state.connections_map;
+        return this.$store.state.streamsMap;
       },
-      set([key, value]) {
-        if (!this.connections_map[key]) {
-          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_STREAMS_MAP", value);
       },
     },
-    streams_map: {
+    eventsMap: {
       get() {
-        return this.$store.state.streams_map;
+        return this.$store.state.eventsMap;
       },
-      set([key, value]) {
-        if (!this.streams_map[key]) {
-          this.$store.commit("ADD_STREAMS_MAP", [key, value]);
-        }
-      },
-    },
-    access_info_map: {
-      get() {
-        return this.$store.state.access_info_map;
-      },
-      set([key, value]) {
-        if (!this.access_info_map[key]) {
-          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
-        }
-      },
-    },
-    events_map: {
-      get() {
-        return this.$store.state.events_map;
-      },
-      set([key, value]) {
-        if (!this.events_map[key]) {
-          this.$store.commit("ADD_EVENTS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_EVENTS_MAP", value);
       },
     },
     types: {
@@ -71,8 +47,8 @@ export default {
     loadStreams() {
       let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
-      existing.forEach((obj) =>{
-        const connection = this.connections_map[obj.key];
+      existing.forEach(obj => {
+        const connection = this.connectionsMap[obj.key];
         if (connection) this.updateStore(connection);
       });
     },
@@ -82,24 +58,13 @@ export default {
     async addStreamsToStore(connection) {
       try {
         const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
-        if (result)
-          this.streams_map = [connection.apiEndpoint, result[0].streams];
+        if (result) {
+          const clonedStreams = Object.assign({}, this.streamsMap);
+          clonedStreams[connection.apiEndpoint] = result[0].streams;
+          this.streamsMap = clonedStreams;
+        }
       } catch (e) {
         console.log("Error occurred when retrieving streams" + e);
-        return false;
-      }
-      return true;
-    },
-    async addAccessInfoToStore(connection) {
-      try {
-        const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
-        if (result)
-          this.access_info_map = [
-            connection.token + connection.endpoint,
-            result[0],
-          ];
-      } catch (e) {
-        console.log("Error occurred when retrieving access info" + e);
         return false;
       }
       return true;
@@ -112,7 +77,9 @@ export default {
           queryParams,
           this.forEachEvent
         );
-        this.events_map = [connection.token + connection.endpoint, this.events];
+        const clonedEvents = Object.assign({}, this.eventsMap);
+        clonedEvents[connection.apiEndpoint] = this.events;
+        this.eventsMap = clonedEvents;
         console.log(result);
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);
@@ -131,7 +98,7 @@ export default {
         this.addAccessInfoToStore(connection) &&
         this.addEventsToStore(connection)
       )
-        if(this.currentRouteName() !== "Events") this.$router.push("events");
+        if (this.currentRouteName() !== "Events") this.$router.push("events");
     },
   },
 };

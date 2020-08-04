@@ -16,15 +16,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(["connections_map"]),
-    events_map: {
+    ...mapState(["connectionsMap"]),
+    eventsMap: {
       get() {
-        return this.$store.state.events_map;
+        return this.$store.state.eventsMap;
       },
-      set([key, value]) {
-        if (!this.events_map[key]) {
-          this.$store.commit("ADD_EVENTS_MAP", [key, value]);
-        }
+      set(value) {
+        this.$store.commit("UPDATE_EVENTS_MAP", value);
       },
     },
     types: {
@@ -41,10 +39,10 @@ export default {
       let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
       existing.forEach(obj => {
-        const connection = this.connections_map[obj.key];
+        const connection = this.connectionsMap[obj.key];
         if (connection) this.addEventsToStore(connection);
       });
-      if(this.currentRouteName() !== "Events") this.$router.push("events");
+      if (this.currentRouteName() !== "Events") this.$router.push("events");
     },
     currentRouteName() {
       return this.$route.name;
@@ -57,8 +55,9 @@ export default {
           queryParams,
           this.addEachEvent
         );
-        this.events_map = [connection.token + connection.endpoint, this.events];
-        console.log("Events successfully loaded");
+        const clonedEvents = Object.assign({}, this.eventsMap);
+        clonedEvents[connection.apiEndpoint] = this.events;
+        this.eventsMap = clonedEvents;
         console.log(result);
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);

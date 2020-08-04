@@ -10,10 +10,10 @@ const store = new Vuex.Store({
     serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
     accessInfo: "",
     selectedStreams: {},
-    connections_map: {},
-    streams_map: {},
-    access_info_map: {},
-    events_map: {},
+    connectionsMap: {},
+    streamsMap: {},
+    accessInfoMap: {},
+    eventsMap: {},
     selectedFilters: {},
     types: new Set(),
   },
@@ -36,29 +36,29 @@ const store = new Vuex.Store({
     SET_TYPES: (state, loadTypes) => {
       state.types = loadTypes;
     },
-    ADD_CONNECTIONS_MAP: (state, [key, value]) => {
-      Vue.set(state.connections_map, key, value);
+    DELETE_CONNECTIONS_MAP: (state, connectionsMap) => {
+      state.connectionsMap = connectionsMap;
     },
-    DELETE_CONNECTIONS_MAP: (state, connections_map) => {
-      state.connections_map = connections_map;
+    UPDATE_CONNECTIONS_MAP: (state, connectionsMap) => {
+      state.connectionsMap = connectionsMap;
     },
-    ADD_STREAMS_MAP: (state, [key, value]) => {
-      Vue.set(state.streams_map, key, value);
+    UPDATE_STREAMS_MAP: (state, streamsMap) => {
+      state.streamsMap = streamsMap;
     },
-    DELETE_STREAMS_MAP: (state, streams_map) => {
-      state.streams_map = streams_map;
+    DELETE_STREAMS_MAP: (state, streamsMap) => {
+      state.streamsMap = streamsMap;
     },
-    ADD_ACCESS_INFO_MAP: (state, [key, value]) => {
-      Vue.set(state.access_info_map, key, value);
+    UPDATE_ACCESS_INFO_MAP: (state, accessInfoMap) => {
+      state.accessInfoMap = accessInfoMap;
     },
-    DELETE_ACCESS_INFO_MAP: (state, access_info_map) => {
-      state.access_info_map = access_info_map;
+    DELETE_ACCESS_INFO_MAP: (state, accessInfoMap) => {
+      state.accessInfoMap = accessInfoMap;
     },
-    ADD_EVENTS_MAP: (state, [key, value]) => {
-      Vue.set(state.events_map, key, value);
+    UPDATE_EVENTS_MAP: (state, eventsMap) => {
+      state.eventsMap = eventsMap;
     },
-    DELETE_EVENTS_MAP: (state, events_map) => {
-      state.events_map = events_map;
+    DELETE_EVENTS_MAP: (state, eventsMap) => {
+      state.eventsMap = eventsMap;
     },
   },
   getters: {
@@ -81,16 +81,16 @@ const store = new Vuex.Store({
       return this.state.types;
     },
     getConnectionsMap() {
-      return this.state.connections_map;
+      return this.state.connectionsMap;
     },
     getStreamsMap() {
-      return this.state.streams_map;
+      return this.state.streamsMap;
     },
     getAccessInfoMap() {
-      return this.state.access_info_map;
+      return this.state.accessInfoMap;
     },
     getEventsMap() {
-      return this.state.events_map;
+      return this.state.eventsMap;
     },
   },
 });

@@ -47,33 +47,33 @@ export default {
   name: "Info",
   computed: {
     ...mapState(["accessInfo"]),
-    connections_map: {
+    connectionsMap: {
       get() {
-        return this.$store.state.connections_map;
+        return this.$store.state.connectionsMap;
       },
       set(value) {
         this.$store.commit("DELETE_CONNECTIONS_MAP", value);
       },
     },
-    streams_map: {
+    streamsMap: {
       get() {
-        return this.$store.state.streams_map;
+        return this.$store.state.streamsMap;
       },
       set(value) {
         this.$store.commit("DELETE_STREAMS_MAP", value);
       },
     },
-    access_info_map: {
+    accessInfoMap: {
       get() {
-        return this.$store.state.access_info_map;
+        return this.$store.state.accessInfoMap;
       },
       set(value) {
         this.$store.commit("DELETE_ACCESS_INFO_MAP", value);
       },
     },
-    events_map: {
+    eventsMap: {
       get() {
-        return this.$store.state.events_map;
+        return this.$store.state.eventsMap;
       },
       set(value) {
         this.$store.commit("DELETE_EVENTS_MAP", value);
@@ -81,10 +81,10 @@ export default {
     },
     infoJSON: {
       get: function() {
-        return Object.keys(this.access_info_map)
+        return Object.keys(this.accessInfoMap)
           .filter(key => key === this.accessInfo)
           .reduce((obj, key) => {
-            obj[key] = this.access_info_map[key];
+            obj[key] = this.accessInfoMap[key];
             return obj;
           }, {});
       },
@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     displayAccessData() {
-      for (const [key, value] of Object.entries(this.access_info_map)) {
+      for (const [key, value] of Object.entries(this.accessInfoMap)) {
         if (key.includes(this.accessInfo)) this.infoJSON = value;
       }
     },
@@ -117,23 +117,23 @@ export default {
     },
     deleteConnectionData()
     {
-      const connections_map_cloned = Object.assign({}, this.connections_map);
-      delete connections_map_cloned[this.accessInfo];
-      this.connections_map = connections_map_cloned;
+      const clonedConnectionsMap = Object.assign({}, this.connectionsMap);
+      delete clonedConnectionsMap[this.accessInfo];
+      this.connectionsMap = clonedConnectionsMap;
 
-      const access_info_map_cloned = Object.assign({}, this.access_info_map);
-      delete access_info_map_cloned[this.accessInfo];
-      this.access_info_map = access_info_map_cloned;
+      const clonedAccessInfoMap = Object.assign({}, this.accessInfoMap);
+      delete clonedAccessInfoMap[this.accessInfo];
+      this.accessInfoMap = clonedAccessInfoMap;
 
-      const streams_map_cloned = Object.assign({}, this.streams_map);
-      delete streams_map_cloned[this.accessInfo];
-      this.streams_map = streams_map_cloned;
+      const clonedStreamsMap = Object.assign({}, this.streamsMap);
+      delete clonedStreamsMap[this.accessInfo];
+      this.streamsMap = clonedStreamsMap;
 
-      const events_map_cloned = Object.assign({}, this.events_map);
-      delete events_map_cloned[this.accessInfo];
-      this.events_map = events_map_cloned;
+      const clonedEventsMap = Object.assign({}, this.eventsMap);
+      delete clonedEventsMap[this.accessInfo];
+      this.eventsMap = clonedEventsMap;
 
-      Object.keys(this.connections_map).length === 0 ? this.$router.push("login") : this.$router.push("events");
+      Object.keys(this.connectionsMap).length === 0 ? this.$router.push("login") : this.$router.push("events");
     },
     //todo restructure the logout funcitionality
     logout() {

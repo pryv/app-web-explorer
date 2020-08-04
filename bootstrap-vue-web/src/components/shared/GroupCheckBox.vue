@@ -22,12 +22,12 @@ export default {
   components: { StreamCheckBox },
   data() {
     return {
-      accessInfoMap: {},
+      accessInfo: {},
     };
   },
   computed: {
-    ...mapState(["streams_map"]),
-    ...mapState(["access_info_map"]),
+    ...mapState(["streamsMap"]),
+    ...mapState(["accessInfoMap"]),
     selectedStreamsMap: {
       get() {
         return this.$store.state.selectedStreams;
@@ -37,14 +37,14 @@ export default {
       },
     },
     computedAccessInfoObjectArray() {
-      return this.accessInfoMap;
+      return this.accessInfo;
     },
   },
   watch: {
-    streams_map() {
+    streamsMap() {
       this.displayStreams();
     },
-    access_info_map() {
+    accessInfoMap() {
       this.displayStreams();
     },
   },
@@ -87,9 +87,9 @@ export default {
     },
     displayStreams() {
       const customUserObjectArray = {};
-      for (const [key, accessInfo] of Object.entries(this.access_info_map)) {
+      for (const [key, accessInfo] of Object.entries(this.accessInfoMap)) {
         customUserObjectArray[key] = [];
-        const streams = this.streams_map[key];
+        const streams = this.streamsMap[key];
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
             const payload = {
@@ -102,7 +102,7 @@ export default {
           }
         }
       }
-      this.accessInfoMap = customUserObjectArray;
+      this.accessInfo = customUserObjectArray;
     },
     setSelectedStreamsMapUpdate(payload) {
       this.selectedStreamsMap[payload.endpoint] = payload.streams;

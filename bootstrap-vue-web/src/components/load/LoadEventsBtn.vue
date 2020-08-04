@@ -4,16 +4,19 @@
 
 <script>
 import PryvBtn from "../shared/PryvBtn";
-
+import { mapState } from "vuex";
 export default {
   name: "LoadEventsBtn",
   components: { PryvBtn },
   data() {
     return {
       btnContent: "Load Events",
+      events: [],
+      typesSet: new Set(),
     };
   },
   computed: {
+    ...mapState(["connections_map"]),
     events_map: {
       get() {
         return this.$store.state.events_map;
@@ -34,24 +37,17 @@ export default {
     },
   },
   methods: {
-    apiLogin(endPoint) {
-      let connection = null;
-      try {
-        connection = new this.$pryv.Connection(endPoint);
-      } catch (e) {
-        console.log("connection retrieved successfully" + e);
-        return;
-      }
-      return connection;
-    },
     loadEvents() {
       let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
-      existing.forEach(function(obj) {
-        const connection = this.apiLogin(obj.key);
+      existing.forEach(obj => {
+        const connection = this.connections_map[obj.key];
         if (connection) this.addEventsToStore(connection);
       });
-      this.$router.push("events");
+      if(this.currentRouteName() !== "Events") this.$router.push("events");
+    },
+    currentRouteName() {
+      return this.$route.name;
     },
     async addEventsToStore(connection) {
       this.events = [];
@@ -62,6 +58,7 @@ export default {
           this.addEachEvent
         );
         this.events_map = [connection.token + connection.endpoint, this.events];
+        console.log("Events successfully loaded");
         console.log(result);
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);

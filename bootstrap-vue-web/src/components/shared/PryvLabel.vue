@@ -1,7 +1,7 @@
 <template functional>
   <b-row>
     <b-col cols="1" class="p-0">
-      <a target="_blank" :href="props.href">
+      <a target="_blank" :href="props.href" v-if="props.href">
         <b-img src="../../assets/link.png" width="10px"></b-img>
       </a>
     </b-col>

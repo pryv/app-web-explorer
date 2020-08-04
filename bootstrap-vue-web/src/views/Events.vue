@@ -2,30 +2,47 @@
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
     <div class="bg-white py-2 w-80">
       <div class="card-style events-card">
-        <h4>Events Panel</h4>
+        <b-row>
+          <b-col cols="6">
+            <h4>Events Panel</h4>
+          </b-col>
+          <b-col cols="3">
+            <LoadStreamsBtn class="float-right"/>
+          </b-col>
+          <b-col cols="3">
+            <LoadEventsBtn/>
+          </b-col>
+        </b-row>
       </div>
       <FilterPanel></FilterPanel>
       <br />
       <div>
         <b-card no-body>
-          <PryvAlert
-            v-if="fetchData.length == 0"
-            :show="show"
-            :message="message"
-          ></PryvAlert>
+          <AddEventBtn></AddEventBtn>
           <b-tabs card>
-            <b-tab title="JSON VIEW" active>
-              <b-card-text style="text-align: left">
-                <vue-json-pretty :path="'res'" :data="this.displayJSON" />
-              </b-card-text>
-            </b-tab>
-            <b-tab title="TABLE VIEW">
+            <b-tab title="TABLE VIEW" active>
               <b-card-text>
                 <div>
                   <b-table responsive striped hover :items="fetchData" />
+                  <PryvAlert
+                          v-if="fetchData.length == 0"
+                          :show="show"
+                          :message="message"
+                  ></PryvAlert>
                 </div>
               </b-card-text>
             </b-tab>
+            <b-tab title="JSON VIEW">
+              <b-card-text class="text-left">
+                <vue-json-pretty :data="this.displayJSON" />
+                <PryvAlert
+                        v-if="fetchData.length == 0"
+                        :show="show"
+                        :message="message"
+                ></PryvAlert>
+              </b-card-text>
+            </b-tab>
+
           </b-tabs>
         </b-card>
       </div>
@@ -39,10 +56,16 @@ import VueJsonPretty from "vue-json-pretty";
 import PryvAlert from "../components/shared/PryvAlert";
 import FilterPanel from "../components/filters/FilterPanel";
 import { filterTagsSort, states } from "../utilities/constants";
+import LoadEventsBtn from "../components/load/LoadEventsBtn";
+import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
+import AddEventBtn from "../components/events/AddEventBtn";
 
 export default {
   name: "Events",
   components: {
+    AddEventBtn,
+    LoadStreamsBtn,
+    LoadEventsBtn,
     FilterPanel,
     PryvAlert,
     VueJsonPretty,
@@ -62,7 +85,7 @@ export default {
     displayJSON() {
       return this.fetchData.length > 0
         ? this.fetchData
-        : "No events to display";
+        : ' ';
     },
     types: {
       get() {

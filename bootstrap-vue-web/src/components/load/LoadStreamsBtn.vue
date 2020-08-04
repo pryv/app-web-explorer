@@ -12,7 +12,9 @@ export default {
   components: { PryvBtn },
   data() {
     return {
-      btnContent: "Load Streams",
+      btnContent: "Load All",
+      events: [],
+      typesSet: new Set(),
     };
   },
   computed: {
@@ -66,22 +68,16 @@ export default {
     },
   },
   methods: {
-    apiLogin(endPoint) {
-      let connection = null;
-      try {
-        connection = new this.$pryv.Connection(endPoint);
-      } catch (e) {
-        console.log("connection retrieved successfully");
-      }
-      return connection;
-    },
     loadStreams() {
       let existing = this.$sessionStorage.endpoint_arr;
       existing = existing ? JSON.parse(existing) : [];
-      existing.forEach(function(obj) {
-        const connection = this.apiLogin(obj.key);
+      existing.forEach((obj) =>{
+        const connection = this.connections_map[obj.key];
         if (connection) this.updateStore(connection);
       });
+    },
+    currentRouteName() {
+      return this.$route.name;
     },
     async addStreamsToStore(connection) {
       try {
@@ -135,7 +131,7 @@ export default {
         this.addAccessInfoToStore(connection) &&
         this.addEventsToStore(connection)
       )
-        this.$router.push("events");
+        if(this.currentRouteName() !== "Events") this.$router.push("events");
     },
   },
 };

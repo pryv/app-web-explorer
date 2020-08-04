@@ -123,7 +123,7 @@
           >Modify Types
         </b-button>
       </b-col>
-      <Modal
+      <TypesFilterModal
         :label="typesMessage"
         :options="optionsTypes"
         :title="modalTitle"
@@ -131,7 +131,7 @@
         @clickCancel="cancelTypeFilters"
         @clickOk="setTypeFilters"
         @listChange="setSelected"
-      ></Modal>
+      ></TypesFilterModal>
     </b-row>
   </b-card>
 </template>
@@ -141,12 +141,12 @@ import { mapState } from "vuex";
 import Checkbox from "../shared/Checkbox";
 import Dropbox from "../shared/Dropbox";
 import TimePicker from "../shared/TimePicker";
-import Modal from "../shared/Modal";
+import TypesFilterModal from "./TypesFilterModal";
 import { filterTags, filterTagsSort, states } from "../../utilities/constants";
 
 export default {
   name: "FilterPanel",
-  components: { Modal, TimePicker, Checkbox, Dropbox },
+  components: { TypesFilterModal, TimePicker, Checkbox, Dropbox },
   computed: {
     ...mapState(["types"]),
     updatedFilters: {

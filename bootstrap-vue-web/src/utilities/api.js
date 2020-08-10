@@ -23,9 +23,26 @@ const createEventApi = [
     params: {},
   },
 ];
+
+const updateStreamApi = [
+  {
+    method: "streams.update",
+    params: {},
+  },
+];
+
+const deleteStreamApi = [
+  {
+    method: "streams.delete",
+    params: {},
+  },
+];
+
 export default {
   ACCESS_INFO_API: accessInfoApi,
   ACCESS_EVENTS_API: getEventsApi,
   GET_STREAMS_API: getStreamsApi,
   CREATE_EVENT_API: createEventApi,
+  UPDATE_STREAM_API: updateStreamApi,
+  DELETE_STREAM_API: deleteStreamApi,
 };

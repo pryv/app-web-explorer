@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
     viewAccessInfo: "", //set endpoint when clicked on info button of a connection
     viewStreamInfo: {}, // set obj with endpoint and stream id when clicked on edit stream icon
+    viewStreamInfoObj: {},
     selectedStreams: {},
     connectionsMap: {},
     streamsMap: {},
@@ -32,6 +33,9 @@ const store = new Vuex.Store({
     //{"endpoint": endpoint, "id": id}
     SET_STREAM_INFO: (state, streamObj) => {
       state.viewStreamInfo = streamObj;
+    },
+    UPDATE_STREAM_INFO_OBJ: (state, streamInfoObj) => {
+      state.viewStreamInfoObj = streamInfoObj;
     },
     UPDATE_SELECTED_ENDPOINTS: (state, selectedStreams) => {
       state.selectedStreams = selectedStreams;
@@ -94,6 +98,9 @@ const store = new Vuex.Store({
     },
     getStreamInfo() {
       return this.state.viewStreamInfo;
+    },
+    getStreamInfoObj() {
+      return this.state.viewStreamInfoObj;
     },
     getSelectedStreams() {
       return this.state.selectedStreams;

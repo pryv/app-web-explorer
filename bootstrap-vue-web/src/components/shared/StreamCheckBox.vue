@@ -25,6 +25,7 @@
       </b-row>
       <b-form-checkbox
         v-for="stream in displayStreams"
+        :class="{ 'trashed': stream.trashed && stream.trashed === true }"
         :key="stream.streamId"
         :value="stream.streamId"
         @change="checkBoxClicked($event, stream.streamId, endpoint)"
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "StreamCheckBox",
   props: {
@@ -56,6 +58,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(["streamsMap"]),
     accessInfoName() {
       if (this.streamObjectArray && this.streamObjectArray[0]) {
         return this.streamObjectArray[0].accessInfoName;
@@ -95,6 +98,14 @@ export default {
         this.$store.commit("SET_STREAM_INFO", value);
       },
     },
+    viewStreamInfoObj: {
+      get() {
+        return this.$store.state.viewStreamInfoObj;
+      },
+      set(value) {
+        this.$store.commit("UPDATE_STREAM_INFO_OBJ", value);
+      },
+    },
   },
   methods: {
     checkBoxClicked(e, value, index) {
@@ -112,12 +123,16 @@ export default {
       this.viewAccessInfo = endpoint;
     },
     viewStreamInfoFunc(streamId, endpoint, event) {
-      event.preventDefault()
+      event.preventDefault();
       const obj = {
         endpoint: endpoint,
         id: streamId,
       };
       this.viewStreamInfo = obj;
+      const streamObj = this.streamsMap[obj.endpoint].find(
+        key => key.id === this.viewStreamInfo.id
+      );
+      this.viewStreamInfoObj = streamObj;
       if (this.currentRouteName != "Stream") {
         this.$router.push("stream");
       }
@@ -170,5 +185,10 @@ export default {
   margin-top: 0.2em;
   cursor: pointer;
   margin-left: 5%;
+}
+
+.trashed {
+  color: #9d0717;
+  font-weight: bold;
 }
 </style>

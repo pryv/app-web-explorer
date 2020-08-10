@@ -1,33 +1,37 @@
-.dropbox-filter{
-    font-size: 0.75rem;
-    border-radius: 0;
+.dropbox-filter {
+  font-size: 0.75rem;
+  border-radius: 0;
 }
-.text-left{
-    text-align: left;
+.text-left {
+  text-align: left;
 }
 
-.default-font{
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    line-height: 20px;
+.default-font {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .w-80 {
-    width: 80%;
+  width: 80%;
 }
 
-.pryv-btn-style{
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    line-height: 20px;
-    color: #fff;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    padding: 2px 6px;
-    margin-bottom: 0;
-    vertical-align: middle;
-    cursor: pointer;
-    background-color: #bd1727;
-    border: 1px solid #9d0717;
+.w-3 {
+  width: 3%;
+}
+
+.pryv-btn-style {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  padding: 2px 6px;
+  margin-bottom: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #bd1727;
+  border: 1px solid #9d0717;
 }

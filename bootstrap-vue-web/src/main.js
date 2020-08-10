@@ -7,6 +7,7 @@ import store from "./store";
 import "./cookies";
 import "./axios";
 import "./assets/css/style.css";
+import "./jsoneditor";
 
 Vue.config.productionTip = false;
 

@@ -96,10 +96,9 @@ export default {
     updateStore(connection) {
       if (
         this.addStreamsToStore(connection) &&
-        this.addAccessInfoToStore(connection) &&
         this.addEventsToStore(connection)
       )
-        if (this.currentRouteName() !== "Events") this.$router.push("events");
+        if (this.currentRouteName() === "Login") this.$router.push("events");
     },
   },
 };

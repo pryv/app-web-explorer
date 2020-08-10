@@ -128,14 +128,18 @@ export default {
         { key: "id", label: "Id", sortable: true },
         { key: "streamId", label: "Stream Id", sortable: true },
         { key: "type", label: "Type", sortable: true },
-        { key: "time", label: "Time" },
+        { key: "time", label: "Time" ,formatter: value => {
+            return new Date(value).toUTCString();
+          }},
         { key: "content", label: "Content" },
         { key: "streamIds", label: "Stream Ids" },
         { key: "tags", label: "Tags" },
         { key: "attachments", label: "Attachments Id" },
         { key: "created", label: "Created", sortable: true },
         { key: "createdBy", label: "Created By" },
-        { key: "modified", label: "Modified", sortable: true },
+        { key: "modified", label: "Modified", sortable: true, formatter: value => {
+            return new Date(value).toUTCString();
+          } },
         { key: "modifiedBy", label: "Modified By" },
       ],
     };
@@ -209,6 +213,10 @@ export default {
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
+    },
+    formatDateAssigned(value) {
+      alert(value);
+      return (new Date(value)).toUTCString();
     },
     filterEvents() {
       let selectedEvents = this.fetchData;

@@ -97,6 +97,7 @@ export default {
               accessInfoType: accessInfo.type,
               streamId: streams[i].id,
               streamName: streams[i].name,
+              trashed : streams[i].trashed,
             };
             customUserObjectArray[key].push(payload);
           }

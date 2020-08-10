@@ -203,8 +203,10 @@ export default {
       return true;
     },
     async addStreamsToStore(connection) {
+      const apiObj = GET_STREAMS_API.GET_STREAMS_API;
+      apiObj[0].params= {"state":"all"}; //todo remove state all
       try {
-        const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
+        const result = await connection.api(apiObj);
         if (result) {
           this.streamsMap = [connection.apiEndpoint, result[0].streams];
         }

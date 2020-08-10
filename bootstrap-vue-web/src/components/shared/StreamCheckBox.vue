@@ -13,11 +13,12 @@
             :value="endpoint"
             @change="checkBoxClicked($event, endpoint, endpoint)"
             class="font-weight-bold main"
+            @click.stop
             >{{ accessInfoName }}
           </b-form-checkbox>
         </div>
         <div cols="2">
-          <span :endpoint="endpoint" @click="viewAccessInfo(endpoint)">
+          <span :endpoint="endpoint" @click="viewAccessInfoFunc(endpoint)">
             <b-icon-info-square-fill class="info-btn"> </b-icon-info-square-fill
           ></span>
         </div>
@@ -27,7 +28,14 @@
         :key="stream.streamId"
         :value="stream.streamId"
         @change="checkBoxClicked($event, stream.streamId, endpoint)"
-        >{{ stream.streamName }}
+        >{{ stream.streamName
+        }}<span :endpoint="endpoint">
+          <b-icon-pencil-square
+            @click="viewStreamInfoFunc(stream.streamId, endpoint, $event)"
+            class="pencil-btn"
+          >
+          </b-icon-pencil-square
+        ></span>
       </b-form-checkbox>
     </b-form-checkbox-group>
   </div>
@@ -71,6 +79,22 @@ export default {
         this.$emit("selectedStreamsMapUpdate", payload);
       },
     },
+    viewAccessInfo: {
+      get() {
+        return this.$store.state.viewAccessInfo;
+      },
+      set(value) {
+        this.$store.commit("SET_ACCESS_INFO", value);
+      },
+    },
+    viewStreamInfo: {
+      get() {
+        return this.$store.state.viewStreamInfo;
+      },
+      set(value) {
+        this.$store.commit("SET_STREAM_INFO", value);
+      },
+    },
   },
   methods: {
     checkBoxClicked(e, value, index) {
@@ -81,11 +105,22 @@ export default {
       };
       this.$emit("checkBoxClicked", payload);
     },
-    viewAccessInfo(val) {
+    viewAccessInfoFunc(endpoint) {
       if (this.currentRouteName != "Info") {
         this.$router.push("info");
       }
-      this.$store.commit("SET_ACCESS_INFO", val);
+      this.viewAccessInfo = endpoint;
+    },
+    viewStreamInfoFunc(streamId, endpoint, event) {
+      event.preventDefault()
+      const obj = {
+        endpoint: endpoint,
+        id: streamId,
+      };
+      this.viewStreamInfo = obj;
+      if (this.currentRouteName != "Stream") {
+        this.$router.push("stream");
+      }
     },
   },
 };
@@ -117,6 +152,7 @@ export default {
   vertical-align: middle;
   margin-left: -2%;
   font-size: 0.75rem !important;
+  width: 150px;
 }
 
 .main {
@@ -127,5 +163,12 @@ export default {
   float: right;
   margin-top: 0.2em;
   cursor: pointer;
+}
+
+.pencil-btn {
+  float: right;
+  margin-top: 0.2em;
+  cursor: pointer;
+  margin-left: 5%;
 }
 </style>

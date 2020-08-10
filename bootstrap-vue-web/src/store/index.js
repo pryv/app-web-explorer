@@ -8,7 +8,8 @@ const store = new Vuex.Store({
   state: {
     selected: [],
     serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
-    accessInfo: "",
+    viewAccessInfo: "", //set endpoint when clicked on info button of a connection
+    viewStreamInfo: {}, // set obj with endpoint and stream id when clicked on edit stream icon
     selectedStreams: {},
     connectionsMap: {},
     streamsMap: {},
@@ -16,6 +17,7 @@ const store = new Vuex.Store({
     eventsMap: {},
     selectedFilters: {},
     types: new Set(),
+    typesAll: {},
   },
   mutations: {
     UPDATE_CHECKBOX: (state, selected) => {
@@ -24,8 +26,12 @@ const store = new Vuex.Store({
     UPDATE_SERVICE_INFO: (state, serviceInfo) => {
       state.serviceInfo = serviceInfo;
     },
-    SET_ACCESS_INFO: (state, token) => {
-      state.accessInfo = token;
+    SET_ACCESS_INFO: (state, endpoint) => {
+      state.viewAccessInfo = endpoint;
+    },
+    //{"endpoint": endpoint, "id": id}
+    SET_STREAM_INFO: (state, streamObj) => {
+      state.viewStreamInfo = streamObj;
     },
     UPDATE_SELECTED_ENDPOINTS: (state, selectedStreams) => {
       state.selectedStreams = selectedStreams;
@@ -36,11 +42,20 @@ const store = new Vuex.Store({
     SET_TYPES: (state, loadTypes) => {
       state.types = loadTypes;
     },
+    SET_TYPES_ALL: (state, loadAllTypes) => {
+      state.typesAll = loadAllTypes;
+    },
+    ADD_CONNECTIONS_MAP: (state, [key, value]) => {
+      Vue.set(state.connectionsMap, key, value);
+    },
     DELETE_CONNECTIONS_MAP: (state, connectionsMap) => {
       state.connectionsMap = connectionsMap;
     },
     UPDATE_CONNECTIONS_MAP: (state, connectionsMap) => {
       state.connectionsMap = connectionsMap;
+    },
+    ADD_STREAMS_MAP: (state, [key, value]) => {
+      Vue.set(state.streamsMap, key, value);
     },
     UPDATE_STREAMS_MAP: (state, streamsMap) => {
       state.streamsMap = streamsMap;
@@ -48,11 +63,17 @@ const store = new Vuex.Store({
     DELETE_STREAMS_MAP: (state, streamsMap) => {
       state.streamsMap = streamsMap;
     },
+    ADD_ACCESS_INFO_MAP: (state, [key, value]) => {
+      Vue.set(state.accessInfoMap, key, value);
+    },
     UPDATE_ACCESS_INFO_MAP: (state, accessInfoMap) => {
       state.accessInfoMap = accessInfoMap;
     },
     DELETE_ACCESS_INFO_MAP: (state, accessInfoMap) => {
       state.accessInfoMap = accessInfoMap;
+    },
+    ADD_EVENTS_MAP: (state, [key, value]) => {
+      Vue.set(state.eventsMap, key, value);
     },
     UPDATE_EVENTS_MAP: (state, eventsMap) => {
       state.eventsMap = eventsMap;
@@ -69,7 +90,10 @@ const store = new Vuex.Store({
       return this.state.serviceInfo;
     },
     getAccessInfo() {
-      return this.state.accessInfo;
+      return this.state.viewAccessInfo;
+    },
+    getStreamInfo() {
+      return this.state.viewStreamInfo;
     },
     getSelectedStreams() {
       return this.state.selectedStreams;
@@ -91,6 +115,9 @@ const store = new Vuex.Store({
     },
     getEventsMap() {
       return this.state.eventsMap;
+    },
+    getAllTypes() {
+      return this.state.typesAll;
     },
   },
 });

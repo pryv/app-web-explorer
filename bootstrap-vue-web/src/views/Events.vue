@@ -3,14 +3,14 @@
     <div class="bg-white py-2 w-80">
       <div class="card-style events-card">
         <b-row>
-          <b-col cols="6">
+          <b-col cols="10">
             <h4>Events Panel</h4>
           </b-col>
-          <b-col cols="3">
-            <LoadStreamsBtn class="float-right"/>
+          <b-col cols="1" class="pl-0">
+            <LoadStreamsBtn class="float-right" />
           </b-col>
-          <b-col cols="3">
-            <LoadEventsBtn/>
+          <b-col cols="1" class="pl-0">
+            <LoadEventsBtn class="float-right" />
           </b-col>
         </b-row>
       </div>
@@ -20,14 +20,63 @@
         <b-card no-body>
           <AddEventBtn></AddEventBtn>
           <b-tabs card>
+            f
             <b-tab title="TABLE VIEW" active>
               <b-card-text>
                 <div>
-                  <b-table responsive striped hover :items="fetchData" />
+                  <b-table
+                    style="max-height: 300px"
+                    :fields="fields"
+                    sticky-header
+                    responsive
+                    striped
+                    hover
+                    :items="fetchData"
+                  >
+                    <template v-slot:cell(attachments)="data">
+                      <div
+                        v-if="
+                          data.item.attachments &&
+                            data.item.attachments.length > 0
+                        "
+                      >
+                        <a
+                          target="_blank"
+                          :href="
+                            `https://${data.item.endpoint}events/${data.item.id}/${data.item.attachments[0].id}?readToken=${data.item.attachments[0].readToken}`
+                          "
+                          >{{ data.item.attachments[0].id }}</a
+                        >
+                        <div>Click to view the attachment</div>
+                      </div>
+                      <p v-else>No Attachments</p>
+                    </template>
+                    <template v-slot:cell(content)="data">
+                      <div
+                        v-if="
+                          data.item.content && data.item.type.includes('series')
+                        "
+                      >
+                        {{ data.item.content.fields }}
+                        <a
+                          href="#"
+                          @click="
+                            openJSON(
+                              data.item.endpoint,
+                              data.item.id,
+                              data.item.token
+                            )
+                          "
+                        >
+                          Click here to view data</a
+                        >
+                      </div>
+                    </template>
+                  </b-table>
                   <PryvAlert
-                          v-if="fetchData.length == 0"
-                          :show="show"
-                          :message="message"
+                    v-if="fetchData.length == 0"
+                    :show="show"
+                    :message="message"
                   ></PryvAlert>
                 </div>
               </b-card-text>
@@ -36,13 +85,12 @@
               <b-card-text class="text-left">
                 <vue-json-pretty :data="this.displayJSON" />
                 <PryvAlert
-                        v-if="fetchData.length == 0"
-                        :show="show"
-                        :message="message"
+                  v-if="fetchData.length == 0"
+                  :show="show"
+                  :message="message"
                 ></PryvAlert>
               </b-card-text>
             </b-tab>
-
           </b-tabs>
         </b-card>
       </div>
@@ -55,7 +103,7 @@ import { mapState } from "vuex";
 import VueJsonPretty from "vue-json-pretty";
 import PryvAlert from "../components/shared/PryvAlert";
 import FilterPanel from "../components/filters/FilterPanel";
-import { filterTagsSort, states } from "../utilities/constants";
+import { constants, filterTagsSort, states } from "../utilities/constants";
 import LoadEventsBtn from "../components/load/LoadEventsBtn";
 import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
 import AddEventBtn from "../components/events/AddEventBtn";
@@ -76,6 +124,20 @@ export default {
       show: true,
       message: "No info available to display.",
       typesSet: new Set(),
+      fields: [
+        { key: "id", label: "Id", sortable: true },
+        { key: "streamId", label: "Stream Id", sortable: true },
+        { key: "type", label: "Type", sortable: true },
+        { key: "time", label: "Time" },
+        { key: "content", label: "Content" },
+        { key: "streamIds", label: "Stream Ids" },
+        { key: "tags", label: "Tags" },
+        { key: "attachments", label: "Attachments Id" },
+        { key: "created", label: "Created", sortable: true },
+        { key: "createdBy", label: "Created By" },
+        { key: "modified", label: "Modified", sortable: true },
+        { key: "modifiedBy", label: "Modified By" },
+      ],
     };
   },
   computed: {
@@ -83,9 +145,7 @@ export default {
     ...mapState(["selectedFilters"]),
     ...mapState(["eventsMap"]),
     displayJSON() {
-      return this.fetchData.length > 0
-        ? this.fetchData
-        : ' ';
+      return this.fetchData.length > 0 ? this.fetchData : " ";
     },
     types: {
       get() {
@@ -95,6 +155,21 @@ export default {
         this.$store.commit("SET_TYPES", value);
       },
     },
+    typesAll: {
+      get() {
+        return this.$store.state.typesAll;
+      },
+      set(value) {
+        this.$store.commit("SET_TYPES_ALL", value);
+      },
+    },
+  },
+  mounted() {
+    this.axios.get(constants.DEFAULT_SERVICE_INFO_URL).then(response => {
+      this.axios.get(response.data.eventTypes).then(response => {
+        this.typesAll = response.data.types;
+      });
+    });
   },
   async created() {
     this.displayEvents();
@@ -111,8 +186,7 @@ export default {
     },
   },
   methods: {
-    selectStreamsOrFilters()
-    {
+    selectStreamsOrFilters() {
       this.displayEvents();
       this.filterEvents();
     },
@@ -125,9 +199,13 @@ export default {
       let selectedEvents = [];
       for (const [key, value] of Object.entries(this.selectedStreams)) {
         for (let i = 0; i < value.length; i++) {
-          selectedEvents = this.eventsMap[key].filter(
-            event => event.streamId == value[i]
-          );
+          selectedEvents = this.eventsMap[key].filter(event => {
+            event.apiEndpoint = key;
+            event.endpoint = key.split("@")[1];
+            event.token = key.split("@")[0].replace(/(^\w+:|^)\/\//, "");
+            return event.streamId == value[i];
+          });
+
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
@@ -223,6 +301,21 @@ export default {
           }
         });
       this.fetchData = [...selectedEvents];
+    },
+    openJSON(endpoint, eventId, token) {
+      this.axios
+        .get(`https://${endpoint}events/${eventId}/series?auth=${token}`)
+        .then(response => {
+          console.log("response data");
+          console.log(response.data);
+          var myjson = JSON.stringify(response.data, null, 2);
+          var x = window.open();
+          x.document.open();
+          x.document.write(
+            "<html><body><pre>" + myjson + "</pre></body></html>"
+          );
+          x.document.close();
+        });
     },
   },
 };

@@ -5,7 +5,7 @@
     :placeholder="placeholder"
     @input="$emit('textInput', $event)"
     :value="value"
-    type="text"
+    :type="type"
     :disabled="disabled"
     :required="required"
   ></b-input>
@@ -20,6 +20,7 @@ export default {
     id: { type: String },
     disabled: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
+    type: { type: String, default: "text" },
   },
 };
 </script>

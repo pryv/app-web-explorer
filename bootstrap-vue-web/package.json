@@ -14,10 +14,12 @@
     "webserver-test": "node node_modules/.bin/rec-la ./tests/webpage-auth/ 5443"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.5",
     "pryv": "^2.0.3",
     "rec-la": "^0.1.14",
+    "v-jsoneditor": "^1.4.1",
     "vee-validate": "^3.3.6",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
@@ -56,8 +58,7 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {
-    }
+    "rules": {}
   },
   "browserslist": [
     "> 1%",

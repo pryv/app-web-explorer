@@ -1,11 +1,10 @@
 <template functional>
   <b-button
-    v-text="props.content"
     class="pryv-btn mt-2"
     variant="danger"
     v-on:click="listeners.click"
     :type="props.type"
-  ></b-button>
+  ><b-icon v-if="props.icon" :icon="props.icon" font-scale="1"></b-icon> {{props.content}}</b-button>
 </template>
 
 <script>

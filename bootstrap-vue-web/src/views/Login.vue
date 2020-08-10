@@ -100,7 +100,7 @@ import APILogin from "../components/login/APILogin";
 import PryvLabel from "../components/shared/PryvLabel";
 import WebButton from "../components/login/WebButtonLogin";
 import UsernameLogin from "../components/login/UsernameLogin";
-import ServiceInfo from "../components/login/service-info/ServiceInfo";
+import ServiceInfo from "../components/login/ServiceInfo";
 import GET_STREAMS_API from "../utilities/api";
 import ACCESS_INFO_API from "../utilities/api";
 export default {
@@ -117,32 +117,40 @@ export default {
       get() {
         return this.$store.state.connectionsMap;
       },
-      set(value) {
-        this.$store.commit("UPDATE_CONNECTIONS_MAP", value);
+      set([key, value]) {
+        if (!this.connectionsMap[key]) {
+          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
+        }
       },
     },
     streamsMap: {
       get() {
         return this.$store.state.streamsMap;
       },
-      set(value) {
-        this.$store.commit("UPDATE_STREAMS_MAP", value);
+      set([key, value]) {
+        if (!this.streamsMap[key]) {
+          this.$store.commit("ADD_STREAMS_MAP", [key, value]);
+        }
       },
     },
     accessInfoMap: {
       get() {
         return this.$store.state.accessInfoMap;
       },
-      set(value) {
-        this.$store.commit("UPDATE_ACCESS_INFO_MAP", value);
+      set([key, value]) {
+        if (!this.accessInfoMap[key]) {
+          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
+        }
       },
     },
     eventsMap: {
       get() {
         return this.$store.state.eventsMap;
       },
-      set(value) {
-        this.$store.commit("UPDATE_EVENTS_MAP", value);
+      set([key, value]) {
+        if (!this.eventsMap[key]) {
+          this.$store.commit("ADD_EVENTS_MAP", [key, value]);
+        }
       },
     },
     types: {
@@ -191,19 +199,14 @@ export default {
       return true;
     },
     addConnectionToStore(connection) {
-      const clonedConnectionsMap = Object.assign({}, this.connectionsMap);
-      clonedConnectionsMap[connection.apiEndpoint] = connection;
-      this.connectionsMap = clonedConnectionsMap;
-      console.log(this.connectionsMap);
+      this.connectionsMap = [connection.apiEndpoint, connection];
       return true;
     },
     async addStreamsToStore(connection) {
       try {
         const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
         if (result) {
-          const clonedStreamsMap = Object.assign({}, this.streamsMap);
-          clonedStreamsMap[connection.apiEndpoint] = result[0].streams;
-          this.streamsMap = clonedStreamsMap;
+          this.streamsMap = [connection.apiEndpoint, result[0].streams];
         }
       } catch (e) {
         console.log("Error occurred when retrieving streams " + e);
@@ -215,9 +218,7 @@ export default {
       try {
         const result = await connection.api(ACCESS_INFO_API.ACCESS_INFO_API);
         if (result) {
-          const clonedAccessInfoMap = Object.assign({}, this.accessInfoMap);
-          clonedAccessInfoMap[connection.apiEndpoint] = result[0];
-          this.accessInfoMap = clonedAccessInfoMap;
+          this.accessInfoMap = [connection.apiEndpoint, result[0]];
         }
       } catch (e) {
         console.log("Error occurred when retrieving access info " + e);
@@ -227,16 +228,14 @@ export default {
     },
     async addEventsToStore(connection) {
       this.events = [];
-      let queryParams = {};
+      let queryParams = {"limit":100}; //todo remove limit parameter
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.forEachEvent
         );
-        console.log(result);
-        const clonedEventsMap = Object.assign({}, this.eventsMap);
-        clonedEventsMap[connection.apiEndpoint] = this.events;
-        this.eventsMap = clonedEventsMap;
+        console.log(result)
+        this.eventsMap = [connection.apiEndpoint, this.events];
       } catch (e) {
         console.log("Error occurred when retrieving events " + e);
         return false;

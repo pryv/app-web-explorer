@@ -1,5 +1,5 @@
 <template>
-  <PryvBtn :content="btnContent" @click="loadStreams" id="submitBtn"></PryvBtn>
+  <PryvBtn :icon="icon" :content="btnContent" @click="loadStreams" id="submitBtn"></PryvBtn>
 </template>
 
 <script>
@@ -11,9 +11,10 @@ export default {
   components: { PryvBtn },
   data() {
     return {
-      btnContent: "Load All",
+      btnContent: " All",
       events: [],
       typesSet: new Set(),
+      icon:"arrow-clockwise"
     };
   },
   computed: {

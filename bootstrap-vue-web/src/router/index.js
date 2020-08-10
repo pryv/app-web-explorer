@@ -34,6 +34,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "login" */ "../views/Info.vue"),
   },
+  {
+    path: "/stream",
+    name: "Stream",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/Stream.vue"),
+  },
 ];
 
 const router = new VueRouter({

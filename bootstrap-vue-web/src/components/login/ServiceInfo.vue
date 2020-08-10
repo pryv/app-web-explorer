@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import PryvInput from "../../shared/PryvInput";
-import { constants } from "../../../utilities/constants";
+import PryvInput from "../shared/PryvInput";
+import { constants } from "../../utilities/constants";
 export default {
   name: "APILogin",
   components: { PryvInput },

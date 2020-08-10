@@ -4,7 +4,7 @@
                 @click="$bvModal.show('modal-scoped-event')"
                 id="submitBtn"
                 class="pryv-btn-style default-font float-right"
-        >Add Event
+        ><b-icon icon="plus" font-scale="1"></b-icon> Event
         </b-button>
         <AddEventModal>
         </AddEventModal>

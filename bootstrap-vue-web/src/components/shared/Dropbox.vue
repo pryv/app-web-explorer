@@ -19,7 +19,8 @@ export default {
       required: true,
     },
     disabled: {
-      required: true,
+      required: false,
+      default : false
     },
   },
 };

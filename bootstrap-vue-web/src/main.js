@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./cookies";
+import "./axios";
 import "./assets/css/style.css";
 
 Vue.config.productionTip = false;

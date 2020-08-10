@@ -6,12 +6,13 @@
           <b-col cols="10">
             <h4>Access Info Panel</h4>
           </b-col>
-          <b-col cols="1">
+          <b-col cols="2">
             <PryvBtn
               v-if="infoJSON"
               @click="backToEvents"
-              class="mt-0"
+              class="mt-0 float-right"
               :content="btnContent"
+              icon="arrow-left"
             ></PryvBtn>
           </b-col>
         </b-row>
@@ -27,6 +28,7 @@
               class="mt-0"
               @click="logout"
               :content="btnContentDisconnect"
+              icon="power"
             ></PryvBtn>
           </b-row>
         </b-card>
@@ -46,7 +48,7 @@ import PryvBtn from "../components/shared/PryvBtn";
 export default {
   name: "Info",
   computed: {
-    ...mapState(["accessInfo"]),
+    ...mapState(["viewAccessInfo"]),
     connectionsMap: {
       get() {
         return this.$store.state.connectionsMap;
@@ -82,7 +84,7 @@ export default {
     infoJSON: {
       get: function() {
         return Object.keys(this.accessInfoMap)
-          .filter(key => key === this.accessInfo)
+          .filter(key => key === this.viewAccessInfo)
           .reduce((obj, key) => {
             obj[key] = this.accessInfoMap[key];
             return obj;
@@ -102,11 +104,6 @@ export default {
     };
   },
   methods: {
-    displayAccessData() {
-      for (const [key, value] of Object.entries(this.accessInfoMap)) {
-        if (key.includes(this.accessInfo)) this.infoJSON = value;
-      }
-    },
     currentRouteName() {
       return this.$route.name;
     },
@@ -117,19 +114,19 @@ export default {
     },
     deleteConnectionData() {
       const clonedConnectionsMap = Object.assign({}, this.connectionsMap);
-      delete clonedConnectionsMap[this.accessInfo];
+      delete clonedConnectionsMap[this.viewAccessInfo];
       this.connectionsMap = clonedConnectionsMap;
 
       const clonedAccessInfoMap = Object.assign({}, this.accessInfoMap);
-      delete clonedAccessInfoMap[this.accessInfo];
+      delete clonedAccessInfoMap[this.viewAccessInfo];
       this.accessInfoMap = clonedAccessInfoMap;
 
       const clonedStreamsMap = Object.assign({}, this.streamsMap);
-      delete clonedStreamsMap[this.accessInfo];
+      delete clonedStreamsMap[this.viewAccessInfo];
       this.streamsMap = clonedStreamsMap;
 
       const clonedEventsMap = Object.assign({}, this.eventsMap);
-      delete clonedEventsMap[this.accessInfo];
+      delete clonedEventsMap[this.viewAccessInfo];
       this.eventsMap = clonedEventsMap;
 
       Object.keys(this.connectionsMap).length === 0
@@ -139,7 +136,7 @@ export default {
     //todo restructure the logout funcitionality
     logout() {
       let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
-      let obj = endpointArr.find(o => o.key === this.accessInfo);
+      let obj = endpointArr.find(o => o.key === this.viewAccessInfo);
       if (obj.cookie) {
         const test = this.$cookies.remove("pryv-libjs-web-app-explorer", "/", {
           domain: ".l.rec.la",
@@ -147,14 +144,9 @@ export default {
         console.log("remove cookies");
         console.log(test);
       }
-      endpointArr = endpointArr.filter(obj => obj.key !== this.accessInfo);
+      endpointArr = endpointArr.filter(obj => obj.key !== this.viewAccessInfo);
       this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);
       this.deleteConnectionData();
-    },
-  },
-  watch: {
-    accessInfo() {
-      this.displayAccessData();
     },
   },
 };

@@ -1,5 +1,10 @@
 <template>
-  <PryvBtn :icon="icon" :content="btnContent" @click="loadEvents" id="submitBtn"></PryvBtn>
+  <PryvBtn
+    :icon="icon"
+    :content="btnContent"
+    @click="loadEvents"
+    id="submitBtn"
+  ></PryvBtn>
 </template>
 
 <script>
@@ -13,7 +18,7 @@ export default {
       btnContent: " Events",
       events: [],
       typesSet: new Set(),
-      icon:"arrow-clockwise"
+      icon: "arrow-clockwise",
     };
   },
   computed: {

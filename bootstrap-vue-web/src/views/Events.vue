@@ -51,6 +51,21 @@
                       </div>
                       <p v-else>No Attachments</p>
                     </template>
+                    <template v-slot:cell(id)="data">
+                      <div>
+                        <PryvBtn
+                          class="mt-0 mr-5"
+                          icon="check2-square"
+                          @click="$bvModal.show(data.item.id)"
+                        ></PryvBtn
+                        >{{ data.item.id }}
+                      </div>
+                      <EditEventModal
+                        :data="data.item"
+                        :apiEndpoint="data.item.apiEndpoint"
+                        :id="data.item.id"
+                      ></EditEventModal>
+                    </template>
                     <template v-slot:cell(content)="data">
                       <div
                         v-if="
@@ -71,6 +86,7 @@
                           Click here to view data</a
                         >
                       </div>
+                      <div v-else>{{ data.item.content }}</div>
                     </template>
                   </b-table>
                   <PryvAlert
@@ -107,10 +123,14 @@ import { constants, filterTagsSort, states } from "../utilities/constants";
 import LoadEventsBtn from "../components/load/LoadEventsBtn";
 import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
 import AddEventBtn from "../components/events/AddEventBtn";
+import PryvBtn from "../components/shared/PryvBtn";
+import EditEventModal from "../components/events/EditEventModal";
 
 export default {
   name: "Events",
   components: {
+    EditEventModal,
+    PryvBtn,
     AddEventBtn,
     LoadStreamsBtn,
     LoadEventsBtn,
@@ -128,18 +148,27 @@ export default {
         { key: "id", label: "Id", sortable: true },
         { key: "streamId", label: "Stream Id", sortable: true },
         { key: "type", label: "Type", sortable: true },
-        { key: "time", label: "Time" ,formatter: value => {
+        {
+          key: "time",
+          label: "Time",
+          formatter: value => {
             return new Date(value).toUTCString();
-          }},
+          },
+        },
         { key: "content", label: "Content" },
         { key: "streamIds", label: "Stream Ids" },
         { key: "tags", label: "Tags" },
         { key: "attachments", label: "Attachments Id" },
         { key: "created", label: "Created", sortable: true },
         { key: "createdBy", label: "Created By" },
-        { key: "modified", label: "Modified", sortable: true, formatter: value => {
+        {
+          key: "modified",
+          label: "Modified",
+          sortable: true,
+          formatter: value => {
             return new Date(value).toUTCString();
-          } },
+          },
+        },
         { key: "modifiedBy", label: "Modified By" },
       ],
     };
@@ -171,7 +200,13 @@ export default {
   mounted() {
     this.axios.get(constants.DEFAULT_SERVICE_INFO_URL).then(response => {
       this.axios.get(response.data.eventTypes).then(response => {
-        this.typesAll = response.data.types;
+        var obj = response.data.types;
+        Object.keys(obj).forEach(function(k) {
+          const objVal = obj[k];
+          delete obj[k];
+          obj[k.toLowerCase()] = objVal;
+        });
+        this.typesAll = obj;
       });
     });
   },
@@ -209,14 +244,9 @@ export default {
             event.token = key.split("@")[0].replace(/(^\w+:|^)\/\//, "");
             return event.streamId == value[i];
           });
-
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
-    },
-    formatDateAssigned(value) {
-      alert(value);
-      return (new Date(value)).toUTCString();
     },
     filterEvents() {
       let selectedEvents = this.fetchData;

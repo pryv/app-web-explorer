@@ -167,10 +167,10 @@ export default {
     },
     async addStreamsToStore(endpoint, stream) {
       const clonedStreams = Object.assign({}, this.streamsMap);
-      const deletedStreamIndex = clonedStreams[
-        this.viewStreamInfo.endpoint
-      ].findIndex(key => key.id === this.viewStreamInfo.id);
-      clonedStreams[endpoint][deletedStreamIndex] = stream;
+      const streamIndex = clonedStreams[this.viewStreamInfo.endpoint].findIndex(
+        key => key.id === this.viewStreamInfo.id
+      );
+      clonedStreams[endpoint][streamIndex] = stream;
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;
     },

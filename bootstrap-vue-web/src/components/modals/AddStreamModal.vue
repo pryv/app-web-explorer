@@ -181,14 +181,10 @@ export default {
       clonedStreams[this.viewAccessInfo].push(stream);
       this.updateParent(clonedStreams, stream);
       this.streamsMap = clonedStreams;
-      console.log("streams ap");
-      console.log(this.streamsMap);
       this.$bvModal.hide("modal-scoped-stream");
     },
     updateParent(clonedStreams, stream) {
       if (stream.parentId !== null) {
-        console.log("parent id");
-        console.log(stream.parentId);
         var index = this.getParentIndex(clonedStreams, stream);
         var parentStream = clonedStreams[this.viewAccessInfo][index];
         var findChild = null;

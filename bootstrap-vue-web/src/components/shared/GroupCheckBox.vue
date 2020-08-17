@@ -70,14 +70,9 @@ export default {
           clonedSelectedStreamsObjectArray[e.endpointClicked].push(
             e.clickedEndpointAndStreamId
           );
-
-          console.log("streams map")
-          console.log(this.streamsMap)
           const stream = this.streamsMap[e.endpointClicked].filter(
             key => key.id === e.clickedEndpointAndStreamId
           );
-          console.log("selected stream")
-          console.log(stream)
           this.selectChildStreams(
             stream[0],
             clonedSelectedStreamsObjectArray,
@@ -138,7 +133,6 @@ export default {
       });
     },
     displayStreams() {
-      alert("display streams")
       const customUserObjectArray = {};
       for (const [key, accessInfo] of Object.entries(this.accessInfoMap)) {
         customUserObjectArray[key] = [];

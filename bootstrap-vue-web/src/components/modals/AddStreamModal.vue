@@ -88,6 +88,7 @@
 import { mapState } from "vuex";
 import PryvBtn from "../shared/PryvBtn";
 import CREATE_STREAM_API from "../../utilities/api";
+
 export default {
   name: "AddStreamModal",
   components: { PryvBtn },
@@ -157,11 +158,10 @@ export default {
         apiObj[0].params = {
           name: this.selectedName,
         };
-        if(this.selectedId !== null)
-          apiObj[0].params["id"] = this.selectedId;
-        if(this.selectedParentId !== null)
+        if (this.selectedId !== null) apiObj[0].params["id"] = this.selectedId;
+        if (this.selectedParentId !== null)
           apiObj[0].params["parentId"] = this.selectedParentId.split(" ")[0];
-        if(this.clientData !== null)
+        if (this.clientData !== null)
           apiObj[0].params["clientData"] = this.clientData;
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].error) {
@@ -176,12 +176,62 @@ export default {
         return;
       }
     },
-    async addStreamsToStore(stream)
-    {
-      let clonedEvents = JSON.parse(JSON.stringify(this.streamsMap));
-      clonedEvents[this.viewAccessInfo].push(stream);
-      this.streamsMap = clonedEvents;
+    async addStreamsToStore(stream) {
+      let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
+      clonedStreams[this.viewAccessInfo].push(stream);
+      this.updateParent(clonedStreams, stream);
+      this.streamsMap = clonedStreams;
+      console.log("streams ap");
+      console.log(this.streamsMap);
       this.$bvModal.hide("modal-scoped-stream");
+    },
+    updateParent(clonedStreams, stream) {
+      if (stream.parentId !== null) {
+        console.log("parent id");
+        console.log(stream.parentId);
+        var index = this.getParentIndex(clonedStreams, stream);
+        var parentStream = clonedStreams[this.viewAccessInfo][index];
+        var findChild = null;
+        if (parentStream.children) {
+          parentStream.children.forEach((child, id) => {
+            if (child.id === stream.id) {
+              findChild = stream;
+              clonedStreams[this.viewAccessInfo][index].children[id] = stream;
+            }
+          });
+        }
+        if (findChild === null) {
+          if (!parentStream.children) parentStream["children"] = [];
+          parentStream.children.push(stream);
+        }
+        this.updateParent(clonedStreams, parentStream);
+      }
+    },
+    getParentIndex(clonedStreams, stream) {
+      const parentStreamIndex = clonedStreams[this.viewAccessInfo].findIndex(
+        key => key.id === stream.parentId
+      );
+      return parentStreamIndex;
+    },
+    async addEachStream(apiEndpoint, stream) {
+      const streamArr = this.streamsMap[this.viewAccessInfo];
+      if (
+        stream.children &&
+        stream.children.length === 0 &&
+        !streamArr.includes(stream)
+      ) {
+        this.streamsMap = [apiEndpoint, stream];
+      }
+      if (
+        stream.children &&
+        stream.children.length > 0 &&
+        !streamArr.includes(stream)
+      ) {
+        this.streamsMap = [apiEndpoint, stream];
+        stream.children.forEach(streamChild => {
+          return this.addStream(apiEndpoint, streamChild);
+        });
+      }
     },
     resetModal() {
       this.selectedName = null;

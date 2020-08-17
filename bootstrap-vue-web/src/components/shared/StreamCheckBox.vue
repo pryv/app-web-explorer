@@ -23,7 +23,7 @@
           ></span>
         </div>
       </b-row>
-      <b-form-checkbox
+     <!-- <b-form-checkbox
         v-for="stream in displayStreams"
         :class="{ 'trashed': stream.trashed && stream.trashed === true }"
         :key="stream.streamId"
@@ -37,15 +37,18 @@
           >
           </b-icon-pencil-square
         ></span>
-      </b-form-checkbox>
+      </b-form-checkbox>-->
+      <RecursiveCheckbox :endpoint="endpoint" @viewStreamInfo="viewStreamInfoFunc"  @checkBoxClicked="$emit('checkBoxClicked',$event);" :displayStreams="displayStreams"></RecursiveCheckbox>
     </b-form-checkbox-group>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import RecursiveCheckbox from "./RecursiveCheckbox";
 export default {
   name: "StreamCheckBox",
+  components: { RecursiveCheckbox },
   props: {
     selectedStreamsObjectArray: {
       type: Array,
@@ -122,8 +125,11 @@ export default {
       }
       this.viewAccessInfo = endpoint;
     },
-    viewStreamInfoFunc(streamId, endpoint, event) {
-      event.preventDefault();
+    viewStreamInfoFunc(payload) {
+      console.log("payload");
+      console.log(payload)
+      let streamId = payload.streamId;
+      let endpoint = payload.endpoint;
       const obj = {
         endpoint: endpoint,
         id: streamId,

@@ -10,6 +10,7 @@
 <script>
 import PryvBtn from "../shared/PryvBtn";
 import { mapState } from "vuex";
+import { filterTagsSort } from "../../utilities/constants";
 export default {
   name: "LoadEventsBtn",
   components: { PryvBtn },
@@ -23,6 +24,7 @@ export default {
   },
   computed: {
     ...mapState(["connectionsMap"]),
+    ...mapState(["selectedFilters"]),
     eventsMap: {
       get() {
         return this.$store.state.eventsMap;
@@ -53,14 +55,24 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
+    getSelectedLimit() { //todo limit filter
+      let eventCount = 0;
+      var limit = this.selectedFilters[filterTagsSort.LIMIT];
+      Object.keys(this.eventsMap).map(key => {
+        eventCount = eventCount > this.eventsMap[key].length;
+      });
+      if (limit > eventCount) return limit;
+    },
     async addEventsToStore(connection) {
+      const limit = this.getSelectedLimit();
       this.events = [];
-      let queryParams = {};
+      let queryParams = limit ? { limit: limit } : {};
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.addEachEvent
         );
+        this.typesSet = new Set();
         const clonedEvents = Object.assign({}, this.eventsMap);
         clonedEvents[connection.apiEndpoint] = this.events;
         this.eventsMap = clonedEvents;
@@ -73,8 +85,14 @@ export default {
     },
     addEachEvent(event) {
       this.events.push(event);
+      //todo check the types
       this.typesSet.add(event.type);
       this.types = this.typesSet;
+      console.log("types set")
+      console.log(this.typesSet)
+      console.log("types")
+      console.log(this.types)
+
     },
   },
 };

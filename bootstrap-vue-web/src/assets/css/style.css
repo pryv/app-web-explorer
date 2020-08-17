@@ -32,6 +32,21 @@
   margin-bottom: 0;
   vertical-align: middle;
   cursor: pointer;
+}
+.btn-danger{
   background-color: #bd1727;
   border: 1px solid #9d0717;
+}
+.jsoneditor{
+  border: thin solid darkgray !important;
+}
+
+.jsoneditor-menu
+{
+  background-color: darkgray !important;
+}
+
+.jsoneditor-menu a.jsoneditor-poweredBy
+{
+  display: none !important;
 }

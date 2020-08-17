@@ -18,9 +18,18 @@
       <br />
       <div>
         <b-card no-body>
-          <AddEventBtn></AddEventBtn>
+          <b-col cols="1" offset="11">
+            <PryvBtn
+              @click="$bvModal.show('modal-scoped-event')"
+              id="submitBtn"
+              class="mt-0 float-right"
+              icon="plus"
+              content="Event"
+            >
+            </PryvBtn>
+          </b-col>
+          <AddEventModal></AddEventModal>
           <b-tabs card>
-            f
             <b-tab title="TABLE VIEW" active>
               <b-card-text>
                 <div>
@@ -122,16 +131,16 @@ import FilterPanel from "../components/filters/FilterPanel";
 import { constants, filterTagsSort, states } from "../utilities/constants";
 import LoadEventsBtn from "../components/load/LoadEventsBtn";
 import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
-import AddEventBtn from "../components/events/AddEventBtn";
 import PryvBtn from "../components/shared/PryvBtn";
-import EditEventModal from "../components/events/EditEventModal";
+import EditEventModal from "../components/modals/EditEventModal";
+import AddEventModal from "../components/modals/AddEventModal";
 
 export default {
   name: "Events",
   components: {
+    AddEventModal,
     EditEventModal,
     PryvBtn,
-    AddEventBtn,
     LoadStreamsBtn,
     LoadEventsBtn,
     FilterPanel,
@@ -152,21 +161,31 @@ export default {
           key: "time",
           label: "Time",
           formatter: value => {
-            return new Date(value).toUTCString();
+            return new Date(value * 1000).toUTCString();
           },
+          sortable: true,
         },
         { key: "content", label: "Content" },
         { key: "streamIds", label: "Stream Ids" },
         { key: "tags", label: "Tags" },
         { key: "attachments", label: "Attachments Id" },
-        { key: "created", label: "Created", sortable: true },
+        { key: "description", label: "Description" },
+        { key: "clientData", label: "Client Data" },
+        {
+          key: "created",
+          label: "Created",
+          sortable: true,
+          formatter: value => {
+            return new Date(value * 1000).toUTCString();
+          },
+        },
         { key: "createdBy", label: "Created By" },
         {
           key: "modified",
           label: "Modified",
           sortable: true,
           formatter: value => {
-            return new Date(value).toUTCString();
+            return new Date(value * 1000).toUTCString();
           },
         },
         { key: "modifiedBy", label: "Modified By" },
@@ -230,6 +249,8 @@ export default {
       this.filterEvents();
     },
     displayEvents() {
+      console.log("events map");
+      console.log(this.eventsMap);
       this.fetchData = [];
       this.typesSet = new Set();
       if (!this.selectedStreams) {

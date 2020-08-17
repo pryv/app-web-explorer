@@ -21,7 +21,9 @@
           <b-row class="float-right">
             <b-icon
               v-if="
-                viewStreamInfoObj.trashed && viewStreamInfoObj.trashed === true
+                viewStreamInfoObj.trashed &&
+                  viewStreamInfoObj.trashed === true &&
+                  editable === false
               "
               icon="trash-fill"
               font-scale="3"
@@ -36,8 +38,16 @@
             v-else
             v-model="viewStreamInfoObj"
             :plus="false"
-            height="400px"
-            @error="onError"
+            height="500px"
+            :options="{
+              enableTransform: false,
+              enableSort: false,
+              statusBar: false,
+              mainMenuBar: true,
+              search: false,
+              navigationBar: false,
+              mode: 'code',
+            }"
           ></v-jsoneditor>
           <b-row v-if="editable === true" class="justify-content-center">
             <PryvBtn
@@ -128,6 +138,14 @@ export default {
     },
   },
   methods: {
+    isJSON: function(text) {
+      try {
+        JSON.parse(text);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
     currentRouteName() {
       return this.$route.name;
     },
@@ -174,9 +192,6 @@ export default {
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;
     },
-    onError() {
-      console.log("error");
-    },
     reset() {
       Object.assign(this.$data, this.$options.data.call(this));
     },
@@ -199,7 +214,7 @@ export default {
           return;
         }
       } catch (e) {
-        console.log("Error occurred when creating events" + e);
+        console.log("Error occurred when creating modals" + e);
         return;
       }
     },
@@ -219,4 +234,5 @@ export default {
 .trash {
   background-color: #9d0717;
 }
+
 </style>

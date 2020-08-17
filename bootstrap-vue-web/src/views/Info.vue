@@ -6,7 +6,7 @@
           <b-col cols="10">
             <h4>Access Info Panel</h4>
           </b-col>
-          <b-col cols="2">
+          <b-col cols="1">
             <PryvBtn
               v-if="infoJSON"
               @click="backToEvents"
@@ -14,6 +14,17 @@
               :content="btnContent"
               icon="arrow-left"
             ></PryvBtn>
+          </b-col>
+          <b-col cols="1">
+            <PryvBtn
+              @click="$bvModal.show('modal-scoped-stream')"
+              id="submitBtn"
+              class="mt-0 float-right"
+              icon="plus"
+              content="Stream"
+            >
+            </PryvBtn>
+            <AddStreamModal></AddStreamModal>
           </b-col>
         </b-row>
       </div>
@@ -44,6 +55,7 @@
 import { mapState } from "vuex";
 import VueJsonPretty from "vue-json-pretty";
 import PryvBtn from "../components/shared/PryvBtn";
+import AddStreamModal from "../components/modals/AddStreamModal";
 
 export default {
   name: "Info",
@@ -93,6 +105,7 @@ export default {
     },
   },
   components: {
+    AddStreamModal,
     PryvBtn,
     VueJsonPretty,
   },

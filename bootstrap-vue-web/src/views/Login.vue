@@ -128,9 +128,14 @@ export default {
         return this.$store.state.streamsMap;
       },
       set([key, value]) {
-        if (!this.streamsMap[key]) {
-          this.$store.commit("ADD_STREAMS_MAP", [key, value]);
+        let streamArr = null;
+        if (this.streamsMap[key]) {
+          streamArr = this.streamsMap[key];
+        } else {
+          streamArr = [];
         }
+        streamArr.push(value);
+        this.$store.commit("ADD_STREAMS_MAP", [key, streamArr]);
       },
     },
     accessInfoMap: {
@@ -204,17 +209,35 @@ export default {
     },
     async addStreamsToStore(connection) {
       const apiObj = GET_STREAMS_API.GET_STREAMS_API;
-      apiObj[0].params= {"state":"all"}; //todo remove state all
+      apiObj[0].params = { state: "all" }; //todo remove state all
       try {
         const result = await connection.api(apiObj);
+        console.log("streams");
+        console.log(result[0]);
         if (result) {
-          this.streamsMap = [connection.apiEndpoint, result[0].streams];
+          result[0].streams.forEach(stream => {
+            this.addStream(connection.apiEndpoint, stream);
+          });
+          //this.streamsMap = [connection.apiEndpoint, result[0].streams];
+          console.log("streams map");
+          console.log(this.streamsMap);
         }
       } catch (e) {
         console.log("Error occurred when retrieving streams " + e);
         return false;
       }
       return true;
+    },
+    async addStream(apiEndpoint, stream) {
+      //this.streamsMap = [apiEndpoint, stream];
+      if(stream.children && stream.children.length === 0)
+        this.streamsMap = [apiEndpoint, stream];
+      if (stream.children && stream.children.length > 0) {
+        this.streamsMap = [apiEndpoint, stream];
+        stream.children.forEach(streamChild => {
+          return this.addStream(apiEndpoint, streamChild);
+        });
+      }
     },
     async addAccessInfoToStore(connection) {
       try {
@@ -230,13 +253,13 @@ export default {
     },
     async addEventsToStore(connection) {
       this.events = [];
-      let queryParams = {"limit":100}; //todo remove limit parameter
+      let queryParams = {};
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.forEachEvent
         );
-        console.log(result)
+        console.log(result);
         this.eventsMap = [connection.apiEndpoint, this.events];
       } catch (e) {
         console.log("Error occurred when retrieving events " + e);

@@ -17,6 +17,13 @@ const getStreamsApi = [
   },
 ];
 
+const createStreamsApi = [
+  {
+    method: "streams.create",
+    params: {},
+  },
+];
+
 const createEventApi = [
   {
     method: "events.create",
@@ -53,4 +60,5 @@ export default {
   UPDATE_STREAM_API: updateStreamApi,
   DELETE_STREAM_API: deleteStreamApi,
   UPDATE_EVENT_API: updateEventApi,
+  CREATE_STREAM_API: createStreamsApi,
 };

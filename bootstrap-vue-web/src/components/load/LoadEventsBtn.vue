@@ -10,7 +10,6 @@
 <script>
 import PryvBtn from "../shared/PryvBtn";
 import { mapState } from "vuex";
-import { filterTagsSort } from "../../utilities/constants";
 export default {
   name: "LoadEventsBtn",
   components: { PryvBtn },
@@ -41,6 +40,14 @@ export default {
         this.$store.commit("SET_TYPES", value);
       },
     },
+    modifiedSinceMap: {
+      get() {
+        return this.$store.state.modifiedSinceMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
+      },
+    },
   },
   methods: {
     loadEvents() {
@@ -55,23 +62,19 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
-    getSelectedLimit() { //todo limit filter
-      let eventCount = 0;
-      var limit = this.selectedFilters[filterTagsSort.LIMIT];
-      Object.keys(this.eventsMap).map(key => {
-        eventCount = eventCount > this.eventsMap[key].length;
-      });
-      if (limit > eventCount) return limit;
-    },
     async addEventsToStore(connection) {
-      const limit = this.getSelectedLimit();
       this.events = [];
-      let queryParams = limit ? { limit: limit } : {};
+      let modified = this.modifiedSinceMap[connection.apiEndpoint];
+      let queryParams = { modifiedSince: modified };
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.addEachEvent
         );
+        this.modifiedSinceMap = [
+          connection.apiEndpoint,
+          result.meta.serverTime / 1000,
+        ];
         this.typesSet = new Set();
         const clonedEvents = Object.assign({}, this.eventsMap);
         clonedEvents[connection.apiEndpoint] = this.events;
@@ -88,11 +91,6 @@ export default {
       //todo check the types
       this.typesSet.add(event.type);
       this.types = this.typesSet;
-      console.log("types set")
-      console.log(this.typesSet)
-      console.log("types")
-      console.log(this.types)
-
     },
   },
 };

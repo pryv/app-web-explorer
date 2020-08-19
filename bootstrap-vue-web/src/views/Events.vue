@@ -247,21 +247,29 @@ export default {
       this.filterEvents();
     },
     displayEvents() {
-      console.log("events map");
-      console.log(this.eventsMap);
       this.fetchData = [];
+      const eventFewMap = {}
       this.typesSet = new Set();
-      if (!this.selectedStreams) {
+      let limit = 20;
+      if (!this.selectedStreams || Object.keys(this.eventsMap).length === 0) {
         return;
       }
+      if (this.selectedFilters && Object.keys(this.selectedFilters).includes(filterTagsSort.LIMIT)) {
+        limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
+      }
+      for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
+        eventFewMap[apiEndpoint] = events.slice(0, limit);
+      }
       let selectedEvents = [];
-      for (const [key, value] of Object.entries(this.selectedStreams)) {
-        for (let i = 0; i < value.length; i++) {
-          selectedEvents = this.eventsMap[key].filter(event => {
-            event.apiEndpoint = key;
-            event.endpoint = key.split("@")[1];
-            event.token = key.split("@")[0].replace(/(^\w+:|^)\/\//, "");
-            return event.streamId == value[i];
+      for (const [apiEndpoint, streamIds] of Object.entries(this.selectedStreams)) {
+        const ep = apiEndpoint.split("@")[1];
+        const token = apiEndpoint.split("@")[0].replace(/(^\w+:|^)\/\//, "");
+        for (let i = 0; i < streamIds.length; i++) {
+          selectedEvents = eventFewMap[apiEndpoint].filter(event => {
+            event.apiEndpoint = apiEndpoint;
+            event.endpoint = ep
+            event.token = token;
+            return event.streamId == streamIds[i];
           });
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }

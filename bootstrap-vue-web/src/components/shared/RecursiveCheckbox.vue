@@ -2,46 +2,59 @@
   <div>
     <b-row :key="stream.streamId" v-for="stream in displayStreams">
       <b-col cols="2">
-        <b-icon v-if="stream.children" icon="arrow-down-square-fill" v-b-toggle="`${stream.streamId}`" font-scale="1"></b-icon>
+        <span
+          v-if="stream.children"
+          v-b-toggle="`${stream.streamId}`"
+        >
+          <b-icon
+            icon="arrow-down-square-fill"
+            class="when-closed"
+            font-scale="1"
+          ></b-icon>
+          <b-icon
+            icon="arrow-up-square-fill"
+            class="when-opened"
+            variant="danger"
+            font-scale="1"
+          ></b-icon>
+        </span>
       </b-col>
       <b-col cols="8">
         <b-form-checkbox
-                :class="{
-        'trashed': stream.trashed && stream.trashed === true,
-        'not-trashed': !stream.trashed,
-        'text-left':stream.streamId
-      }"
-
-                :value="stream.streamId"
-                @change="checkBoxClicked($event, stream.streamId, endpoint)"
-        >{{ stream.streamName
-          }}
+          :class="{
+            trashed: stream.trashed && stream.trashed === true,
+            'not-trashed': !stream.trashed,
+            'text-left': stream.streamId,
+          }"
+          :value="stream.streamId"
+          @change="checkBoxClicked($event, stream.streamId, endpoint)"
+          >{{ stream.streamName }}
         </b-form-checkbox>
       </b-col>
       <b-col cols="1">
         <b-icon-trash-fill
-                v-if="stream.trashed && stream.trashed === true"
-                class="trash-fill"
+          v-if="stream.trashed && stream.trashed === true"
+          class="trash-fill"
         >
         </b-icon-trash-fill>
       </b-col>
       <b-col cols="1">
         <b-icon-pencil-square
-                @click="viewStreamInfoRecursive(stream.streamId, endpoint, $event)"
-                class="pencil-btn"
+          @click="viewStreamInfoRecursive(stream.streamId, endpoint, $event)"
+          class="pencil-btn"
         >
         </b-icon-pencil-square>
       </b-col>
       <b-col cols="12">
         <b-collapse :id="`${stream.streamId}`" class="mt-2">
           <b-card>
-        <RecursiveCheckbox
-                @viewStreamInfo="$emit('viewStreamInfo', $event)"
-                :endpoint="endpoint"
-                @checkBoxClicked="$emit('checkBoxClicked', $event)"
-                v-if="stream.children"
-                :displayStreams="stream.children"
-        ></RecursiveCheckbox>
+            <RecursiveCheckbox
+              @viewStreamInfo="$emit('viewStreamInfo', $event)"
+              :endpoint="endpoint"
+              @checkBoxClicked="$emit('checkBoxClicked', $event)"
+              v-if="stream.children"
+              :displayStreams="stream.children"
+            ></RecursiveCheckbox>
           </b-card>
         </b-collapse>
       </b-col>
@@ -82,10 +95,10 @@ export default {
 </script>
 
 <style scoped>
-  .card-body{
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-  }
+.card-body {
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
 </style>

@@ -61,7 +61,7 @@
         >
           <b-form-input
             :value="selectedType"
-            @input="setTypeObject"
+            @update="setTypeObject"
             list="input-type-list"
             id="input-type"
             required

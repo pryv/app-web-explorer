@@ -157,6 +157,14 @@ export default {
         this.$store.commit("ADD_EVENTS_MAP", [key, value]);
       },
     },
+    modifiedSinceMap: {
+      get() {
+        return this.$store.state.modifiedSinceMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
+      },
+    },
     types: {
       get() {
         return this.$store.state.types;
@@ -204,6 +212,8 @@ export default {
     },
     addConnectionToStore(connection) {
       this.connectionsMap = [connection.apiEndpoint, connection];
+      console.log("added connection to store");
+      console.log(this.connectionsMap);
       return true;
     },
     async addStreamsToStore(connection) {
@@ -220,6 +230,8 @@ export default {
         console.log("Error occurred when retrieving streams " + e);
         return false;
       }
+      console.log("added streams to store");
+      console.log(this.streamsMap);
       return true;
     },
     async addInitialEventsToStore(connection) {
@@ -232,8 +244,8 @@ export default {
             this.forEachEvent(event);
           });
           this.eventsMap = [connection.apiEndpoint, this.events];
-          console.log("events map initial the events are loaded");
-          console.log(this.eventsMap);
+          console.log("events map initial events are loaded");
+          console.log(JSON.parse(JSON.stringify(this.eventsMap)));
         }
       } catch (e) {
         console.log("Error occurred when retrieving streams " + e);
@@ -262,6 +274,8 @@ export default {
         console.log("Error occurred when retrieving access info " + e);
         return false;
       }
+      console.log("added access info to store");
+      console.log(this.accessInfoMap);
       return true;
     },
     async addEventsToStore(connection) {
@@ -272,10 +286,10 @@ export default {
           queryParams,
           this.forEachEvent
         );
-        console.log(result);
+        this.modifiedSinceMap = [connection.apiEndpoint,result.meta.serverTime/1000 ];
         this.eventsMap = [connection.apiEndpoint, this.events];
         console.log("events map all the events are loaded");
-        console.log(this.eventsMap);
+        console.log(JSON.parse(JSON.stringify(this.eventsMap)));
       } catch (e) {
         console.log("Error occurred when retrieving events " + e);
         return false;
@@ -287,7 +301,7 @@ export default {
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },
-     updateStore(connection) {
+    updateStore(connection) {
       if (
         this.addConnectionToStore(connection) &&
         this.addStreamsToStore(connection) &&
@@ -301,7 +315,7 @@ export default {
     async updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
         console.log("befor functions before routed");
-        await this.updateStore(connection)
+        (await this.updateStore(connection))
           ? this.$router.push("events")
           : console.log("Some error occured when loading");
         console.log("later functions after routed");

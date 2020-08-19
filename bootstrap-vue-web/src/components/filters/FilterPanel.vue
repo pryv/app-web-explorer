@@ -323,8 +323,6 @@ export default {
   methods: {
     setSelected(value) {
       this.selected = value;
-      console.log("this.selected");
-      console.log(this.selected);
       this.selected
         ? ((this.tags = this.tags.filter(
             value => !value.includes(filterTags.TYPES)
@@ -513,9 +511,9 @@ export default {
   margin-right: 2rem;
 }
 
-  .modify-btn{
-    border-radius: 0;
-    width:100%;
-    padding: 2px 5px;
-  }
+.modify-btn {
+  border-radius: 0;
+  width: 100%;
+  padding: 2px 5px;
+}
 </style>

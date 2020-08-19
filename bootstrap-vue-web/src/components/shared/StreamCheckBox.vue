@@ -8,7 +8,10 @@
     >
       <b-row>
         <b-col cols="2">
-          <b-icon v-b-toggle="`${endpoint}`" icon="arrow-down-square-fill" font-scale="1"></b-icon>
+          <span v-b-toggle="`${endpoint}`">
+            <b-icon icon="arrow-down-square-fill" class="when-closed" font-scale="1"></b-icon>
+            <b-icon icon="arrow-up-square-fill" class="when-opened" variant="danger" font-scale="1"></b-icon>
+          </span>
         </b-col>
         <b-col cols="8">
           <b-form-checkbox
@@ -208,5 +211,8 @@ export default {
   padding-top: 0.3rem;
   padding-bottom: 0.125rem;
 }
-
+.collapsed > .when-opened,
+:not(.collapsed) > .when-closed {
+  display: none;
+}
 </style>

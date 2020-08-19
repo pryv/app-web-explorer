@@ -19,6 +19,7 @@ const store = new Vuex.Store({
     selectedFilters: {},
     types: new Set(),
     typesAll: {},
+    modifiedSinceMap: {},
   },
   mutations: {
     UPDATE_CHECKBOX: (state, selected) => {
@@ -63,6 +64,9 @@ const store = new Vuex.Store({
     },
     UPDATE_STREAMS_MAP: (state, streamsMap) => {
       state.streamsMap = streamsMap;
+    },
+    ADD_MODIFIED_SINCE_MAP: (state, [key, value]) => {
+      Vue.set(state.modifiedSinceMap, key, value);
     },
     DELETE_STREAMS_MAP: (state, streamsMap) => {
       state.streamsMap = streamsMap;
@@ -125,6 +129,9 @@ const store = new Vuex.Store({
     },
     getAllTypes() {
       return this.state.typesAll;
+    },
+    getModifiedSinceMap() {
+      return this.state.modifiedSinceMap;
     },
   },
 });

@@ -49,6 +49,20 @@ export default {
     },
   },
   methods: {
+    displayAllInitial()
+    {
+      Object.keys(this.accessInfo).forEach(
+              apiEndpoint =>
+              {
+                const payload = {
+                  eventClickedOrUnClicked: true,
+                  clickedEndpointAndStreamId: apiEndpoint,
+                  endpointClicked: apiEndpoint,
+                };
+                this.checkBoxClicked(payload)
+              }
+      );
+    },
     checkBoxClicked(e) {
       const clonedSelectedStreamsObjectArray = Object.assign(
         {},
@@ -150,14 +164,17 @@ export default {
         const streams = this.streamsMap[key];
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
-            if (streams[i].parentId === null)
+            if (!streams[i].parentId || streams[i].parentId === null)
+            {
               customUserObjectArray[key].push(
-                this.createPayload(accessInfo, streams[i])
+                      this.createPayload(accessInfo, streams[i])
               );
+            }
           }
         }
       }
       this.accessInfo = customUserObjectArray;
+      this.displayAllInitial();
     },
     createPayload(accessInfo, stream) {
       const payload = {

@@ -1,27 +1,25 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2 w-80">
+    <div class="bg-white py-2 w-90">
       <div class="card-style info-card">
         <b-row>
           <b-col cols="10">
             <h4>Access Info Panel</h4>
           </b-col>
-          <b-col cols="1">
+          <b-col cols="2" class="px-0 float-right">
             <PryvBtn
               v-if="infoJSON"
               @click="backToEvents"
-              class="mt-0 float-right"
+              class="mt-0 mr-0"
               :content="btnContent"
               icon="arrow-left"
             ></PryvBtn>
-          </b-col>
-          <b-col cols="1">
             <PryvBtn
-              @click="$bvModal.show('modal-scoped-stream')"
-              id="submitBtn"
-              class="mt-0 float-right"
-              icon="plus"
-              content="Stream"
+                    @click="$bvModal.show('modal-scoped-stream')"
+                    id="submitBtn"
+                    class="mt-0"
+                    icon="plus"
+                    content="Stream"
             >
             </PryvBtn>
             <AddStreamModal></AddStreamModal>

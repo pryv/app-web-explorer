@@ -57,18 +57,34 @@ export default {
       return this.$route.name;
     },
     async addStreamsToStore(connection) {
+      const apiObj = GET_STREAMS_API.GET_STREAMS_API;
+      apiObj[0].params = { state: "all" }; //todo remove state all
       try {
-        const result = await connection.api(GET_STREAMS_API.GET_STREAMS_API);
+        const result = await connection.api(apiObj);
         if (result) {
+          var loadStreams = [];
+          result[0].streams.forEach(stream => {
+            this.addStream(connection.apiEndpoint, stream, loadStreams);
+          });
           const clonedStreams = Object.assign({}, this.streamsMap);
-          clonedStreams[connection.apiEndpoint] = result[0].streams;
+          clonedStreams[connection.apiEndpoint] = loadStreams;
           this.streamsMap = clonedStreams;
         }
       } catch (e) {
-        console.log("Error occurred when retrieving streams" + e);
+        console.log("Error occurred when retrieving streams " + e);
         return false;
       }
       return true;
+    },
+    async addStream(apiEndpoint, stream, loadStreams) {
+      if(stream.children && stream.children.length === 0)
+        loadStreams.push(stream)
+      if (stream.children && stream.children.length > 0) {
+        loadStreams.push(stream)
+        stream.children.forEach(streamChild => {
+          return this.addStream(apiEndpoint, streamChild, loadStreams);
+        });
+      }
     },
     async addEventsToStore(connection) {
       this.events = [];

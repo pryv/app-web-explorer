@@ -10,27 +10,34 @@
           id="checkbox-group-1"
           name="flavour-1"
           v-model="valueLocal"
+          class="pl-4"
         ></b-form-checkbox-group>
       </b-form-group>
     </template>
     <template v-slot:modal-footer="{ ok, cancel }">
-      <b-button @click="$emit('clickOk', ok)" size="sm" variant="success">
-        OK
-      </b-button>
-      <b-button
-        @click="$emit('clickCancel', cancel)"
-        size="sm"
-        variant="danger"
-      >
-        Cancel
-      </b-button>
+      <PryvBtn
+              @click="$emit('clickOk', ok)"
+              class="mt-0 float-right"
+              content="OK"
+              icon="check"
+              type="submit"
+              variant="success"
+      ></PryvBtn>
+      <PryvBtn
+              @click="$emit('clickCancel', cancel)"
+              class="mt-0 float-right"
+              content="Cancel"
+              icon="x"
+      ></PryvBtn>
     </template>
   </b-modal>
 </template>
 
 <script>
+import PryvBtn from "../shared/PryvBtn";
 export default {
   name: "TypesFilterModal",
+  components: { PryvBtn },
   props: {
     title: {
       required: true,
@@ -59,4 +66,11 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+  .custom-control {
+    padding-left: 1.5rem;
+  }
+  .custom-control-inline{
+    margin-right: 3rem;
+  }
+</style>

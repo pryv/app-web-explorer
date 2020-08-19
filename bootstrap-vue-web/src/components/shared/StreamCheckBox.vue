@@ -1,46 +1,45 @@
 <template>
-  <div class="text-left">
+  <b-col cols="12">
     <b-form-checkbox-group
       id="flavors"
-      class="ml-4 pl-0"
+      class="pl-0"
       stacked
       v-model="selectedStreamsObjectArrayLocal"
     >
-      <b-row class="px-3">
-        <div cols="10">
+      <b-row>
+        <b-col cols="2">
+          <b-icon v-b-toggle="`${endpoint}`" icon="arrow-down-square-fill" font-scale="1"></b-icon>
+        </b-col>
+        <b-col cols="8">
           <b-form-checkbox
             :key="endpoint"
             :value="endpoint"
             @change="checkBoxClicked($event, endpoint, endpoint)"
-            class="font-weight-bold main"
+            class="font-weight-bold main text-left"
             @click.stop
             >{{ accessInfoName }}
           </b-form-checkbox>
-        </div>
-        <div cols="2">
+        </b-col>
+        <b-col cols="2">
           <span :endpoint="endpoint" @click="viewAccessInfoFunc(endpoint)">
-            <b-icon-info-square-fill class="info-btn"> </b-icon-info-square-fill
+            <b-icon-info-square-fill variant="secondary" class="info-btn"> </b-icon-info-square-fill
           ></span>
-        </div>
+        </b-col>
+        <b-col cols="12">
+          <b-collapse :id="`${endpoint}`"  class="mt-2"  visible>
+            <b-card>
+              <RecursiveCheckbox
+                      :endpoint="endpoint"
+                      @viewStreamInfo="viewStreamInfoFunc"
+                      @checkBoxClicked="$emit('checkBoxClicked', $event)"
+                      :displayStreams="displayStreams"
+              ></RecursiveCheckbox>
+            </b-card>
+          </b-collapse>
+        </b-col>
       </b-row>
-     <!-- <b-form-checkbox
-        v-for="stream in displayStreams"
-        :class="{ 'trashed': stream.trashed && stream.trashed === true }"
-        :key="stream.streamId"
-        :value="stream.streamId"
-        @change="checkBoxClicked($event, stream.streamId, endpoint)"
-        >{{ stream.streamName
-        }}<span :endpoint="endpoint">
-          <b-icon-pencil-square
-            @click="viewStreamInfoFunc(stream.streamId, endpoint, $event)"
-            class="pencil-btn"
-          >
-          </b-icon-pencil-square
-        ></span>
-      </b-form-checkbox>-->
-      <RecursiveCheckbox :endpoint="endpoint" @viewStreamInfo="viewStreamInfoFunc"  @checkBoxClicked="$emit('checkBoxClicked',$event);" :displayStreams="displayStreams"></RecursiveCheckbox>
-    </b-form-checkbox-group>
-  </div>
+       </b-form-checkbox-group>
+  </b-col>
 </template>
 
 <script>
@@ -126,8 +125,6 @@ export default {
       this.viewAccessInfo = endpoint;
     },
     viewStreamInfoFunc(payload) {
-      console.log("payload");
-      console.log(payload)
       let streamId = payload.streamId;
       let endpoint = payload.endpoint;
       const obj = {
@@ -167,13 +164,15 @@ export default {
 .custom-control-label {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: inline-block;
-  padding: 2px 6px;
   padding-left: 0 !important;
   margin-bottom: 0;
   vertical-align: middle;
-  margin-left: -2%;
   font-size: 0.75rem !important;
-  width: 150px;
+  width: auto;
+}
+
+.custom-control{
+  padding-left: 0 !important;
 }
 
 .main {
@@ -194,7 +193,20 @@ export default {
 }
 
 .trashed {
-  color: #9d0717;
+  color: gray;
   font-weight: bold;
 }
+
+.not-trashed {
+  color: black;
+  font-weight: bold;
+}
+
+.card-body{
+  padding-left: 0.125rem;
+  padding-right: 0.125rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.125rem;
+}
+
 </style>

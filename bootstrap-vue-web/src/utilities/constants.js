@@ -3,7 +3,7 @@ const filterTags = {
   FROM: "From",
   TO: "To",
   STATE: "State",
-  MODIFIED_SINCE: "Modified Since",
+  MODIFIED_SINCE: "Modified",
   TYPES: "Types",
   SORT: "Sort",
   LIMIT: "Limit",

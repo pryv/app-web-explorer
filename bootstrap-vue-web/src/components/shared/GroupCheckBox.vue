@@ -87,7 +87,6 @@ export default {
             e.endpointClicked
           ] = clonedSelectedStreamsObjectArray[e.endpointClicked].filter(
             endpointAndStreamId => {
-              console.log(endpointAndStreamId !== e.clickedEndpointAndStreamId);
               return endpointAndStreamId !== e.clickedEndpointAndStreamId;
             }
           );

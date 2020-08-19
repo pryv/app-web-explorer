@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2 w-80">
+    <div class="bg-white py-2 w-90">
       <div class="card-style info-card">
         <b-row>
           <b-col cols="10">
@@ -17,12 +17,12 @@
         </b-row>
       </div>
       <div>
-        <b-card class="text-info" v-if="viewStreamInfoObj">
-          <b-row class="float-right">
+        <b-card class="text-info" v-if="computedStreamInfo">
+          <b-row class="float-right mr-2" >
             <b-icon
               v-if="
-                viewStreamInfoObj.trashed &&
-                  viewStreamInfoObj.trashed === true &&
+                computedStreamInfo.trashed &&
+                  computedStreamInfo.trashed === true &&
                   editable === false
               "
               icon="trash-fill"
@@ -32,11 +32,11 @@
           <vue-json-pretty
             v-if="editable === false"
             :path="'res'"
-            :data="viewStreamInfoObj"
+            :data="computedStreamInfo"
           ></vue-json-pretty>
           <v-jsoneditor
             v-else
-            v-model="viewStreamInfoObj"
+            v-model="computedStreamInfo"
             :plus="false"
             height="500px"
             :options="{
@@ -72,19 +72,53 @@
             <span class="w-3"></span>
             <PryvBtn
               class="mt-0"
-              @click="deleteStream"
+              @click="
+                viewStreamInfoObj.trashed && viewStreamInfoObj.trashed === true
+                  ? $bvModal.show(viewStreamInfoObj.id)
+                  : deleteStream()
+              "
               :content="btnContentDelete"
               icon="trash-fill"
             ></PryvBtn>
-          </b-row>
-          <b-row style="visibility: hidden;">
-            <LoadStreamsBtn ref="loadStreams"></LoadStreamsBtn>
           </b-row>
         </b-card>
         <b-card class="text-info" v-else>
           {{ message }}
         </b-card>
       </div>
+      <b-modal :id="this.viewStreamInfoObj.id" ref="modal">
+        <template v-slot:modal-header>
+          <h5>Delete a stream</h5>
+        </template>
+        <template v-slot:default>
+          <b-form-checkbox
+            id="checkbox-1"
+            v-model="merge"
+            name="checkbox-1"
+            value="accepted"
+            unchecked-value="not_accepted"
+          >
+            Merge events with parents
+          </b-form-checkbox>
+        </template>
+        <template v-slot:modal-footer="{ ok, cancel }">
+          <PryvBtn
+            @click="deleteStream"
+            class="mt-0 float-right"
+            content="Delete"
+            icon="trash-fill"
+            type="submit"
+            variant="success"
+          ></PryvBtn>
+          <PryvBtn
+            @click="cancel()"
+            class="mt-0 float-right"
+            content="Cancel"
+            icon="x"
+          ></PryvBtn>
+        </template>
+      </b-modal>
+      <LoadStreamsBtn ref="reloadStreams" class="invisible"></LoadStreamsBtn>
     </div>
   </div>
 </template>
@@ -114,6 +148,8 @@ export default {
       btnContentCancel: "Cancel",
       btnContentDelete: "Delete",
       editable: false,
+      updatedStreamInfo: null,
+      merge: "not_accepted",
     };
   },
   computed: {
@@ -122,6 +158,7 @@ export default {
     ...mapState(["connectionsMap"]),
     viewStreamInfoObj: {
       get() {
+        this.reset();
         return this.$store.state.viewStreamInfoObj;
       },
       set(value) {
@@ -134,6 +171,16 @@ export default {
       },
       set(value) {
         this.$store.commit("UPDATE_STREAMS_MAP", value);
+      },
+    },
+    computedStreamInfo: {
+      get() {
+        return this.updatedStreamInfo !== null
+          ? this.updatedStreamInfo
+          : this.$store.state.viewStreamInfoObj;
+      },
+      set(value) {
+        this.updatedStreamInfo = value;
       },
     },
   },
@@ -157,21 +204,31 @@ export default {
     edit() {
       this.editable = !this.editable;
     },
+    getUpdatedProps() {
+      const obj = {};
+      Object.keys(this.viewStreamInfoObj).forEach(k => {
+        if (k in this.computedStreamInfo)
+          if (this.viewStreamInfoObj[k] !== this.computedStreamInfo[k])
+            if (k !== "children") obj[k] = this.computedStreamInfo[k];
+      });
+      return obj;
+    },
     async save() {
-      console.log(this.viewStreamInfoObj);
+      const updateObj = this.getUpdatedProps();
+      if (Object.keys(updateObj).length === 0) {
+        alert("No changes for the existing stream is detected");
+        return;
+      }
       const endpoint = this.viewStreamInfo.endpoint;
       const connection = this.connectionsMap[endpoint];
       try {
         const apiObj = UPDATE_STREAM_API.UPDATE_STREAM_API;
         apiObj[0].params = {
           id: this.viewStreamInfoObj.id,
-          update: this.viewStreamInfoObj,
+          update: updateObj,
         };
         const result = await connection.api(apiObj);
-        if (result && result[0] && result[0].stream) {
-          await this.addStreamsToStore(endpoint, result[0].stream);
-        }
-        this.reset();
+        await this.addStreamsToStore(endpoint, result[0].stream);
         if (result && result[0] && result[0].error) {
           alert(result[0].error.id + " - " + result[0].error.message);
           return;
@@ -180,10 +237,9 @@ export default {
         console.log("Error occurred when creating events" + e);
         return;
       }
-      console.log(connection);
-      this.reset();
     },
     async addStreamsToStore(endpoint, stream) {
+      stream.children = this.viewStreamInfoObj.children;
       const clonedStreams = Object.assign({}, this.streamsMap);
       const streamIndex = clonedStreams[this.viewStreamInfo.endpoint].findIndex(
         key => key.id === this.viewStreamInfo.id
@@ -202,13 +258,22 @@ export default {
         const apiObj = DELETE_STREAM_API.DELETE_STREAM_API;
         apiObj[0].params = {
           id: this.viewStreamInfoObj.id,
-          mergeEventsWithParent: true,
+          mergeEventsWithParent: this.merge === "accepted" ? true : false,
         };
+
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].stream) {
-          await this.addStreamsToStore(endpoint, result[0].stream);
+          const stream = result[0].stream;
+          await this.addStreamsToStore(endpoint, stream);
+          stream.children = this.viewStreamInfoObj.children;
+          this.viewStreamInfoObj = stream;
         }
-        console.log(this.streamsMap);
+        if (result && result[0] && (result[0].streamDeletion ))
+        {
+          this.$refs.reloadStreams.$el.click()
+          this.$bvModal.hide(result[0].streamDeletion.id);
+          this.backToEvents();
+        }
         if (result && result[0] && result[0].error) {
           alert(result[0].error.id + " - " + result[0].error.message);
           return;
@@ -234,5 +299,4 @@ export default {
 .trash {
   background-color: #9d0717;
 }
-
 </style>

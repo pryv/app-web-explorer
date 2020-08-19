@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 450px;min-width: 200px;">
+  <div style="max-width: 400px;min-width:400px;">
     <b-row align-v="center" class="pt-2">
       <b-img
         alt="Responsive image"

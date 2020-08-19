@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2 w-80">
+    <div class="bg-white py-2 w-90">
       <div class="card-style login-card">
         <b-row>
           <b-col cols="10">
@@ -212,15 +212,10 @@ export default {
       apiObj[0].params = { state: "all" }; //todo remove state all
       try {
         const result = await connection.api(apiObj);
-        console.log("streams");
-        console.log(result[0]);
         if (result) {
           result[0].streams.forEach(stream => {
             this.addStream(connection.apiEndpoint, stream);
           });
-          //this.streamsMap = [connection.apiEndpoint, result[0].streams];
-          console.log("streams map");
-          console.log(this.streamsMap);
         }
       } catch (e) {
         console.log("Error occurred when retrieving streams " + e);

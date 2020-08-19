@@ -1,16 +1,14 @@
 <template>
   <div class="bg-white shadow h-100 w-100 d-flex justify-content-center">
-    <div class="bg-white py-2 w-80">
+    <div class="bg-white py-2 w-90">
       <div class="card-style events-card">
         <b-row>
           <b-col cols="10">
             <h4>Events Panel</h4>
           </b-col>
-          <b-col cols="1" class="pl-0">
-            <LoadStreamsBtn class="float-right" />
-          </b-col>
-          <b-col cols="1" class="pl-0">
-            <LoadEventsBtn class="float-right" />
+          <b-col cols="2" class="px-0 float-right">
+            <LoadStreamsBtn class="mr-2" />
+            <LoadEventsBtn />
           </b-col>
         </b-row>
       </div>
@@ -18,7 +16,7 @@
       <br />
       <div>
         <b-card no-body>
-          <b-col cols="1" offset="11">
+          <b-col cols="2" offset="10" class="pr-0">
             <PryvBtn
               @click="$bvModal.show('modal-scoped-event')"
               id="submitBtn"

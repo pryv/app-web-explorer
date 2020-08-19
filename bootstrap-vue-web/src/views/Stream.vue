@@ -52,7 +52,7 @@
           <b-row v-if="editable === true" class="justify-content-center">
             <PryvBtn
               class="mt-0"
-              @click="edit"
+              @click="cancelEdit"
               :content="btnContentCancel"
             ></PryvBtn>
             <span class="w-3"></span>
@@ -111,7 +111,7 @@
             variant="success"
           ></PryvBtn>
           <PryvBtn
-            @click="cancel()"
+            @click="cancel"
             class="mt-0 float-right"
             content="Cancel"
             icon="x"
@@ -283,6 +283,11 @@ export default {
         return;
       }
     },
+    cancelEdit()
+    {
+      this.editable = !this.editable;
+      this.updatedStreamInfo = null;
+    }
   },
 };
 </script>

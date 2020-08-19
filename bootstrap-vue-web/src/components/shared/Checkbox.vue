@@ -1,7 +1,7 @@
 <template>
   <span>
-    <input :checked="checked" name="checkbox-1" type="checkbox" />
-    <label>
+    <input :checked="checked"  @change="$emit('change', $event.target.checked)" name="checkbox-1" type="checkbox" />
+    <label class="label-class">
       {{ content }}
     </label>
   </span>
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style>
-label {
+.label-class {
   font-size: 12px;
   margin-left: 5px;
   margin-top: -5%;

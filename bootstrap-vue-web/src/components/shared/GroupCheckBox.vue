@@ -61,6 +61,18 @@ export default {
           ] = this.computedAccessInfoObjectArray[e.endpointClicked].map(opt => {
             return opt.streamId;
           });
+          clonedSelectedStreamsObjectArray[e.endpointClicked].forEach(
+                  obj =>{
+                    const stream = this.streamsMap[e.endpointClicked].filter(
+                            key => key.id === obj
+                    );
+                    this.selectChildStreams(
+                            stream[0],
+                            clonedSelectedStreamsObjectArray,
+                            e.endpointClicked
+                    );
+                  }
+          )
           clonedSelectedStreamsObjectArray[e.endpointClicked].push(
             e.endpointClicked
           );

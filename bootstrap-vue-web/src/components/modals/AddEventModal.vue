@@ -25,6 +25,7 @@
             id="input-connection"
             :state="connectionState"
             required
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-connection-list"
@@ -45,6 +46,7 @@
             id="input-stream"
             required
             :state="streamState"
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-stream-list"
@@ -65,6 +67,7 @@
             required
             :state="typeState"
             placeholder="Select a type"
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-type-list"
@@ -231,7 +234,7 @@ export default {
         .filter(obj => !obj.trashed)
         .map(obj => {
           const payload = {
-            value: obj.id + " - " + obj.name,
+            value: `${obj.name} [${obj.id}]`,
             text: filteredObj,
           };
           return payload;
@@ -294,7 +297,9 @@ export default {
         this.selectedTypeObject.type === "number"
       ) {
         const payload = {
-          label: `Content ${this.selectedTypeObject.required ? "*" : ""}`,
+          label: `Content ${
+            this.selectedTypeObject.type === "number" ? "*" : ""
+          }`,
           type: this.selectedTypeObject.type,
           val: null,
           required: this.selectedTypeObject.type === "number" ? true : false,
@@ -372,7 +377,6 @@ export default {
       if (this.selectedEndpoint === null) return;
       if (this.selectedStream === null) return;
       if (this.selectedTypeObject === null) return;
-
       const connection = this.connectionsMap[this.selectedEndpoint];
       try {
         const apiObj = CREATE_EVENT_API.CREATE_EVENT_API;
@@ -394,6 +398,7 @@ export default {
 
         if (
           this.selectedTypeObject.type === "null" &&
+          this.contentNames.length > 0 &&
           this.contentNames[0].type === "attachment"
         ) {
           var formData = new FormData();
@@ -403,7 +408,9 @@ export default {
             .createEventWithFormData(
               {
                 type: this.selectedType.toLowerCase(),
-                streamId: this.selectedStream.split(" ")[0],
+                streamId: this.selectedStream
+                  .split(" ")[1]
+                  .replace(/[[\]]/g, ""),
               },
               formData
             )
@@ -421,7 +428,7 @@ export default {
             );
         } else {
           apiObj[0].params = {
-            streamId: this.selectedStream.split(" ")[0],
+            streamId: this.selectedStream.split(" ")[1].replace(/[[\]]/g, ""),
             type: this.selectedType.toLowerCase(),
             content: content,
           };

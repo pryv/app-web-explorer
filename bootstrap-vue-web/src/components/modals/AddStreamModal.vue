@@ -25,6 +25,7 @@
             v-model="selectedParentId"
             list="input-stream-list"
             id="input-stream"
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-stream-list"
@@ -148,10 +149,6 @@ export default {
       this.nameState = null;
     },
     async addStream() {
-      console.log(this.selectedId);
-      console.log(this.selectedParentId);
-      console.log(this.selectedName);
-      console.log(this.clientData);
       const connection = this.connectionsMap[this.viewAccessInfo];
       try {
         const apiObj = CREATE_STREAM_API.CREATE_STREAM_API;
@@ -182,6 +179,7 @@ export default {
       this.updateParent(clonedStreams, stream);
       this.streamsMap = clonedStreams;
       this.$bvModal.hide("modal-scoped-stream");
+      this.resetModal();
     },
     updateParent(clonedStreams, stream) {
       if (stream.parentId !== null) {
@@ -208,26 +206,6 @@ export default {
         key => key.id === stream.parentId
       );
       return parentStreamIndex;
-    },
-    async addEachStream(apiEndpoint, stream) {
-      const streamArr = this.streamsMap[this.viewAccessInfo];
-      if (
-        stream.children &&
-        stream.children.length === 0 &&
-        !streamArr.includes(stream)
-      ) {
-        this.streamsMap = [apiEndpoint, stream];
-      }
-      if (
-        stream.children &&
-        stream.children.length > 0 &&
-        !streamArr.includes(stream)
-      ) {
-        this.streamsMap = [apiEndpoint, stream];
-        stream.children.forEach(streamChild => {
-          return this.addStream(apiEndpoint, streamChild);
-        });
-      }
     },
     resetModal() {
       this.selectedName = null;

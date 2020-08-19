@@ -103,6 +103,7 @@ import UsernameLogin from "../components/login/UsernameLogin";
 import ServiceInfo from "../components/login/ServiceInfo";
 import GET_STREAMS_API from "../utilities/api";
 import ACCESS_INFO_API from "../utilities/api";
+import GET_EVENTS_API from "../utilities/api";
 export default {
   components: {
     ServiceInfo,
@@ -153,9 +154,7 @@ export default {
         return this.$store.state.eventsMap;
       },
       set([key, value]) {
-        if (!this.eventsMap[key]) {
-          this.$store.commit("ADD_EVENTS_MAP", [key, value]);
-        }
+        this.$store.commit("ADD_EVENTS_MAP", [key, value]);
       },
     },
     types: {
@@ -223,9 +222,28 @@ export default {
       }
       return true;
     },
+    async addInitialEventsToStore(connection) {
+      const apiObj = GET_EVENTS_API.GET_EVENTS_API;
+      apiObj[0].params = {};
+      try {
+        const result = await connection.api(apiObj);
+        if (result) {
+          result[0].events.forEach(event => {
+            this.forEachEvent(event);
+          });
+          this.eventsMap = [connection.apiEndpoint, this.events];
+          console.log("events map initial the events are loaded");
+          console.log(this.eventsMap);
+        }
+      } catch (e) {
+        console.log("Error occurred when retrieving streams " + e);
+        return false;
+      }
+      return true;
+    },
     async addStream(apiEndpoint, stream) {
       //this.streamsMap = [apiEndpoint, stream];
-      if(stream.children && stream.children.length === 0)
+      if (stream.children && stream.children.length === 0)
         this.streamsMap = [apiEndpoint, stream];
       if (stream.children && stream.children.length > 0) {
         this.streamsMap = [apiEndpoint, stream];
@@ -248,7 +266,7 @@ export default {
     },
     async addEventsToStore(connection) {
       this.events = [];
-      let queryParams = {};
+      let queryParams = { limit: 1000000 };
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
@@ -256,6 +274,8 @@ export default {
         );
         console.log(result);
         this.eventsMap = [connection.apiEndpoint, this.events];
+        console.log("events map all the events are loaded");
+        console.log(this.eventsMap);
       } catch (e) {
         console.log("Error occurred when retrieving events " + e);
         return false;
@@ -267,23 +287,25 @@ export default {
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },
-    updateStore(connection) {
+     updateStore(connection) {
       if (
         this.addConnectionToStore(connection) &&
         this.addStreamsToStore(connection) &&
         this.addAccessInfoToStore(connection) &&
-        this.addEventsToStore(connection)
+        this.addInitialEventsToStore(connection)
       ) {
-        console.log("successfully loaded");
         return true;
       }
       return false;
     },
-    updateSessionStorage(connection, cookie) {
+    async updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        this.updateStore(connection)
+        console.log("befor functions before routed");
+        await this.updateStore(connection)
           ? this.$router.push("events")
           : console.log("Some error occured when loading");
+        console.log("later functions after routed");
+        await this.addEventsToStore(connection);
       }
     },
     currentRouteName() {

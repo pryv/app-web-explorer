@@ -26,6 +26,7 @@
             id="input-stream"
             required
             :state="streamState"
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-stream-list"
@@ -46,6 +47,7 @@
             required
             :state="typeState"
             placeholder="Select a type"
+            autocomplete="off"
           ></b-form-input>
           <b-form-datalist
             id="input-type-list"

@@ -54,7 +54,7 @@ const deleteStreamApi = [
 
 export default {
   ACCESS_INFO_API: accessInfoApi,
-  ACCESS_EVENTS_API: getEventsApi,
+  GET_EVENTS_API: getEventsApi,
   GET_STREAMS_API: getStreamsApi,
   CREATE_EVENT_API: createEventApi,
   UPDATE_STREAM_API: updateStreamApi,

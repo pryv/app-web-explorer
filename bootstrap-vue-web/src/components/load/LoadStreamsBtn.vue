@@ -1,5 +1,10 @@
 <template>
-  <PryvBtn :icon="icon" :content="btnContent" @click="loadStreams" id="submitBtn"></PryvBtn>
+  <PryvBtn
+    icon="arrow-clockwise"
+    content=" All"
+    @click="loadStreams"
+    id="submitBtn"
+  ></PryvBtn>
 </template>
 
 <script>
@@ -11,10 +16,8 @@ export default {
   components: { PryvBtn },
   data() {
     return {
-      btnContent: " All",
       events: [],
       typesSet: new Set(),
-      icon:"arrow-clockwise"
     };
   },
   computed: {
@@ -35,12 +38,28 @@ export default {
         this.$store.commit("UPDATE_EVENTS_MAP", value);
       },
     },
+    eventsDisplayMap: {
+      get() {
+        return this.$store.state.eventsDisplayMap;
+      },
+      set(value) {
+        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
+      },
+    },
     types: {
       get() {
         return this.$store.state.types;
       },
       set(value) {
         this.$store.commit("SET_TYPES", value);
+      },
+    },
+    modifiedSinceMap: {
+      get() {
+        return this.$store.state.modifiedSinceMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
       },
     },
   },
@@ -58,11 +77,11 @@ export default {
     },
     async addStreamsToStore(connection) {
       const apiObj = GET_STREAMS_API.GET_STREAMS_API;
-      apiObj[0].params = { state: "all" }; //todo remove state all
+      apiObj[0].params = { state: "all" };
       try {
         const result = await connection.api(apiObj);
         if (result) {
-          var loadStreams = [];
+          const loadStreams = [];
           result[0].streams.forEach(stream => {
             this.addStream(connection.apiEndpoint, stream, loadStreams);
           });
@@ -77,27 +96,47 @@ export default {
       return true;
     },
     async addStream(apiEndpoint, stream, loadStreams) {
-      if(stream.children && stream.children.length === 0)
-        loadStreams.push(stream)
+      if (stream.children && stream.children.length === 0)
+        loadStreams.push(stream);
       if (stream.children && stream.children.length > 0) {
-        loadStreams.push(stream)
-        stream.children.forEach(streamChild => {
-          return this.addStream(apiEndpoint, streamChild, loadStreams);
-        });
+        loadStreams.push(stream);
+        stream.children.forEach(streamChild =>
+          this.addStream(apiEndpoint, streamChild, loadStreams)
+        );
       }
     },
     async addEventsToStore(connection) {
       this.events = [];
-      let queryParams = {};
+      let modified = this.modifiedSinceMap[connection.apiEndpoint];
+      let queryParams = { modifiedSince: modified };
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
           this.forEachEvent
         );
-        const clonedEvents = Object.assign({}, this.eventsMap);
-        clonedEvents[connection.apiEndpoint] = this.events;
-        this.eventsMap = clonedEvents;
-        console.log(result);
+        this.modifiedSinceMap = [
+          connection.apiEndpoint,
+          result.meta.serverTime,
+        ];
+        this.typesSet = new Set();
+        const clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
+        this.events.forEach(event => {
+          if (
+            this.eventsMap[connection.apiEndpoint].filter(
+              e => e.id === event.id
+            ).length === 0
+          ) {
+            this.eventsMap[connection.apiEndpoint].push(event);
+          }
+          if (
+            clonedDisplayEvents[connection.apiEndpoint].filter(
+              e => e.id === event.id
+            ).length === 0
+          ) {
+            clonedDisplayEvents[connection.apiEndpoint].push(event);
+          }
+        });
+        this.eventsDisplayMap = clonedDisplayEvents;
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);
         return false;

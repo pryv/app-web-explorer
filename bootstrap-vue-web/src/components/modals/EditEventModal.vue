@@ -96,36 +96,37 @@
               :state="contentStates[index]"
             ></b-form-input>
           </b-form-group>
-          <b-form-group label="Time" label-for="input-time">
-            <b-form-input
-              type="text"
-              v-model="selectedTimeComputed"
-              id="input-time"
-              placeholder="Enter Time"
-            ></b-form-input>
-          </b-form-group>
-          <b-form-group label="Duration" label-for="input-duration">
-            <b-form-input
-              type="text"
-              v-model="selectedDurationComputed"
-              id="input-duration"
-              placeholder="Enter Duration"
-            ></b-form-input>
-          </b-form-group>
-          <b-form-group label="Description" label-for="input-description">
-            <b-form-input
-              type="text"
-              v-model="selectedDescriptionComputed"
-              id="input-description"
-              placeholder="Enter Description"
-            ></b-form-input>
-          </b-form-group>
-          <b-form-group label="Client Data" label-for="input-client-data">
-            <v-jsoneditor
-              v-model="selectedClientDataComputed"
-              height="200px"
-              :plus="false"
-              :options="{
+        </div>
+        <b-form-group label="Time" label-for="input-time">
+          <b-form-input
+                  type="text"
+                  v-model="selectedTimeComputed"
+                  id="input-time"
+                  placeholder="Enter Time"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group label="Duration" label-for="input-duration">
+          <b-form-input
+                  type="text"
+                  v-model="selectedDurationComputed"
+                  id="input-duration"
+                  placeholder="Enter Duration"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group label="Description" label-for="input-description">
+          <b-form-input
+                  type="text"
+                  v-model="selectedDescriptionComputed"
+                  id="input-description"
+                  placeholder="Enter Description"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group label="Client Data" label-for="input-client-data">
+          <v-jsoneditor
+                  v-model="selectedClientDataComputed"
+                  height="200px"
+                  :plus="false"
+                  :options="{
                 enableTransform: false,
                 enableSort: false,
                 statusBar: false,
@@ -134,9 +135,8 @@
                 navigationBar: false,
                 mode: 'code',
               }"
-            ></v-jsoneditor>
-          </b-form-group>
-        </div>
+          ></v-jsoneditor>
+        </b-form-group>
       </form>
     </template>
     <template v-slot:modal-footer="{ ok, cancel }">
@@ -482,12 +482,12 @@ export default {
       }
       return arr;
     },
-    eventsMap: {
+    eventsDisplayMap: {
       get() {
-        return this.$store.state.eventsMap;
+        return this.$store.state.eventsDisplayMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_EVENTS_MAP", value);
+        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
       },
     },
   },
@@ -611,18 +611,22 @@ export default {
           return;
         }
         await this.addEventsToStore(result[0].event);
+
       } catch (e) {
         console.log("Error occurred when creating modals" + e);
         return;
       }
     },
     async addEventsToStore(event) {
-      const clonedEvents = Object.assign({}, this.eventsMap);
+      const clonedEvents = Object.assign({}, this.eventsDisplayMap);
+      console.log(clonedEvents)
+      console.log("cloned events")
       const editedEventIndex = clonedEvents[this.data.apiEndpoint].findIndex(
         key => key.id === event.id
       );
       clonedEvents[this.data.apiEndpoint][editedEventIndex] = event;
-      this.eventsMap = clonedEvents;
+      this.eventsDisplayMap = clonedEvents;
+
       this.$bvModal.hide(this.data.id);
     },
     resetModal() {

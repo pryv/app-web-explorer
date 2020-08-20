@@ -11,7 +11,7 @@
     </template>
     <template v-slot:default>
       <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group label="ID" label-for="input-id">
+        <b-form-group label="ID" label-for="isnput-id">
           <b-form-input
             type="text"
             v-model="selectedId"
@@ -19,7 +19,7 @@
             placeholder="Enter ID"
           ></b-form-input>
         </b-form-group>
-        <b-form-group label="Stream *" label-for="input-stream">
+        <b-form-group label="Parent *" label-for="input-stream">
           <b-form-input
             placeholder="Select a stream"
             v-model="selectedParentId"
@@ -117,14 +117,10 @@ export default {
       const filteredObj = Object.keys(this.streamsMap).filter(
         key => key === this.viewAccessInfo
       );
-      const array = this.streamsMap[filteredObj].map(obj => {
-        const payload = {
-          value: obj.id + " - " + obj.name,
-          text: filteredObj,
-        };
-        return payload;
-      });
-      return array;
+      return this.streamsMap[filteredObj].map(obj => ({
+        value: `${obj.name} [${obj.id}]`,
+        text: filteredObj,
+      }));
     },
   },
   methods: {
@@ -157,7 +153,9 @@ export default {
         };
         if (this.selectedId !== null) apiObj[0].params["id"] = this.selectedId;
         if (this.selectedParentId !== null)
-          apiObj[0].params["parentId"] = this.selectedParentId.split(" ")[0];
+          apiObj[0].params["parentId"] = this.selectedParentId
+            .split(" ")[1]
+            .replace(/[[\]]/g, "");
         if (this.clientData !== null)
           apiObj[0].params["clientData"] = this.clientData;
         const result = await connection.api(apiObj);
@@ -183,9 +181,9 @@ export default {
     },
     updateParent(clonedStreams, stream) {
       if (stream.parentId !== null) {
-        var index = this.getParentIndex(clonedStreams, stream);
-        var parentStream = clonedStreams[this.viewAccessInfo][index];
-        var findChild = null;
+        const index = this.getParentIndex(clonedStreams, stream);
+        const parentStream = clonedStreams[this.viewAccessInfo][index];
+        let findChild = null;
         if (parentStream.children) {
           parentStream.children.forEach((child, id) => {
             if (child.id === stream.id) {
@@ -202,10 +200,9 @@ export default {
       }
     },
     getParentIndex(clonedStreams, stream) {
-      const parentStreamIndex = clonedStreams[this.viewAccessInfo].findIndex(
+      return clonedStreams[this.viewAccessInfo].findIndex(
         key => key.id === stream.parentId
       );
-      return parentStreamIndex;
     },
     resetModal() {
       this.selectedName = null;

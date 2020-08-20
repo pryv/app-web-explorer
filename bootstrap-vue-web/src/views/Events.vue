@@ -213,6 +213,14 @@ export default {
         this.$store.commit("SET_TYPES_ALL", value);
       },
     },
+    eventsDisplayMap: {
+      get() {
+        return this.$store.state.eventsDisplayMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_DISPLAY_EVENTS_MAP", [key, value]);
+      },
+    },
   },
   mounted() {
     this.axios.get(constants.DEFAULT_SERVICE_INFO_URL).then(response => {
@@ -237,7 +245,9 @@ export default {
     selectedFilters() {
       this.selectStreamsOrFilters();
     },
-    eventsMap() {
+    eventsDisplayMap() {
+      console.log("watch events map")
+      console.log(this.eventsMap)
       this.selectStreamsOrFilters();
     },
   },
@@ -248,26 +258,49 @@ export default {
     },
     displayEvents() {
       this.fetchData = [];
-      const eventFewMap = {}
       this.typesSet = new Set();
-      let limit = 20;
-      if (!this.selectedStreams || Object.keys(this.eventsMap).length === 0) {
+      //const displayLimit = 20;
+      if (
+        !this.selectedStreams ||
+        !this.eventsDisplayMap ||
+        (this.eventsDisplayMap &&
+          Object.keys(this.eventsDisplayMap).length === 0)
+      ) {
         return;
       }
-      if (this.selectedFilters && Object.keys(this.selectedFilters).includes(filterTagsSort.LIMIT)) {
-        limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
+      if (
+        this.selectedFilters &&
+        Object.keys(this.selectedFilters).includes(filterTagsSort.LIMIT)
+      ) {
+        const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
+        for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
+          this.eventsDisplayMap = [
+            apiEndpoint,
+            events.slice(-limit),
+          ];
+        }
       }
-      for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-        eventFewMap[apiEndpoint] = events.slice(0, limit);
-      }
+      /* else {
+              for (const [apiEndpoint, events] of Object.entries(this.eventsDisplayMap)) {
+                if(events.length >20)
+                {
+                  this.eventsDisplayMap = [
+                    apiEndpoint,
+                    events.slice(-displayLimit),
+                  ];
+                }
+              }
+            }*/
       let selectedEvents = [];
-      for (const [apiEndpoint, streamIds] of Object.entries(this.selectedStreams)) {
+      for (const [apiEndpoint, streamIds] of Object.entries(
+        this.selectedStreams
+      )) {
         const ep = apiEndpoint.split("@")[1];
         const token = apiEndpoint.split("@")[0].replace(/(^\w+:|^)\/\//, "");
         for (let i = 0; i < streamIds.length; i++) {
-          selectedEvents = eventFewMap[apiEndpoint].filter(event => {
+          selectedEvents = this.eventsDisplayMap[apiEndpoint].filter(event => {
             event.apiEndpoint = apiEndpoint;
-            event.endpoint = ep
+            event.endpoint = ep;
             event.token = token;
             return event.streamId == streamIds[i];
           });

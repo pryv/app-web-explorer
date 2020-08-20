@@ -157,6 +157,14 @@ export default {
         this.$store.commit("ADD_EVENTS_MAP", [key, value]);
       },
     },
+    eventsDisplayMap: {
+      get() {
+        return this.$store.state.eventsDisplayMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_DISPLAY_EVENTS_MAP", [key, value]);
+      },
+    },
     modifiedSinceMap: {
       get() {
         return this.$store.state.modifiedSinceMap;
@@ -192,6 +200,7 @@ export default {
         "https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only",
       href_service_info: "https://github.com/pryv/lib-js#usage-of-pryvservice",
       events: [],
+      displayEvents: [],
       typesSet: new Set(),
       btnContent: "Back",
     };
@@ -235,17 +244,17 @@ export default {
       return true;
     },
     async addInitialEventsToStore(connection) {
+      this.displayEvents = [];
       const apiObj = GET_EVENTS_API.GET_EVENTS_API;
       apiObj[0].params = {};
       try {
         const result = await connection.api(apiObj);
+        this.modifiedSinceMap = [connection.apiEndpoint, Date.now() / 1000];
         if (result) {
           result[0].events.forEach(event => {
-            this.forEachEvent(event);
+            this.forEachDisplayEvent(event);
           });
-          this.eventsMap = [connection.apiEndpoint, this.events];
-          console.log("events map initial events are loaded");
-          console.log(JSON.parse(JSON.stringify(this.eventsMap)));
+          this.eventsDisplayMap = [connection.apiEndpoint, this.displayEvents];
         }
       } catch (e) {
         console.log("Error occurred when retrieving streams " + e);
@@ -274,8 +283,6 @@ export default {
         console.log("Error occurred when retrieving access info " + e);
         return false;
       }
-      console.log("added access info to store");
-      console.log(this.accessInfoMap);
       return true;
     },
     async addEventsToStore(connection) {
@@ -286,10 +293,11 @@ export default {
           queryParams,
           this.forEachEvent
         );
-        this.modifiedSinceMap = [connection.apiEndpoint,result.meta.serverTime/1000 ];
+        this.modifiedSinceMap = [
+          connection.apiEndpoint,
+          result.meta.serverTime,
+        ];
         this.eventsMap = [connection.apiEndpoint, this.events];
-        console.log("events map all the events are loaded");
-        console.log(JSON.parse(JSON.stringify(this.eventsMap)));
       } catch (e) {
         console.log("Error occurred when retrieving events " + e);
         return false;
@@ -298,6 +306,11 @@ export default {
     },
     forEachEvent(event) {
       this.events.push(event);
+      this.typesSet.add(event.type);
+      this.types = this.typesSet;
+    },
+    forEachDisplayEvent(event) {
+      this.displayEvents.push(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },

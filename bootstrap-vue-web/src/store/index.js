@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     types: new Set(),
     typesAll: {},
     modifiedSinceMap: {},
+    eventsDisplayMap: {},
   },
   mutations: {
     UPDATE_CHECKBOX: (state, selected) => {
@@ -85,6 +86,12 @@ const store = new Vuex.Store({
     },
     UPDATE_EVENTS_MAP: (state, eventsMap) => {
       state.eventsMap = eventsMap;
+    },
+    UPDATE_DISPLAY_EVENTS_MAP: (state, eventsDisplayMap) => {
+      state.eventsDisplayMap = eventsDisplayMap;
+    },
+    ADD_DISPLAY_EVENTS_MAP: (state, [key, value]) => {
+      Vue.set(state.eventsDisplayMap, key, value);
     },
     DELETE_EVENTS_MAP: (state, eventsMap) => {
       state.eventsMap = eventsMap;

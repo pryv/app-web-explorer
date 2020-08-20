@@ -61,7 +61,7 @@
         >
           <b-form-input
             :value="selectedType"
-            @update="setTypeObject"
+            @input="setTypeObject"
             list="input-type-list"
             id="input-type"
             required
@@ -212,14 +212,10 @@ export default {
     ...mapState(["streamsMap"]),
     ...mapState(["typesAll"]),
     connectionNames() {
-      let result = Object.keys(this.accessInfoMap).map(key => {
-        const payload = {
-          value: this.accessInfoMap[key].name,
-          text: key,
-        };
-        return payload;
-      });
-      return result;
+      return Object.keys(this.accessInfoMap).map(key => ({
+        value: this.accessInfoMap[key].name,
+        text: key,
+      }));
     },
     streamNames() {
       if (
@@ -230,29 +226,22 @@ export default {
       const filteredObj = Object.keys(this.streamsMap).filter(
         key => key === this.selectedEndpoint
       );
-      const array = this.streamsMap[filteredObj]
+      return this.streamsMap[filteredObj]
         .filter(obj => !obj.trashed)
-        .map(obj => {
-          const payload = {
-            value: `${obj.name} [${obj.id}]`,
-            text: filteredObj,
-          };
-          return payload;
-        });
-      return array;
+        .map(obj => ({
+          value: `${obj.name} [${obj.id}]`,
+          text: filteredObj,
+        }));
     },
     typeNames() {
-      return Object.keys(this.typesAll).map(key => {
-        const payload = {
-          value: key,
-          text: this.typesAll[key].type,
-        };
-        return payload;
-      });
+      return Object.keys(this.typesAll).map(key => ({
+        value: key,
+        text: this.typesAll[key].type,
+      }));
     },
     contentStates() {
       if (this.contentStatesCheck.length === 0) {
-        var arr = [];
+        const arr = [];
         for (let i = 0; i < this.contentNames.length; i++) {
           arr.push(null);
         }
@@ -327,12 +316,20 @@ export default {
       }
       return arr;
     },
-    eventsMap: {
+    eventsDisplayMap: {
       get() {
-        return this.$store.state.eventsMap;
+        return this.$store.state.eventsDisplayMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_EVENTS_MAP", value);
+        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
+      },
+    },
+    modifiedSinceMap: {
+      get() {
+        return this.$store.state.modifiedSinceMap;
+      },
+      set([key, value]) {
+        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
       },
     },
   },
@@ -395,7 +392,6 @@ export default {
             content[obj.labelKey] = value;
           });
         }
-
         if (
           this.selectedTypeObject.type === "null" &&
           this.contentNames.length > 0 &&
@@ -455,9 +451,9 @@ export default {
       }
     },
     async addEventsToStore(event) {
-      let clonedEvents = JSON.parse(JSON.stringify(this.eventsMap));
+      let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
       clonedEvents[this.selectedEndpoint].push(event);
-      this.eventsMap = clonedEvents;
+      this.eventsDisplayMap = clonedEvents;
       this.$bvModal.hide("modal-scoped-event");
     },
     resetModal() {
@@ -496,9 +492,8 @@ export default {
         : (this.selectedTypeObject = null);
     },
     updateValue(obj, value) {
-      var index = this.contentNames.indexOf(obj);
       obj.val = value;
-      this.$set(this.contentStatesCheck, index, null);
+      this.$set(this.contentStatesCheck, this.contentNames.indexOf(obj), null);
     },
   },
 };

@@ -16,7 +16,7 @@
         <div class="text-left default-font">
           "register": {{ register }} <br />
           "access": {{ access }} <br />
-          "api": {{ api_v }} <br />
+          "api": {{ api }} <br />
           "name": {{ name }} <br />
           "home": {{ home }} <br />
           "support": {{ support }} <br />
@@ -53,7 +53,7 @@ export default {
       disabled: true,
       register: "",
       access: "",
-      api_v: "",
+      api: "",
       name: "",
       home: "",
       support: "",
@@ -76,7 +76,7 @@ export default {
     const serviceInfoVar = await service.info();
     this.register = serviceInfoVar.register;
     this.access = serviceInfoVar.access;
-    this.api_v = serviceInfoVar.api;
+    this.api = serviceInfoVar.api;
     this.name = serviceInfoVar.name;
     this.home = serviceInfoVar.home;
     this.support = serviceInfoVar.support;

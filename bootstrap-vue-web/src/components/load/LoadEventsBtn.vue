@@ -1,7 +1,7 @@
 <template>
   <PryvBtn
-    :icon="icon"
-    :content="btnContent"
+    icon="arrow-clockwise"
+    content=" Events"
     @click="loadEvents"
     id="submitBtn"
   ></PryvBtn>
@@ -15,10 +15,8 @@ export default {
   components: { PryvBtn },
   data() {
     return {
-      btnContent: " Events",
       events: [],
       typesSet: new Set(),
-      icon: "arrow-clockwise",
     };
   },
   computed: {
@@ -30,6 +28,14 @@ export default {
       },
       set(value) {
         this.$store.commit("UPDATE_EVENTS_MAP", value);
+      },
+    },
+    eventsDisplayMap: {
+      get() {
+        return this.$store.state.eventsDisplayMap;
+      },
+      set(value) {
+        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
       },
     },
     types: {
@@ -65,7 +71,8 @@ export default {
     async addEventsToStore(connection) {
       this.events = [];
       let modified = this.modifiedSinceMap[connection.apiEndpoint];
-      let queryParams = { modifiedSince: modified };
+
+      let queryParams = { modifiedSince: modified * 1000 };
       try {
         const result = await connection.getEventsStreamed(
           queryParams,
@@ -76,10 +83,24 @@ export default {
           result.meta.serverTime / 1000,
         ];
         this.typesSet = new Set();
-        const clonedEvents = Object.assign({}, this.eventsMap);
-        clonedEvents[connection.apiEndpoint] = this.events;
-        this.eventsMap = clonedEvents;
-        console.log(result);
+        const clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
+        this.events.forEach(event => {
+          if (
+            this.eventsMap[connection.apiEndpoint].filter(
+              e => e.id === event.id
+            ).length === 0
+          ) {
+            this.eventsMap[connection.apiEndpoint].push(event);
+          }
+          if (
+            clonedDisplayEvents[connection.apiEndpoint].filter(
+              e => e.id === event.id
+            ).length === 0
+          ) {
+            clonedDisplayEvents[connection.apiEndpoint].push(event);
+          }
+        });
+        this.eventsDisplayMap = clonedDisplayEvents;
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);
         return false;
@@ -88,7 +109,6 @@ export default {
     },
     addEachEvent(event) {
       this.events.push(event);
-      //todo check the types
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },

@@ -49,19 +49,15 @@ export default {
     },
   },
   methods: {
-    displayAllInitial()
-    {
-      Object.keys(this.accessInfo).forEach(
-              apiEndpoint =>
-              {
-                const payload = {
-                  eventClickedOrUnClicked: true,
-                  clickedEndpointAndStreamId: apiEndpoint,
-                  endpointClicked: apiEndpoint,
-                };
-                this.checkBoxClicked(payload)
-              }
-      );
+    displayAllInitial() {
+      Object.keys(this.accessInfo).forEach(apiEndpoint => {
+        const payload = {
+          eventClickedOrUnClicked: true,
+          clickedEndpointAndStreamId: apiEndpoint,
+          endpointClicked: apiEndpoint,
+        };
+        this.checkBoxClicked(payload);
+      });
     },
     checkBoxClicked(e) {
       const clonedSelectedStreamsObjectArray = Object.assign(
@@ -75,18 +71,16 @@ export default {
           ] = this.computedAccessInfoObjectArray[e.endpointClicked].map(opt => {
             return opt.streamId;
           });
-          clonedSelectedStreamsObjectArray[e.endpointClicked].forEach(
-                  obj =>{
-                    const stream = this.streamsMap[e.endpointClicked].filter(
-                            key => key.id === obj
-                    );
-                    this.selectChildStreams(
-                            stream[0],
-                            clonedSelectedStreamsObjectArray,
-                            e.endpointClicked
-                    );
-                  }
-          )
+          clonedSelectedStreamsObjectArray[e.endpointClicked].forEach(obj => {
+            const stream = this.streamsMap[e.endpointClicked].filter(
+              key => key.id === obj
+            );
+            this.selectChildStreams(
+              stream[0],
+              clonedSelectedStreamsObjectArray,
+              e.endpointClicked
+            );
+          });
           clonedSelectedStreamsObjectArray[e.endpointClicked].push(
             e.endpointClicked
           );
@@ -129,7 +123,7 @@ export default {
       this.selectedStreamsMap = clonedSelectedStreamsObjectArray;
     },
     selectChildStreams(stream, clonedSelectedStreamsObjectArray, endpoint) {
-      if(!stream.children) return
+      if (!stream.children) return;
       stream.children.forEach(child => {
         clonedSelectedStreamsObjectArray[endpoint].push(child.id);
         if (child.children && child.children.length > 0)
@@ -141,7 +135,7 @@ export default {
       });
     },
     unselectChildStreams(stream, clonedSelectedStreamsObjectArray, endpoint) {
-      if(!stream.children) return
+      if (!stream.children) return;
       const childIds = stream.children.map(key => key.id);
       clonedSelectedStreamsObjectArray[
         endpoint
@@ -164,10 +158,9 @@ export default {
         const streams = this.streamsMap[key];
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
-            if (!streams[i].parentId || streams[i].parentId === null)
-            {
+            if (!streams[i].parentId || streams[i].parentId === null) {
               customUserObjectArray[key].push(
-                      this.createPayload(accessInfo, streams[i])
+                this.createPayload(accessInfo, streams[i])
               );
             }
           }

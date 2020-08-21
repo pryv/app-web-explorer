@@ -329,7 +329,7 @@ export default {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
         console.log("befor functions before routed");
         (await this.updateStore(connection))
-          ? this.$router.push("events")
+          ? await this.$router.push("events")
           : console.log("Some error occured when loading");
         console.log("later functions after routed");
         await this.addEventsToStore(connection);

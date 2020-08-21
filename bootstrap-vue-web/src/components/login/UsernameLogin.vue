@@ -5,7 +5,7 @@
     </div>
     <div>
       <b-form inline ref="form" v-on:submit.prevent="login">
-        <label class="sr-only" for="inline-form-input-username">Username</label>
+        <label class="sr-only" :for="id_username">Username</label>
         <b-input-group class="input-group-width mb-4 mr-sm-2 mb-sm-0">
           <PryvInput
             :id="id_username"
@@ -15,7 +15,7 @@
             :required="inputRequired"
           ></PryvInput>
         </b-input-group>
-        <label class="sr-only" for="inline-form-input-password">Password</label>
+        <label class="sr-only" :for="id_password">Password</label>
         <b-input-group class="input-group-width mb-4 mb-sm-0 w-40 float-right">
           <PryvPassword
             :id="id_password"

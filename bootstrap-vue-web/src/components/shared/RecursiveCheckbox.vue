@@ -2,10 +2,7 @@
   <div>
     <b-row :key="stream.streamId" v-for="stream in displayStreams">
       <b-col cols="2">
-        <span
-          v-if="stream.children"
-          v-b-toggle="`${stream.streamId}`"
-        >
+        <span v-if="stream.children" v-b-toggle="`${stream.streamId}`">
           <b-icon
             icon="arrow-down-square-fill"
             class="when-closed"

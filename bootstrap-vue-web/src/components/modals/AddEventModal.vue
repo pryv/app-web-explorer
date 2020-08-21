@@ -211,6 +211,7 @@ export default {
     ...mapState(["accessInfoMap"]),
     ...mapState(["streamsMap"]),
     ...mapState(["typesAll"]),
+    ...mapState(["eventsMap"]),
     connectionNames() {
       return Object.keys(this.accessInfoMap).map(key => ({
         value: this.accessInfoMap[key].name,
@@ -453,6 +454,7 @@ export default {
     async addEventsToStore(event) {
       let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
       clonedEvents[this.selectedEndpoint].push(event);
+      this.eventsMap[this.selectedEndpoint].push(event)
       this.eventsDisplayMap = clonedEvents;
       this.$bvModal.hide("modal-scoped-event");
     },

@@ -99,42 +99,42 @@
         </div>
         <b-form-group label="Time" label-for="input-time">
           <b-form-input
-                  type="text"
-                  v-model="selectedTimeComputed"
-                  id="input-time"
-                  placeholder="Enter Time"
+            type="text"
+            v-model="selectedTimeComputed"
+            id="input-time"
+            placeholder="Enter Time"
           ></b-form-input>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
-                  type="text"
-                  v-model="selectedDurationComputed"
-                  id="input-duration"
-                  placeholder="Enter Duration"
+            type="text"
+            v-model="selectedDurationComputed"
+            id="input-duration"
+            placeholder="Enter Duration"
           ></b-form-input>
         </b-form-group>
         <b-form-group label="Description" label-for="input-description">
           <b-form-input
-                  type="text"
-                  v-model="selectedDescriptionComputed"
-                  id="input-description"
-                  placeholder="Enter Description"
+            type="text"
+            v-model="selectedDescriptionComputed"
+            id="input-description"
+            placeholder="Enter Description"
           ></b-form-input>
         </b-form-group>
         <b-form-group label="Client Data" label-for="input-client-data">
           <v-jsoneditor
-                  v-model="selectedClientDataComputed"
-                  height="200px"
-                  :plus="false"
-                  :options="{
-                enableTransform: false,
-                enableSort: false,
-                statusBar: false,
-                mainMenuBar: true,
-                search: false,
-                navigationBar: false,
-                mode: 'code',
-              }"
+            v-model="selectedClientDataComputed"
+            height="200px"
+            :plus="false"
+            :options="{
+              enableTransform: false,
+              enableSort: false,
+              statusBar: false,
+              mainMenuBar: true,
+              search: false,
+              navigationBar: false,
+              mode: 'code',
+            }"
           ></v-jsoneditor>
         </b-form-group>
       </form>
@@ -276,14 +276,10 @@ export default {
       },
     },
     connectionNames() {
-      let result = Object.keys(this.accessInfoMap).map(key => {
-        const payload = {
-          value: this.accessInfoMap[key].name,
-          text: key,
-        };
-        return payload;
-      });
-      return result;
+      return Object.keys(this.accessInfoMap).map(key => ({
+        value: this.accessInfoMap[key].name,
+        text: key,
+      }));
     },
     streamNames() {
       if (
@@ -293,29 +289,22 @@ export default {
         const filteredObj = Object.keys(this.streamsMap).filter(
           key => key === this.selectedEndpointComputed
         );
-        const array = this.streamsMap[filteredObj].map(obj => {
-          const payload = {
-            value: obj.id,
-            text: filteredObj,
-          };
-          return payload;
-        });
-        return array;
+        return this.streamsMap[filteredObj].map(obj => ({
+          value: obj.id,
+          text: filteredObj,
+        }));
       }
       return null;
     },
     typeNames() {
-      return Object.keys(this.typesAll).map(key => {
-        const payload = {
-          value: key,
-          text: this.typesAll[key].type,
-        };
-        return payload;
-      });
+      return Object.keys(this.typesAll).map(key => ({
+        value: key,
+        text: this.typesAll[key].type,
+      }));
     },
     contentStates() {
       if (this.contentStatesCheck.length === 0) {
-        var arr = [];
+        const arr = [];
         for (let i = 0; i < this.contentNames.length; i++) {
           arr.push(null);
         }
@@ -325,7 +314,7 @@ export default {
       }
     },
     contentNames() {
-      var arr = [];
+      const arr = [];
       if (
         this.selectedTypeObjectComputed === null ||
         !this.selectedTypeObjectComputed
@@ -611,7 +600,6 @@ export default {
           return;
         }
         await this.addEventsToStore(result[0].event);
-
       } catch (e) {
         console.log("Error occurred when creating modals" + e);
         return;
@@ -619,12 +607,16 @@ export default {
     },
     async addEventsToStore(event) {
       const clonedEvents = Object.assign({}, this.eventsDisplayMap);
-      console.log(clonedEvents)
-      console.log("cloned events")
       const editedEventIndex = clonedEvents[this.data.apiEndpoint].findIndex(
         key => key.id === event.id
       );
       clonedEvents[this.data.apiEndpoint][editedEventIndex] = event;
+      const editedDisplayEventIndex = this.eventsMap[
+        this.data.apiEndpoint
+      ].findIndex(key => key.id === event.id);
+      this.eventsDisplayMap[this.data.apiEndpoint][
+        editedDisplayEventIndex
+      ] = event;
       this.eventsDisplayMap = clonedEvents;
 
       this.$bvModal.hide(this.data.id);
@@ -635,7 +627,7 @@ export default {
       this.selectedStream = this.data.streamId;
       this.selectedType = this.data.type;
       this.selectedTypeObject = this.typesAll[this.selectedType];
-      this.selectedTime=this.data.time;
+      this.selectedTime = this.data.time;
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;
       this.selectedClientData = this.data.clientData;
@@ -662,9 +654,8 @@ export default {
         : (this.selectedTypeObjectComputed = null);
     },
     updateValue(obj, value) {
-      var index = this.contentNames.indexOf(obj);
       obj.val = value;
-      this.$set(this.contentStatesCheck, index, null);
+      this.$set(this.contentStatesCheck, this.contentNames.indexOf(obj), null);
     },
     cancelEdit(cancel) {
       this.resetModal();

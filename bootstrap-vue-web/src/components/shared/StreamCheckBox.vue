@@ -9,8 +9,17 @@
       <b-row>
         <b-col cols="2">
           <span v-b-toggle="`${endpoint}`">
-            <b-icon icon="arrow-down-square-fill" class="when-closed" font-scale="1"></b-icon>
-            <b-icon icon="arrow-up-square-fill" class="when-opened" variant="danger" font-scale="1"></b-icon>
+            <b-icon
+              icon="arrow-down-square-fill"
+              class="when-closed"
+              font-scale="1"
+            ></b-icon>
+            <b-icon
+              icon="arrow-up-square-fill"
+              class="when-opened"
+              variant="danger"
+              font-scale="1"
+            ></b-icon>
           </span>
         </b-col>
         <b-col cols="8">
@@ -25,23 +34,24 @@
         </b-col>
         <b-col cols="2">
           <span :endpoint="endpoint" @click="viewAccessInfoFunc(endpoint)">
-            <b-icon-info-square-fill variant="secondary" class="info-btn"> </b-icon-info-square-fill
+            <b-icon-info-square-fill variant="secondary" class="info-btn">
+            </b-icon-info-square-fill
           ></span>
         </b-col>
         <b-col cols="12">
-          <b-collapse :id="`${endpoint}`"  class="mt-2"  visible>
+          <b-collapse :id="`${endpoint}`" class="mt-2" visible>
             <b-card>
               <RecursiveCheckbox
-                      :endpoint="endpoint"
-                      @viewStreamInfo="viewStreamInfoFunc"
-                      @checkBoxClicked="$emit('checkBoxClicked', $event)"
-                      :displayStreams="displayStreams"
+                :endpoint="endpoint"
+                @viewStreamInfo="viewStreamInfoFunc"
+                @checkBoxClicked="$emit('checkBoxClicked', $event)"
+                :displayStreams="displayStreams"
               ></RecursiveCheckbox>
             </b-card>
           </b-collapse>
         </b-col>
       </b-row>
-       </b-form-checkbox-group>
+    </b-form-checkbox-group>
   </b-col>
 </template>
 
@@ -174,7 +184,7 @@ export default {
   width: auto;
 }
 
-.custom-control{
+.custom-control {
   padding-left: 0 !important;
 }
 
@@ -205,7 +215,7 @@ export default {
   font-weight: bold;
 }
 
-.card-body{
+.card-body {
   padding-left: 0.125rem;
   padding-right: 0.125rem;
   padding-top: 0.3rem;

@@ -32,7 +32,6 @@
               <b-card-text>
                 <div>
                   <b-table
-                    style="max-height: 300px"
                     :fields="fields"
                     sticky-header
                     responsive
@@ -246,8 +245,6 @@ export default {
       this.selectStreamsOrFilters();
     },
     eventsDisplayMap() {
-      console.log("watch events map")
-      console.log(this.eventsMap)
       this.selectStreamsOrFilters();
     },
   },
@@ -259,7 +256,7 @@ export default {
     displayEvents() {
       this.fetchData = [];
       this.typesSet = new Set();
-      //const displayLimit = 20;
+      const displayLimit = 20;
       if (
         !this.selectedStreams ||
         !this.eventsDisplayMap ||
@@ -274,36 +271,25 @@ export default {
       ) {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-          this.eventsDisplayMap = [
-            apiEndpoint,
-            events.slice(-limit),
-          ];
+          this.eventsDisplayMap[apiEndpoint] = events.slice(-limit);
+        }
+      } else {
+        for (const [apiEndpoint, events] of Object.entries(
+          this.eventsDisplayMap
+        )) {
+          if (events.length > 20) {
+            this.eventsDisplayMap[apiEndpoint] = events.slice(-displayLimit);
+          }
         }
       }
-      /* else {
-              for (const [apiEndpoint, events] of Object.entries(this.eventsDisplayMap)) {
-                if(events.length >20)
-                {
-                  this.eventsDisplayMap = [
-                    apiEndpoint,
-                    events.slice(-displayLimit),
-                  ];
-                }
-              }
-            }*/
       let selectedEvents = [];
       for (const [apiEndpoint, streamIds] of Object.entries(
         this.selectedStreams
       )) {
-        const ep = apiEndpoint.split("@")[1];
-        const token = apiEndpoint.split("@")[0].replace(/(^\w+:|^)\/\//, "");
         for (let i = 0; i < streamIds.length; i++) {
-          selectedEvents = this.eventsDisplayMap[apiEndpoint].filter(event => {
-            event.apiEndpoint = apiEndpoint;
-            event.endpoint = ep;
-            event.token = token;
-            return event.streamId == streamIds[i];
-          });
+          selectedEvents = this.eventsDisplayMap[apiEndpoint].filter(
+            event => event.streamId == streamIds[i]
+          );
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
@@ -404,8 +390,6 @@ export default {
       this.axios
         .get(`https://${endpoint}events/${eventId}/series?auth=${token}`)
         .then(response => {
-          console.log("response data");
-          console.log(response.data);
           var myjson = JSON.stringify(response.data, null, 2);
           var x = window.open();
           x.document.open();
@@ -419,10 +403,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .events-card {
   border: none;
   padding: 0.5%;
   text-align: left;
+}
+.b-table-sticky-header {
+  max-height: 100%;
 }
 </style>

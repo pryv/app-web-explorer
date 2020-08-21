@@ -176,6 +176,7 @@
                     class="default-font"
                     type="text"
                     v-model="valueLimit"
+                    @keydown.native="test_keydown_handler"
                   ></b-form-input>
                 </b-col>
               </b-row>
@@ -321,6 +322,25 @@ export default {
     };
   },
   methods: {
+    test_keydown_handler(event) {
+      if (event.which === 13) {
+        this.valueLimit !== ""
+          ? (this.updateSelectedFiltersArray(
+              filterTagsSort.LIMIT,
+              parseInt(this.valueLimit)
+            ),
+            ((this.tags = this.tags.filter(
+              value => !value.includes(filterTags.LIMIT)
+            )),
+            this.tags.push(filterTags.LIMIT + " - " + this.valueLimit)))
+          : this.removeFromSelectedFiltersArray(
+              filterTagsSort.LIMIT,
+              (this.tags = this.tags.filter(
+                value => !value.includes(filterTags.LIMIT)
+              ))
+            );
+      }
+    },
     setSelected(value) {
       this.selected = value;
       this.selected
@@ -423,21 +443,6 @@ export default {
         return;
       }
       this.valueLimit = value;
-      this.valueLimit !== ""
-        ? (this.updateSelectedFiltersArray(
-            filterTagsSort.LIMIT,
-            parseInt(value)
-          ),
-          ((this.tags = this.tags.filter(
-            value => !value.includes(filterTags.LIMIT)
-          )),
-          this.tags.push(filterTags.LIMIT + " - " + value)))
-        : this.removeFromSelectedFiltersArray(
-            filterTagsSort.LIMIT,
-            (this.tags = this.tags.filter(
-              value => !value.includes(filterTags.LIMIT)
-            ))
-          );
     },
     updateSelectedFiltersArray(key, value) {
       const filteredData = Object.assign({}, this.updatedFilters);

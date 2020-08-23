@@ -18,7 +18,7 @@
       </div>
       <div>
         <b-card class="text-info" v-if="computedStreamInfo">
-          <b-row class="float-right mr-2" >
+          <b-row class="float-right mr-2">
             <b-icon
               v-if="
                 computedStreamInfo.trashed &&
@@ -47,6 +47,9 @@
               search: false,
               navigationBar: false,
               mode: 'code',
+              onChangeText: function(jsonText) {
+                isJSON(jsonText);
+              },
             }"
           ></v-jsoneditor>
           <b-row v-if="editable === true" class="justify-content-center">
@@ -60,6 +63,7 @@
               class="mt-0"
               @click="save"
               :content="btnContentSave"
+              :disabled="saveDisable"
             ></PryvBtn>
           </b-row>
           <b-row v-else class="justify-content-center">
@@ -150,6 +154,7 @@ export default {
       editable: false,
       updatedStreamInfo: null,
       merge: "not_accepted",
+      saveDisable: true,
     };
   },
   computed: {
@@ -189,9 +194,9 @@ export default {
       try {
         JSON.parse(text);
       } catch (e) {
-        return false;
+        this.saveDisable = true;
       }
-      return true;
+      this.saveDisable = false;
     },
     currentRouteName() {
       return this.$route.name;
@@ -268,9 +273,8 @@ export default {
           stream.children = this.viewStreamInfoObj.children;
           this.viewStreamInfoObj = stream;
         }
-        if (result && result[0] && (result[0].streamDeletion ))
-        {
-          this.$refs.reloadStreams.$el.click()
+        if (result && result[0] && result[0].streamDeletion) {
+          this.$refs.reloadStreams.$el.click();
           this.$bvModal.hide(result[0].streamDeletion.id);
           this.backToEvents();
         }
@@ -283,11 +287,10 @@ export default {
         return;
       }
     },
-    cancelEdit()
-    {
+    cancelEdit() {
       this.editable = !this.editable;
       this.updatedStreamInfo = null;
-    }
+    },
   },
 };
 </script>

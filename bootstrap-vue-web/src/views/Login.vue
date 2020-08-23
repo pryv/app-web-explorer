@@ -17,6 +17,7 @@
         </b-row>
       </div>
       <div>
+        <b-card no-body>
         <b-tabs content-class="mt-3" fill>
           <b-tab title="Token Based Login" active>
             <b-card-text>
@@ -89,6 +90,8 @@
             </b-card-text>
           </b-tab>
         </b-tabs>
+          <b-overlay :show="showOverlay" no-wrap></b-overlay>
+        </b-card>
       </div>
     </div>
   </div>
@@ -129,12 +132,10 @@ export default {
         return this.$store.state.streamsMap;
       },
       set([key, value]) {
-        let streamArr = null;
-        if (this.streamsMap[key]) {
-          streamArr = this.streamsMap[key];
-        } else {
-          streamArr = [];
-        }
+        let streamArr = [];
+        this.streamsMap[key]
+          ? (streamArr = this.streamsMap[key])
+          : (streamArr = []);
         streamArr.push(value);
         this.$store.commit("ADD_STREAMS_MAP", [key, streamArr]);
       },
@@ -203,6 +204,7 @@ export default {
       displayEvents: [],
       typesSet: new Set(),
       btnContent: "Back",
+      showOverlay : false
     };
   },
   methods: {
@@ -221,13 +223,11 @@ export default {
     },
     addConnectionToStore(connection) {
       this.connectionsMap = [connection.apiEndpoint, connection];
-      console.log("added connection to store");
-      console.log(this.connectionsMap);
       return true;
     },
     async addStreamsToStore(connection) {
       const apiObj = GET_STREAMS_API.GET_STREAMS_API;
-      apiObj[0].params = { state: "all" }; //todo remove state all
+      apiObj[0].params = { state: "all" };
       try {
         const result = await connection.api(apiObj);
         if (result) {
@@ -239,8 +239,6 @@ export default {
         console.log("Error occurred when retrieving streams " + e);
         return false;
       }
-      console.log("added streams to store");
-      console.log(this.streamsMap);
       return true;
     },
     async addInitialEventsToStore(connection) {
@@ -263,14 +261,13 @@ export default {
       return true;
     },
     async addStream(apiEndpoint, stream) {
-      //this.streamsMap = [apiEndpoint, stream];
       if (stream.children && stream.children.length === 0)
         this.streamsMap = [apiEndpoint, stream];
       if (stream.children && stream.children.length > 0) {
         this.streamsMap = [apiEndpoint, stream];
-        stream.children.forEach(streamChild => {
-          return this.addStream(apiEndpoint, streamChild);
-        });
+        stream.children.forEach(streamChild =>
+          this.addStream(apiEndpoint, streamChild)
+        );
       }
     },
     async addAccessInfoToStore(connection) {
@@ -314,24 +311,19 @@ export default {
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },
-    updateStore(connection) {
-      if (
-        this.addConnectionToStore(connection) &&
-        this.addStreamsToStore(connection) &&
-        this.addAccessInfoToStore(connection) &&
-        this.addInitialEventsToStore(connection)
-      ) {
-        return true;
-      }
-      return false;
+    async updateStore(connection) {
+      this.showOverlay = true;
+      const conn =await this.addConnectionToStore(connection);
+      const str = await this.addStreamsToStore(connection);
+      const  acc= await this.addAccessInfoToStore(connection);
+      const eve = await this.addInitialEventsToStore(connection);
+      return (conn && str && acc && eve ? (this.showOverlay=false, true) : false);
     },
     async updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        console.log("befor functions before routed");
         (await this.updateStore(connection))
           ? await this.$router.push("events")
           : console.log("Some error occured when loading");
-        console.log("later functions after routed");
         await this.addEventsToStore(connection);
       }
     },

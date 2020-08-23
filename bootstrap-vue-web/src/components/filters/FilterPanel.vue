@@ -28,12 +28,23 @@
     </b-row>
     <b-col cols="12" class="px-0">
       <b-col cols="1" class="px-0">
-        <b-button
-          class="pryv-btn-style float-left"
-          v-b-toggle.collapse-1
-          variant="danger"
-          >Filters</b-button
+        <b-overlay
+          :show="busy"
+          rounded
+          opacity="0.6"
+          spinner-small
+          spinner-variant="primary"
+          class="d-inline-block"
+          @hidden="onHidden"
         >
+          <b-button
+            class="pryv-btn-style float-left"
+            v-b-toggle.collapse-1
+            variant="danger"
+            ref="button"
+            >Filters</b-button
+          >
+        </b-overlay>
       </b-col>
     </b-col>
     <br />
@@ -319,29 +330,42 @@ export default {
       valueTypeCheck: false,
       modalTitle: "Select Types to Filter",
       tags: [],
+      busy: false,
     };
   },
   methods: {
+    onHidden() {
+      // Return focus to the button once hidden
+      this.$refs.button.focus();
+    },
     test_keydown_handler(event) {
       if (event.which === 13) {
-        this.valueLimit !== ""
-          ? (this.updateSelectedFiltersArray(
-              filterTagsSort.LIMIT,
-              parseInt(this.valueLimit)
-            ),
-            ((this.tags = this.tags.filter(
-              value => !value.includes(filterTags.LIMIT)
-            )),
-            this.tags.push(filterTags.LIMIT + " - " + this.valueLimit)))
-          : this.removeFromSelectedFiltersArray(
-              filterTagsSort.LIMIT,
-              (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.LIMIT)
-              ))
-            );
+        this.busy = true;
+        setTimeout(
+          async function() {
+            this.valueLimit !== ""
+              ? (((this.tags = this.tags.filter(
+                  value => !value.includes(filterTags.LIMIT)
+                )),
+                this.tags.push(filterTags.LIMIT + " - " + this.valueLimit)),
+                this.updateSelectedFiltersArray(
+                  filterTagsSort.LIMIT,
+                  parseInt(this.valueLimit)
+                ))
+              : this.removeFromSelectedFiltersArray(
+                  filterTagsSort.LIMIT,
+                  (this.tags = this.tags.filter(
+                    value => !value.includes(filterTags.LIMIT)
+                  ))
+                );
+            this.busy = false;
+          }.bind(this),
+          150
+        );
       }
     },
     setSelected(value) {
+      this.busy = true;
       this.selected = value;
       this.selected
         ? ((this.tags = this.tags.filter(
@@ -351,8 +375,10 @@ export default {
         : (this.tags = this.tags.filter(
             value => !value.includes(filterTags.TYPES)
           ));
+      this.busy = false;
     },
     selectFiltersRelatedToDates(type, ctx) {
+      this.busy = true;
       ctx.selectedYMD
         ? this.updateSelectedFiltersArray(
             type,
@@ -396,8 +422,10 @@ export default {
               ));
           break;
       }
+      this.busy = false;
     },
     selectFilterStateOrSort(type, value) {
+      this.busy = true;
       value
         ? this.updateSelectedFiltersArray(type, value)
         : this.removeFromSelectedFiltersArray(type);
@@ -436,6 +464,7 @@ export default {
               ));
           break;
       }
+      this.busy = false;
     },
     selectFilterLimit(value) {
       if (isNaN(value)) {
@@ -494,6 +523,7 @@ export default {
       cancel();
     },
     setTypeFilters(ok) {
+      this.busy = true;
       this.selected.length > 0
         ? this.updateSelectedFiltersArray(filterTagsSort.TYPES, this.selected)
         : this.removeFromSelectedFiltersArray(filterTagsSort.TYPES);

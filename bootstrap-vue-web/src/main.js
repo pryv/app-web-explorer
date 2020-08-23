@@ -8,7 +8,7 @@ import "./cookies";
 import "./axios";
 import "./assets/css/style.css";
 import "./jsoneditor";
-
+import VueForceNextTick from "vue-force-next-tick";
 Vue.config.productionTip = false;
 
 import Pryv from "pryv";
@@ -36,7 +36,7 @@ Vue.prototype.$sessionStorage = new Vue({
     },
   },
 });
-
+Vue.use(VueForceNextTick);
 // eslint-disable-next-line no-unused-vars
 var vm = new Vue({
   router,

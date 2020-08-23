@@ -114,6 +114,7 @@
               </b-card-text>
             </b-tab>
           </b-tabs>
+          <b-overlay :show="showOverlay" no-wrap></b-overlay>
         </b-card>
       </div>
     </div>
@@ -150,6 +151,7 @@ export default {
       show: true,
       message: "No info available to display.",
       typesSet: new Set(),
+      showOverlay:false,
       fields: [
         { key: "id", label: "Id", sortable: true },
         { key: "streamId", label: "Stream Id", sortable: true },
@@ -239,21 +241,29 @@ export default {
   },
   watch: {
     selectedStreams() {
+      console.log("selected streams")
       this.selectStreamsOrFilters();
     },
     selectedFilters() {
+      console.log("selected filters")
       this.selectStreamsOrFilters();
     },
     eventsDisplayMap() {
+      console.log("events display map")
       this.selectStreamsOrFilters();
     },
   },
   methods: {
-    selectStreamsOrFilters() {
-      this.displayEvents();
-      this.filterEvents();
+    async selectStreamsOrFilters() {
+      this.showOverlay = true
+      setTimeout(async function(){
+        await this.displayEvents();
+        await this.filterEvents();
+        this.showOverlay = false;
+      }.bind(this), 150);
     },
-    displayEvents() {
+     async displayEvents() {
+      console.log("display events method called")
       this.fetchData = [];
       this.typesSet = new Set();
       const displayLimit = 20;
@@ -293,8 +303,10 @@ export default {
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
+      console.log("display events method done")
     },
-    filterEvents() {
+     async filterEvents() {
+      console.log("filter events method called")
       let selectedEvents = this.fetchData;
       if (!this.selectedFilters) return;
       Object.keys(this.selectedFilters)
@@ -384,6 +396,7 @@ export default {
               break;
           }
         });
+      console.log("filter events method done")
       this.fetchData = [...selectedEvents];
     },
     openJSON(endpoint, eventId, token) {

@@ -162,13 +162,12 @@ export default {
         if (result && result[0] && result[0].error) {
           alert(result[0].error.id + " - " + result[0].error.message);
           this.resetModal();
-          return;
         } else {
           await this.addStreamsToStore(result[0].stream);
         }
       } catch (e) {
         console.log("Error occurred when creating modals" + e);
-        return;
+
       }
     },
     async addStreamsToStore(stream) {

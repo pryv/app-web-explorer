@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-      <b-container class="vh-100" fluid>
-        <b-row class="h-100" style="background-color: green">
-          <b-col class="shadow bg-white" md="auto" style="overflow-y: auto;">
-           <SideBar></SideBar>
-          </b-col>
-          <b-col style="background-color:whitesmoke">
-            <MainLayout></MainLayout>
-          </b-col>
-        </b-row>
-      </b-container>
+    <b-container class="vh-100" fluid="">
+      <b-row class="h-100" style="background-color: green">
+        <b-col class="shadow bg-white" md="auto" style="overflow-y: auto;">
+          <SideBar></SideBar>
+        </b-col>
+        <b-col style="background-color:whitesmoke">
+          <MainLayout></MainLayout>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -33,11 +33,9 @@
 }
 </style>
 <script>
-
-
-import MainLayout from "./components/layout/MainLayout";
-import SideBar from "./components/layout/SideBar";
+import MainLayout from './components/layout/MainLayout';
+import SideBar from './components/layout/SideBar';
 export default {
-  components: { SideBar, MainLayout  },
+  components: { SideBar, MainLayout },
 };
 </script>

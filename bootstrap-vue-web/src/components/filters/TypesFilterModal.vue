@@ -16,18 +16,18 @@
     </template>
     <template v-slot:modal-footer="{ ok, cancel }">
       <PryvBtn
-              @click="$emit('clickOk', ok)"
-              class="mt-0 float-right"
-              content="OK"
-              icon="check"
-              type="submit"
-              variant="success"
+        @click="$emit('clickOk', ok)"
+        class="mt-0 float-right"
+        content="OK"
+        icon="check"
+        type="submit"
+        variant="success"
       ></PryvBtn>
       <PryvBtn
-              @click="$emit('clickCancel', cancel)"
-              class="mt-0 float-right"
-              content="Cancel"
-              icon="x"
+        @click="$emit('clickCancel', cancel)"
+        class="mt-0 float-right"
+        content="Cancel"
+        icon="x"
       ></PryvBtn>
     </template>
   </b-modal>
@@ -67,10 +67,10 @@ export default {
 </script>
 
 <style>
-  .custom-control {
-    padding-left: 1.5rem;
-  }
-  .custom-control-inline{
-    margin-right: 3rem;
-  }
+.custom-control {
+  padding-left: 1.5rem;
+}
+.custom-control-inline {
+  margin-right: 3rem;
+}
 </style>

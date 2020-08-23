@@ -1,6 +1,11 @@
 <template>
   <span>
-    <input :checked="checked"  @change="$emit('change', $event.target.checked)" name="checkbox-1" type="checkbox" />
+    <input
+      :checked="checked"
+      @change="$emit('change', $event.target.checked)"
+      name="checkbox-1"
+      type="checkbox"
+    />
     <label class="label-class">
       {{ content }}
     </label>
@@ -9,10 +14,10 @@
 
 <script>
 export default {
-  name: "Checkbox",
+  name: 'Checkbox',
   model: {
-    prop: "checked",
-    event: "change",
+    prop: 'checked',
+    event: 'change',
   },
   props: {
     content: {
@@ -31,19 +36,4 @@ export default {
   margin-left: 5px;
   margin-top: -5%;
 }
-/*input[type="checkbox"] {
-  display:none;
-}
-input[type="checkbox"] + label::before {
-  width: 15px;
-  height: 15px;
-  background-color: gainsboro;
-  display: block;
-  content: "";
-  float: left;
-  margin-right: 5px;
-}
-input[type="checkbox"]:checked+ label::after {
-  background-color: #9d0717;
-}*/
 </style>

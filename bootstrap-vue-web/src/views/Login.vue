@@ -18,78 +18,81 @@
       </div>
       <div>
         <b-card no-body>
-        <b-tabs content-class="mt-3" fill>
-          <b-tab title="Token Based Login" active>
-            <b-card-text>
-              <b-card class="card-style shadow min-height-card">
-                <PryvLabel
-                  :href="href_web"
-                  :parentData="ButtonLogin"
-                ></PryvLabel>
-                <WebButton @authenticated="updateSessionStorage"></WebButton>
-                <br />
-                <div class="text-left">
-                  <b-button
-                    class="pryv-btn-collapse"
-                    v-b-toggle.collapse-1
-                    variant="primary"
-                    >View Service Info
-                  </b-button>
-                  <b-collapse id="collapse-1" class="mt-2">
-                    <b-card class="card-style shadow border-0">
-                      <PryvLabel
-                        :href="href_service_info"
-                        :parentData="ServiceInfoURL"
-                      ></PryvLabel>
-                      <ServiceInfo id="Web based Login"></ServiceInfo>
-                    </b-card>
-                  </b-collapse>
-                </div>
-              </b-card>
-            </b-card-text>
-          </b-tab>
-          <b-tab title="Username, Password Login">
-            <b-card-text>
-              <b-card class="card-style shadow">
-                <PryvLabel
-                  :href="href_manual"
-                  :parentData="PasswordLogin"
-                ></PryvLabel>
-                <UsernameLogin
-                  @authenticated="updateSessionStorage"
-                ></UsernameLogin>
-                <br />
-                <div style="text-align: left">
-                  <b-button
-                    class="pryv-btn-collapse"
-                    v-b-toggle="'collapse-2'"
-                    variant="primary"
-                    >View Service Info
-                  </b-button>
-                  <b-collapse id="collapse-2" class="mt-2">
-                    <b-card class="card-style shadow border-0">
-                      <PryvLabel
-                        :href="href_service_info"
-                        :parentData="ServiceInfoURL"
-                      ></PryvLabel>
-                      <ServiceInfo
-                        id="Username,Password based Login"
-                      ></ServiceInfo>
-                    </b-card>
-                  </b-collapse>
-                </div>
-              </b-card>
-            </b-card-text>
-          </b-tab>
-          <b-tab title="API Endpoint Login">
-            <b-card-text>
-              <b-card class="card-style shadow">
-                <PryvLabel :href="href_api" :parentData="APILogin"></PryvLabel>
-                <APILogin @authenticated="updateSessionStorage"></APILogin>
-              </b-card>
-            </b-card-text>
-          </b-tab>
-        </b-tabs>
+          <b-tabs content-class="mt-3" fill>
+            <b-tab title="Token Based Login" active>
+              <b-card-text>
+                <b-card class="card-style shadow min-height-card">
+                  <PryvLabel
+                    :href="href_web"
+                    :parentData="ButtonLogin"
+                  ></PryvLabel>
+                  <WebButton @authenticated="updateSessionStorage"></WebButton>
+                  <br />
+                  <div class="text-left">
+                    <b-button
+                      class="pryv-btn-collapse"
+                      v-b-toggle.collapse-1
+                      variant="primary"
+                      >View Service Info
+                    </b-button>
+                    <b-collapse id="collapse-1" class="mt-2">
+                      <b-card class="card-style shadow border-0">
+                        <PryvLabel
+                          :href="href_service_info"
+                          :parentData="ServiceInfoURL"
+                        ></PryvLabel>
+                        <ServiceInfo id="Web based Login"></ServiceInfo>
+                      </b-card>
+                    </b-collapse>
+                  </div>
+                </b-card>
+              </b-card-text>
+            </b-tab>
+            <b-tab title="Username, Password Login">
+              <b-card-text>
+                <b-card class="card-style shadow">
+                  <PryvLabel
+                    :href="href_manual"
+                    :parentData="PasswordLogin"
+                  ></PryvLabel>
+                  <UsernameLogin
+                    @authenticated="updateSessionStorage"
+                  ></UsernameLogin>
+                  <br />
+                  <div style="text-align: left">
+                    <b-button
+                      class="pryv-btn-collapse"
+                      v-b-toggle="'collapse-2'"
+                      variant="primary"
+                      >View Service Info
+                    </b-button>
+                    <b-collapse id="collapse-2" class="mt-2">
+                      <b-card class="card-style shadow border-0">
+                        <PryvLabel
+                          :href="href_service_info"
+                          :parentData="ServiceInfoURL"
+                        ></PryvLabel>
+                        <ServiceInfo
+                          id="Username,Password based Login"
+                        ></ServiceInfo>
+                      </b-card>
+                    </b-collapse>
+                  </div>
+                </b-card>
+              </b-card-text>
+            </b-tab>
+            <b-tab title="API Endpoint Login">
+              <b-card-text>
+                <b-card class="card-style shadow">
+                  <PryvLabel
+                    :href="href_api"
+                    :parentData="APILogin"
+                  ></PryvLabel>
+                  <APILogin @authenticated="updateSessionStorage"></APILogin>
+                </b-card>
+              </b-card-text>
+            </b-tab>
+          </b-tabs>
           <b-overlay :show="showOverlay" no-wrap></b-overlay>
         </b-card>
       </div>
@@ -98,15 +101,15 @@
 </template>
 
 <script>
-import PryvBtn from "../components/shared/PryvBtn";
-import APILogin from "../components/login/APILogin";
-import PryvLabel from "../components/shared/PryvLabel";
-import WebButton from "../components/login/WebButtonLogin";
-import UsernameLogin from "../components/login/UsernameLogin";
-import ServiceInfo from "../components/login/ServiceInfo";
-import GET_STREAMS_API from "../utilities/api";
-import ACCESS_INFO_API from "../utilities/api";
-import GET_EVENTS_API from "../utilities/api";
+import PryvBtn from '../components/shared/PryvBtn';
+import APILogin from '../components/login/APILogin';
+import PryvLabel from '../components/shared/PryvLabel';
+import WebButton from '../components/login/WebButtonLogin';
+import UsernameLogin from '../components/login/UsernameLogin';
+import ServiceInfo from '../components/login/ServiceInfo';
+import GET_STREAMS_API from '../utilities/api';
+import ACCESS_INFO_API from '../utilities/api';
+import GET_EVENTS_API from '../utilities/api';
 export default {
   components: {
     ServiceInfo,
@@ -123,7 +126,7 @@ export default {
       },
       set([key, value]) {
         if (!this.connectionsMap[key]) {
-          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
+          this.$store.commit('ADD_CONNECTIONS_MAP', [key, value]);
         }
       },
     },
@@ -137,7 +140,7 @@ export default {
           ? (streamArr = this.streamsMap[key])
           : (streamArr = []);
         streamArr.push(value);
-        this.$store.commit("ADD_STREAMS_MAP", [key, streamArr]);
+        this.$store.commit('ADD_STREAMS_MAP', [key, streamArr]);
       },
     },
     accessInfoMap: {
@@ -146,7 +149,7 @@ export default {
       },
       set([key, value]) {
         if (!this.accessInfoMap[key]) {
-          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
+          this.$store.commit('ADD_ACCESS_INFO_MAP', [key, value]);
         }
       },
     },
@@ -155,7 +158,7 @@ export default {
         return this.$store.state.eventsMap;
       },
       set([key, value]) {
-        this.$store.commit("ADD_EVENTS_MAP", [key, value]);
+        this.$store.commit('ADD_EVENTS_MAP', [key, value]);
       },
     },
     eventsDisplayMap: {
@@ -163,7 +166,7 @@ export default {
         return this.$store.state.eventsDisplayMap;
       },
       set([key, value]) {
-        this.$store.commit("ADD_DISPLAY_EVENTS_MAP", [key, value]);
+        this.$store.commit('ADD_DISPLAY_EVENTS_MAP', [key, value]);
       },
     },
     modifiedSinceMap: {
@@ -171,7 +174,7 @@ export default {
         return this.$store.state.modifiedSinceMap;
       },
       set([key, value]) {
-        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
+        this.$store.commit('ADD_MODIFIED_SINCE_MAP', [key, value]);
       },
     },
     types: {
@@ -179,7 +182,7 @@ export default {
         return this.$store.state.types;
       },
       set(value) {
-        this.$store.commit("SET_TYPES", value);
+        this.$store.commit('SET_TYPES', value);
       },
     },
     showBtn: function() {
@@ -190,21 +193,21 @@ export default {
   },
   data() {
     return {
-      APILogin: "Login Using API",
-      ButtonLogin: "Login using Web Button",
-      PasswordLogin: "Login using Username, Password",
-      ServiceInfoURL: "Service Info URL",
-      href_api: "https://github.com/pryv/lib-js#using-an-api-endpoint",
+      APILogin: 'Login Using API',
+      ButtonLogin: 'Login using Web Button',
+      PasswordLogin: 'Login using Username, Password',
+      ServiceInfoURL: 'Service Info URL',
+      href_api: 'https://github.com/pryv/lib-js#using-an-api-endpoint',
       href_web:
-        "https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button",
+        'https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button',
       href_manual:
-        "https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only",
-      href_service_info: "https://github.com/pryv/lib-js#usage-of-pryvservice",
+        'https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only',
+      href_service_info: 'https://github.com/pryv/lib-js#usage-of-pryvservice',
       events: [],
       displayEvents: [],
       typesSet: new Set(),
-      btnContent: "Back",
-      showOverlay : false
+      btnContent: 'Back',
+      showOverlay: false,
     };
   },
   methods: {
@@ -227,7 +230,7 @@ export default {
     },
     async addStreamsToStore(connection) {
       const apiObj = GET_STREAMS_API.GET_STREAMS_API;
-      apiObj[0].params = { state: "all" };
+      apiObj[0].params = { state: 'all' };
       try {
         const result = await connection.api(apiObj);
         if (result) {
@@ -236,7 +239,7 @@ export default {
           });
         }
       } catch (e) {
-        console.log("Error occurred when retrieving streams " + e);
+        console.log('Error occurred when retrieving streams ' + e);
         return false;
       }
       return true;
@@ -255,7 +258,7 @@ export default {
           this.eventsDisplayMap = [connection.apiEndpoint, this.displayEvents];
         }
       } catch (e) {
-        console.log("Error occurred when retrieving streams " + e);
+        console.log('Error occurred when retrieving streams ' + e);
         return false;
       }
       return true;
@@ -277,7 +280,7 @@ export default {
           this.accessInfoMap = [connection.apiEndpoint, result[0]];
         }
       } catch (e) {
-        console.log("Error occurred when retrieving access info " + e);
+        console.log('Error occurred when retrieving access info ' + e);
         return false;
       }
       return true;
@@ -296,7 +299,7 @@ export default {
         ];
         this.eventsMap = [connection.apiEndpoint, this.events];
       } catch (e) {
-        console.log("Error occurred when retrieving events " + e);
+        console.log('Error occurred when retrieving events ' + e);
         return false;
       }
       return true;
@@ -313,17 +316,22 @@ export default {
     },
     async updateStore(connection) {
       this.showOverlay = true;
-      const conn =await this.addConnectionToStore(connection);
+      const conn = await this.addConnectionToStore(connection);
       const str = await this.addStreamsToStore(connection);
-      const  acc= await this.addAccessInfoToStore(connection);
+      const acc = await this.addAccessInfoToStore(connection);
       const eve = await this.addInitialEventsToStore(connection);
-      return (conn && str && acc && eve ? (this.showOverlay=false, true) : false);
+      if (conn && str && acc && eve)
+      {
+        this.showOverlay = false;
+        return true;
+      }
+      return false;
     },
     async updateSessionStorage(connection, cookie) {
       if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        (await this.updateStore(connection))
-          ? await this.$router.push("events")
-          : console.log("Some error occured when loading");
+        if (await this.updateStore(connection))
+          await this.$router.push('events');
+        else console.log('Some error occured when loading');
         await this.addEventsToStore(connection);
       }
     },
@@ -331,8 +339,8 @@ export default {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName !== "events") {
-        this.$router.push("events");
+      if (this.currentRouteName !== 'events') {
+        this.$router.push('events');
       }
     },
   },
@@ -354,7 +362,7 @@ export default {
 }
 
 .pryv-btn-collapse {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
   width: 100%;

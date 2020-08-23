@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "Dropbox",
+  name: 'Dropbox',
   props: {
     valueSelected: {
       required: true,
@@ -20,7 +20,7 @@ export default {
     },
     disabled: {
       required: false,
-      default : false
+      default: false,
     },
   },
 };

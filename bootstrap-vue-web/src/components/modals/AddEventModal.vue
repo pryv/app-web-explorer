@@ -263,7 +263,7 @@ export default {
           type: "enum",
           val: null,
           enum: this.selectedTypeObject.enum,
-          required: this.selectedTypeObject.required ? true : false,
+          required: !!this.selectedTypeObject.required,
           labelFor: "input-content-Content",
           feedback: "Content is required",
         };
@@ -276,7 +276,7 @@ export default {
           label: `Attachment ${this.selectedTypeObject.required ? "*" : ""}`,
           type: "attachment",
           val: null,
-          required: this.selectedTypeObject.required ? true : false,
+          required: !!this.selectedTypeObject.required,
           State: null,
           labelFor: "input-content-Attachment",
           feedback: "Attachment is required",
@@ -292,7 +292,7 @@ export default {
           }`,
           type: this.selectedTypeObject.type,
           val: null,
-          required: this.selectedTypeObject.type === "number" ? true : false,
+          required: this.selectedTypeObject.type === "number",
           labelFor: "input-content-Content",
           feedback: "Content is required",
         };
@@ -336,11 +336,11 @@ export default {
   },
   methods: {
     getRequired(key) {
-      return this.selectedTypeObject.required &&
+      return !!(
+        this.selectedTypeObject.required &&
         this.selectedTypeObject.required.length > 0 &&
         this.selectedTypeObject.required.includes(key)
-        ? true
-        : false;
+      );
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
@@ -366,9 +366,7 @@ export default {
       this.handleSubmit();
     },
     async handleSubmit() {
-      if (!this.checkFormValidity()) {
-        return;
-      }
+      if (!this.checkFormValidity()) return;
       await this.addEvent();
     },
     async addEvent() {
@@ -387,10 +385,9 @@ export default {
           this.selectedTypeObject.type === "object" ||
           this.selectedTypeObject.type === "array"
         ) {
-          content = new Object();
+          content = {};
           this.contentNames.forEach(obj => {
-            let value = obj.type === "number" ? +obj.val : obj.val;
-            content[obj.labelKey] = value;
+            content[obj.labelKey] = obj.type === "number" ? +obj.val : obj.val;
           });
         }
         if (
@@ -398,7 +395,7 @@ export default {
           this.contentNames.length > 0 &&
           this.contentNames[0].type === "attachment"
         ) {
-          var formData = new FormData();
+          let formData = new FormData();
           formData.append("file0", this.contentNames[0].val);
 
           connection
@@ -441,20 +438,18 @@ export default {
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
             this.resetModal();
-            return;
           } else {
             await this.addEventsToStore(result[0].event);
           }
         }
       } catch (e) {
         console.log("Error occurred when creating modals" + e);
-        return;
       }
     },
     async addEventsToStore(event) {
       let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
       clonedEvents[this.selectedEndpoint].push(event);
-      this.eventsMap[this.selectedEndpoint].push(event)
+      this.eventsMap[this.selectedEndpoint].push(event);
       this.eventsDisplayMap = clonedEvents;
       this.$bvModal.hide("modal-scoped-event");
     },

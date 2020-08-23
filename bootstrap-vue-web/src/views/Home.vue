@@ -11,6 +11,7 @@
           src="https://pryv.com/wp-content/themes/pryv2019/assets/img/Illustration-hero.svg"
           scale="0"
           width="50%"
+          alt="PRYV"
         />
       </b-col>
     </b-row>

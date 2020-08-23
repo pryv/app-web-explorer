@@ -128,15 +128,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import VueJsonPretty from "vue-json-pretty";
-import PryvBtn from "../components/shared/PryvBtn";
-import VJsoneditor from "v-jsoneditor";
-import UPDATE_STREAM_API from "../utilities/api";
-import DELETE_STREAM_API from "../utilities/api";
-import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
+import { mapState } from 'vuex';
+import VueJsonPretty from 'vue-json-pretty';
+import PryvBtn from '../components/shared/PryvBtn';
+import VJsoneditor from 'v-jsoneditor';
+import UPDATE_STREAM_API from '../utilities/api';
+import DELETE_STREAM_API from '../utilities/api';
+import LoadStreamsBtn from '../components/load/LoadStreamsBtn';
 export default {
-  name: "Stream",
+  name: 'Stream',
   components: {
     LoadStreamsBtn,
     PryvBtn,
@@ -145,29 +145,29 @@ export default {
   },
   data() {
     return {
-      btnContent: "Back",
-      message: "Please select an endpoint to view the access data",
-      btnContentEdit: "Edit",
-      btnContentSave: "Save",
-      btnContentCancel: "Cancel",
-      btnContentDelete: "Delete",
+      btnContent: 'Back',
+      message: 'Please select an endpoint to view the access data',
+      btnContentEdit: 'Edit',
+      btnContentSave: 'Save',
+      btnContentCancel: 'Cancel',
+      btnContentDelete: 'Delete',
       editable: false,
       updatedStreamInfo: null,
-      merge: "not_accepted",
+      merge: 'not_accepted',
       saveDisable: true,
     };
   },
   computed: {
-    ...mapState(["viewStreamInfo"]),
-    ...mapState(["viewStreamInfoObj"]),
-    ...mapState(["connectionsMap"]),
+    ...mapState(['viewStreamInfo']),
+    ...mapState(['viewStreamInfoObj']),
+    ...mapState(['connectionsMap']),
     viewStreamInfoObj: {
       get() {
         this.reset();
         return this.$store.state.viewStreamInfoObj;
       },
       set(value) {
-        this.$store.commit("UPDATE_STREAM_INFO_OBJ", value);
+        this.$store.commit('UPDATE_STREAM_INFO_OBJ', value);
       },
     },
     streamsMap: {
@@ -175,7 +175,7 @@ export default {
         return this.$store.state.streamsMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_STREAMS_MAP", value);
+        this.$store.commit('UPDATE_STREAMS_MAP', value);
       },
     },
     computedStreamInfo: {
@@ -202,8 +202,8 @@ export default {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName !== "events") {
-        this.$router.push("events");
+      if (this.currentRouteName !== 'events') {
+        this.$router.push('events');
       }
     },
     edit() {
@@ -214,14 +214,14 @@ export default {
       Object.keys(this.viewStreamInfoObj).forEach(k => {
         if (k in this.computedStreamInfo)
           if (this.viewStreamInfoObj[k] !== this.computedStreamInfo[k])
-            if (k !== "children") obj[k] = this.computedStreamInfo[k];
+            if (k !== 'children') obj[k] = this.computedStreamInfo[k];
       });
       return obj;
     },
     async save() {
       const updateObj = this.getUpdatedProps();
       if (Object.keys(updateObj).length === 0) {
-        alert("No changes for the existing stream is detected");
+        alert('No changes for the existing stream is detected');
         return;
       }
       const endpoint = this.viewStreamInfo.endpoint;
@@ -235,12 +235,10 @@ export default {
         const result = await connection.api(apiObj);
         await this.addStreamsToStore(endpoint, result[0].stream);
         if (result && result[0] && result[0].error) {
-          alert(result[0].error.id + " - " + result[0].error.message);
-          return;
+          alert(result[0].error.id + ' - ' + result[0].error.message);
         }
       } catch (e) {
-        console.log("Error occurred when creating events" + e);
-        return;
+        console.log('Error occurred when creating events' + e);
       }
     },
     async addStreamsToStore(endpoint, stream) {
@@ -263,7 +261,7 @@ export default {
         const apiObj = DELETE_STREAM_API.DELETE_STREAM_API;
         apiObj[0].params = {
           id: this.viewStreamInfoObj.id,
-          mergeEventsWithParent: this.merge === "accepted" ? true : false,
+          mergeEventsWithParent: this.merge === 'accepted',
         };
 
         const result = await connection.api(apiObj);
@@ -279,12 +277,10 @@ export default {
           this.backToEvents();
         }
         if (result && result[0] && result[0].error) {
-          alert(result[0].error.id + " - " + result[0].error.message);
-          return;
+          alert(result[0].error.id + ' - ' + result[0].error.message);
         }
       } catch (e) {
-        console.log("Error occurred when creating modals" + e);
-        return;
+        console.log('Error occurred when creating modals' + e);
       }
     },
     cancelEdit() {

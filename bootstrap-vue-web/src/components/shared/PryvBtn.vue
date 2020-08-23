@@ -5,11 +5,13 @@
     v-on:click="listeners.click"
     :type="props.type"
     :disabled="props.disabled ? props.disabled : false"
-  ><b-icon v-if="props.icon" :icon="props.icon" font-scale="1"></b-icon> {{props.content}}</b-button>
+    ><b-icon v-if="props.icon" :icon="props.icon" font-scale="1"></b-icon>
+    {{ props.content }}</b-button
+  >
 </template>
 
 <script>
 export default {
-  name: "PryvBtn"
+  name: 'PryvBtn',
 };
 </script>

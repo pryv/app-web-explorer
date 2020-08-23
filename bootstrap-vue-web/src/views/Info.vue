@@ -15,11 +15,11 @@
               icon="arrow-left"
             ></PryvBtn>
             <PryvBtn
-                    @click="$bvModal.show('modal-scoped-stream')"
-                    id="submitBtn"
-                    class="mt-0"
-                    icon="plus"
-                    content="Stream"
+              @click="$bvModal.show('modal-scoped-stream')"
+              id="submitBtn"
+              class="mt-0"
+              icon="plus"
+              content="Stream"
             >
             </PryvBtn>
             <AddStreamModal></AddStreamModal>
@@ -50,21 +50,21 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import VueJsonPretty from "vue-json-pretty";
-import PryvBtn from "../components/shared/PryvBtn";
-import AddStreamModal from "../components/modals/AddStreamModal";
+import { mapState } from 'vuex';
+import VueJsonPretty from 'vue-json-pretty';
+import PryvBtn from '../components/shared/PryvBtn';
+import AddStreamModal from '../components/modals/AddStreamModal';
 
 export default {
-  name: "Info",
+  name: 'Info',
   computed: {
-    ...mapState(["viewAccessInfo"]),
+    ...mapState(['viewAccessInfo']),
     connectionsMap: {
       get() {
         return this.$store.state.connectionsMap;
       },
       set(value) {
-        this.$store.commit("DELETE_CONNECTIONS_MAP", value);
+        this.$store.commit('DELETE_CONNECTIONS_MAP', value);
       },
     },
     streamsMap: {
@@ -72,7 +72,7 @@ export default {
         return this.$store.state.streamsMap;
       },
       set(value) {
-        this.$store.commit("DELETE_STREAMS_MAP", value);
+        this.$store.commit('DELETE_STREAMS_MAP', value);
       },
     },
     accessInfoMap: {
@@ -80,7 +80,7 @@ export default {
         return this.$store.state.accessInfoMap;
       },
       set(value) {
-        this.$store.commit("DELETE_ACCESS_INFO_MAP", value);
+        this.$store.commit('DELETE_ACCESS_INFO_MAP', value);
       },
     },
     eventsMap: {
@@ -88,7 +88,7 @@ export default {
         return this.$store.state.eventsMap;
       },
       set(value) {
-        this.$store.commit("DELETE_EVENTS_MAP", value);
+        this.$store.commit('DELETE_EVENTS_MAP', value);
       },
     },
     infoJSON: {
@@ -109,9 +109,9 @@ export default {
   },
   data() {
     return {
-      btnContent: "Back",
-      message: "Please select an endpoint to view the access data",
-      btnContentDisconnect: "Disconnect",
+      btnContent: 'Back',
+      message: 'Please select an endpoint to view the access data',
+      btnContentDisconnect: 'Disconnect',
     };
   },
   methods: {
@@ -119,8 +119,8 @@ export default {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName !== "events") {
-        this.$router.push("events");
+      if (this.currentRouteName !== 'events') {
+        this.$router.push('events');
       }
     },
     deleteConnectionData() {
@@ -141,14 +141,14 @@ export default {
       this.eventsMap = clonedEventsMap;
 
       Object.keys(this.connectionsMap).length === 0
-        ? this.$router.push("login")
-        : this.$router.push("events");
+        ? this.$router.push('login')
+        : this.$router.push('events');
     },
     logout() {
       let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
       let obj = endpointArr.find(o => o.key === this.viewAccessInfo);
       if (obj.cookie) {
-        this.$cookies.remove("pryv-libjs-web-app-explorer", null,  ".l.rec.la");
+        this.$cookies.remove('pryv-libjs-web-app-explorer', null, '.l.rec.la');
       }
       endpointArr = endpointArr.filter(obj => obj.key !== this.viewAccessInfo);
       this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);

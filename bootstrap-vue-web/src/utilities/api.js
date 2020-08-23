@@ -1,53 +1,53 @@
 const accessInfoApi = [
   {
-    method: "getAccessInfo",
+    method: 'getAccessInfo',
     params: {},
   },
 ];
 const getEventsApi = [
   {
-    method: "events.get",
+    method: 'events.get',
     params: {},
   },
 ];
 const getStreamsApi = [
   {
-    method: "streams.get",
+    method: 'streams.get',
     params: {},
   },
 ];
 
 const createStreamsApi = [
   {
-    method: "streams.create",
+    method: 'streams.create',
     params: {},
   },
 ];
 
 const createEventApi = [
   {
-    method: "events.create",
+    method: 'events.create',
     params: {},
   },
 ];
 
 const updateStreamApi = [
   {
-    method: "streams.update",
+    method: 'streams.update',
     params: {},
   },
 ];
 
 const updateEventApi = [
   {
-    method: "events.update",
+    method: 'events.update',
     params: {},
   },
 ];
 
 const deleteStreamApi = [
   {
-    method: "streams.delete",
+    method: 'streams.delete',
     params: {},
   },
 ];

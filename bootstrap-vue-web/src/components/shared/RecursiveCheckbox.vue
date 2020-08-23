@@ -21,7 +21,7 @@
           :class="{
             trashed: stream.trashed && stream.trashed === true,
             'not-trashed': !stream.trashed,
-            'text-left': stream.streamId,
+            'text-left': stream.streamId
           }"
           :value="stream.streamId"
           @change="checkBoxClicked($event, stream.streamId, endpoint)"
@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  name: "RecursiveCheckbox",
+  name: 'RecursiveCheckbox',
   props: {
     displayStreams: {
       type: Array,
@@ -77,7 +77,7 @@ export default {
         clickedEndpointAndStreamId: value,
         endpointClicked: index,
       };
-      this.$emit("checkBoxClicked", payload);
+      this.$emit('checkBoxClicked', payload);
     },
     viewStreamInfoRecursive(streamId, endpoint, event) {
       event.preventDefault();
@@ -85,7 +85,7 @@ export default {
         streamId: streamId,
         endpoint: endpoint,
       };
-      this.$emit("viewStreamInfo", payload);
+      this.$emit('viewStreamInfo', payload);
     },
   },
 };

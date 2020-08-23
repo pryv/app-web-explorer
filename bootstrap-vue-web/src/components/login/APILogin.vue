@@ -14,7 +14,11 @@
             :required="requiredInput"
           ></PryvInput>
         </div>
-        <PryvBtn :content="btnContent" :type="btnType" @click="loginAPI"></PryvBtn>
+        <PryvBtn
+          :content="btnContent"
+          :type="btnType"
+          @click="loginAPI"
+        ></PryvBtn>
       </b-form>
     </div>
   </div>
@@ -36,15 +40,17 @@ export default {
       placeHolder: "Enter API Endpoint",
       show: false,
       alertMessage: "",
-      btnType : "submit",
-      requiredInput : true
+      btnType: "submit",
+      requiredInput: true,
     };
   },
   methods: {
     loginAPI: async function() {
       try {
         const connection = new this.$pryv.Connection(this.apiEndpoint);
-        connection ? this.$emit("authenticated", connection, false) : console.log("Please enter a valid endpoint.");
+        connection
+          ? this.$emit("authenticated", connection, false)
+          : console.log("Please enter a valid endpoint.");
       } catch (e) {
         this.show = true;
         this.alertMessage = e.message;

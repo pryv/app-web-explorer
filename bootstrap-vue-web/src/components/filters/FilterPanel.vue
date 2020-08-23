@@ -30,7 +30,6 @@
       <b-col cols="1" class="px-0">
         <b-overlay
           :show="busy"
-          rounded
           opacity="0.6"
           spinner-small
           spinner-variant="primary"
@@ -64,13 +63,13 @@
                   ></Checkbox>
                 </b-col>
                 <b-col cols="8" class="text-left">
-                  <TimePicker
+                  <DatePicker
                     :disabled="this.valueFromCheck === false"
                     :value="valueFrom"
                     @updateFilter="
                       selectFiltersRelatedToDates(fromLabelToSort, $event)
                     "
-                  ></TimePicker>
+                  ></DatePicker>
                 </b-col>
               </b-row>
             </b-col>
@@ -86,13 +85,13 @@
                   ></Checkbox>
                 </b-col>
                 <b-col cols="8" class="text-left">
-                  <TimePicker
+                  <DatePicker
                     :disabled="this.valueToCheck === false"
                     :value="valueTo"
                     @updateFilter="
                       selectFiltersRelatedToDates(toLabelToSort, $event)
                     "
-                  ></TimePicker>
+                  ></DatePicker>
                 </b-col>
               </b-row>
             </b-col>
@@ -111,7 +110,7 @@
                   ></Checkbox>
                 </b-col>
                 <b-col cols="8" class="text-left">
-                  <TimePicker
+                  <DatePicker
                     :disabled="this.valueModifiedCheck === false"
                     :value="valueModified"
                     @updateFilter="
@@ -120,7 +119,7 @@
                         $event
                       )
                     "
-                  ></TimePicker>
+                  ></DatePicker>
                 </b-col>
               </b-row>
             </b-col>
@@ -187,7 +186,7 @@
                     class="default-font"
                     type="text"
                     v-model="valueLimit"
-                    @keydown.native="test_keydown_handler"
+                    @keydown.native="enter_limit_event"
                   ></b-form-input>
                 </b-col>
               </b-row>
@@ -249,13 +248,13 @@
 import { mapState } from "vuex";
 import Checkbox from "../shared/Checkbox";
 import Dropbox from "../shared/Dropbox";
-import TimePicker from "../shared/TimePicker";
+import DatePicker from "../shared/DatePicker";
 import TypesFilterModal from "./TypesFilterModal";
 import { filterTags, filterTagsSort, states } from "../../utilities/constants";
 
 export default {
   name: "FilterPanel",
-  components: { TypesFilterModal, TimePicker, Checkbox, Dropbox },
+  components: { TypesFilterModal, DatePicker, Checkbox, Dropbox },
   computed: {
     ...mapState(["types"]),
     updatedFilters: {
@@ -335,29 +334,30 @@ export default {
   },
   methods: {
     onHidden() {
-      // Return focus to the button once hidden
       this.$refs.button.focus();
     },
-    test_keydown_handler(event) {
+    enter_limit_event(event) {
       if (event.which === 13) {
         this.busy = true;
         setTimeout(
           async function() {
-            this.valueLimit !== ""
-              ? (((this.tags = this.tags.filter(
+            if (this.valueLimit !== "") {
+              this.tags = this.tags.filter(
+                value => !value.includes(filterTags.LIMIT)
+              );
+              this.tags.push(filterTags.LIMIT + " - " + this.valueLimit);
+              this.updateSelectedFiltersArray(
+                filterTagsSort.LIMIT,
+                parseInt(this.valueLimit)
+              );
+            } else {
+              this.removeFromSelectedFiltersArray(
+                filterTagsSort.LIMIT,
+                (this.tags = this.tags.filter(
                   value => !value.includes(filterTags.LIMIT)
-                )),
-                this.tags.push(filterTags.LIMIT + " - " + this.valueLimit)),
-                this.updateSelectedFiltersArray(
-                  filterTagsSort.LIMIT,
-                  parseInt(this.valueLimit)
                 ))
-              : this.removeFromSelectedFiltersArray(
-                  filterTagsSort.LIMIT,
-                  (this.tags = this.tags.filter(
-                    value => !value.includes(filterTags.LIMIT)
-                  ))
-                );
+              );
+            }
             this.busy = false;
           }.bind(this),
           150
@@ -367,14 +367,16 @@ export default {
     setSelected(value) {
       this.busy = true;
       this.selected = value;
-      this.selected
-        ? ((this.tags = this.tags.filter(
-            value => !value.includes(filterTags.TYPES)
-          )),
-          this.tags.push(filterTags.TYPES + " - " + value))
-        : (this.tags = this.tags.filter(
-            value => !value.includes(filterTags.TYPES)
-          ));
+      if (this.selected) {
+        this.tags = this.tags.filter(
+          value => !value.includes(filterTags.TYPES)
+        );
+        this.tags.push(filterTags.TYPES + " - " + value);
+      } else {
+        this.tags = this.tags.filter(
+          value => !value.includes(filterTags.TYPES)
+        );
+      }
       this.busy = false;
     },
     selectFiltersRelatedToDates(type, ctx) {
@@ -388,38 +390,42 @@ export default {
       switch (type) {
         case filterTagsSort.FROM:
           this.valueFrom = ctx.selectedYMD;
-          this.valueFrom
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.FROM)
-              )),
-              this.tags.push(filterTags.FROM + " - " + ctx.selectedYMD))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.FROM)
-              ));
+          if (this.valueFrom) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.FROM)
+            );
+            this.tags.push(filterTags.FROM + " - " + ctx.selectedYMD);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.FROM)
+            );
+          }
           break;
         case filterTagsSort.TO:
           this.valueTo = ctx.selectedYMD;
-          this.valueTo
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.TO)
-              )),
-              this.tags.push(filterTags.TO + " - " + ctx.selectedYMD))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.TO)
-              ));
+          if (this.valueTo) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.TO)
+            );
+            this.tags.push(filterTags.TO + " - " + ctx.selectedYMD);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.TO)
+            );
+          }
           break;
         case filterTagsSort.MODIFIED_SINCE:
           this.valueModified = ctx.selectedYMD;
-          this.valueModified
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.MODIFIED_SINCE)
-              )),
-              this.tags.push(
-                filterTags.MODIFIED_SINCE + " - " + ctx.selectedYMD
-              ))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.MODIFIED_SINCE)
-              ));
+          if (this.valueModified) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.MODIFIED_SINCE)
+            );
+            this.tags.push(filterTags.MODIFIED_SINCE + " - " + ctx.selectedYMD);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.MODIFIED_SINCE)
+            );
+          }
           break;
       }
       this.busy = false;
@@ -432,36 +438,42 @@ export default {
       switch (type) {
         case filterTagsSort.SORT:
           this.valueSort = value;
-          this.valueSort
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.SORT)
-              )),
-              this.tags.push(filterTags.SORT + " - " + value))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.SORT)
-              ));
+          if (this.valueSort) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.SORT)
+            );
+            this.tags.push(filterTags.SORT + " - " + value);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.SORT)
+            );
+          }
           break;
         case filterTagsSort.STATE:
           this.valueState = value;
-          this.valueState
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.STATE)
-              )),
-              this.tags.push(filterTags.STATE + " - " + value))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.STATE)
-              ));
+          if (this.valueState) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.STATE)
+            );
+            this.tags.push(filterTags.STATE + " - " + value);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.STATE)
+            );
+          }
           break;
         case filterTagsSort.RUNNING:
           this.valueRunning = value;
-          this.valueRunning
-            ? ((this.tags = this.tags.filter(
-                value => !value.includes(filterTags.RUNNING)
-              )),
-              this.tags.push(filterTags.RUNNING + " - " + value))
-            : (this.tags = this.tags.filter(
-                value => !value.includes(filterTags.RUNNING)
-              ));
+          if (this.valueRunning) {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.RUNNING)
+            );
+            this.tags.push(filterTags.RUNNING + " - " + value);
+          } else {
+            this.tags = this.tags.filter(
+              value => !value.includes(filterTags.RUNNING)
+            );
+          }
           break;
       }
       this.busy = false;

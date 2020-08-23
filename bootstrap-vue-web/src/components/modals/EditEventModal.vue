@@ -159,25 +159,25 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import UPDATE_EVENT_API from "../../utilities/api";
-import Dropbox from "../shared/Dropbox";
-import PryvBtn from "../shared/PryvBtn";
+import { mapState } from 'vuex';
+import UPDATE_EVENT_API from '../../utilities/api';
+import Dropbox from '../shared/Dropbox';
+import PryvBtn from '../shared/PryvBtn';
 export default {
-  name: "EditEventModal",
+  name: 'EditEventModal',
   components: { Dropbox, PryvBtn },
   props: {
     data: { type: Object, required: true, default: null },
   },
   data() {
     return {
-      connectionLbl: "Select the Connection",
+      connectionLbl: 'Select the Connection',
       selectedConnection: null,
       selectedEndpoint: null,
       selectedStream: null,
       selectedType: null,
       selectedTypeObject: null,
-      type: "note/txt",
+      type: 'note/txt',
       streamState: null,
       typeState: null,
       contentStatesCheck: [],
@@ -189,10 +189,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["connectionsMap"]),
-    ...mapState(["accessInfoMap"]),
-    ...mapState(["streamsMap"]),
-    ...mapState(["typesAll"]),
+    ...mapState(['connectionsMap']),
+    ...mapState(['accessInfoMap']),
+    ...mapState(['streamsMap']),
+    ...mapState(['typesAll']),
     selectedConnectionComputed: {
       get() {
         return this.selectedConnection
@@ -322,70 +322,70 @@ export default {
         return;
       if (this.data.type !== this.selectedTypeComputed) {
         if (
-          this.selectedTypeObjectComputed.type === "string" &&
+          this.selectedTypeObjectComputed.type === 'string' &&
           this.selectedTypeObjectComputed.enum
         ) {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
-            type: "enum",
+            type: 'enum',
             val: null,
             enum: this.selectedTypeObjectComputed.enum,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
         } else if (
-          this.selectedTypeObjectComputed.type === "null" &&
+          this.selectedTypeObjectComputed.type === 'null' &&
           this.selectedTypeObjectComputed.attachmentRequired
         ) {
           const payload = {
-            label: "Attachment",
-            type: "attachment",
+            label: 'Attachment',
+            type: 'attachment',
             val: null,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Attachment",
-            feedback: "Attachment is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Attachment',
+            feedback: 'Attachment is required',
           };
           arr.push(payload);
-        } else if (this.selectedTypeObjectComputed.type === "string") {
+        } else if (this.selectedTypeObjectComputed.type === 'string') {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
             type: this.selectedTypeObjectComputed.type,
             val: null,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
-        } else if (this.selectedTypeObjectComputed.type === "number") {
+        } else if (this.selectedTypeObjectComputed.type === 'number') {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
             type: this.selectedTypeObjectComputed.type,
             val: null,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
         } else if (
-          this.selectedTypeObjectComputed.type === "object" ||
-          this.selectedTypeObjectComputed.type === "array"
+          this.selectedTypeObjectComputed.type === 'object' ||
+          this.selectedTypeObjectComputed.type === 'array'
         ) {
           Object.keys(this.selectedTypeObjectComputed.properties).forEach(
             key => {
               const payload = {
-                label: `${key}${this.getRequired(key) ? "*" : ""}`,
+                label: `${key}${this.getRequired(key) ? '*' : ''}`,
                 type: this.selectedTypeObjectComputed.properties[key].type,
                 val: null,
                 required: this.getRequired(key),
-                labelFor: "input-content-" + key,
+                labelFor: 'input-content-' + key,
                 feedback: `${key} is required`,
                 labelKey: key,
               };
@@ -395,72 +395,73 @@ export default {
         }
       } else {
         if (
-          this.selectedTypeObjectComputed.type === "string" &&
+          this.selectedTypeObjectComputed.type === 'string' &&
           this.selectedTypeObjectComputed.enum
         ) {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
-            type: "enum",
+            type: 'enum',
             val: this.data.content,
             enum: this.selectedTypeObjectComputed.enum,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
         } else if (
-          this.selectedTypeObjectComputed.type === "null" &&
+          this.selectedTypeObjectComputed.type === 'null' &&
           this.selectedTypeObjectComputed.attachmentRequired
         ) {
           const payload = {
             label: `Attachment ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
-            type: "attachment",
+            type: 'attachment',
             val: null,
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Attachment",
-            feedback: "Attachment is required",
+            required: !!this.selectedTypeObjectComputed.required,
+
+            labelFor: 'input-content-Attachment',
+            feedback: 'Attachment is required',
           };
           arr.push(payload);
-        } else if (this.selectedTypeObjectComputed.type === "string") {
+        } else if (this.selectedTypeObjectComputed.type === 'string') {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
             type: this.selectedTypeObjectComputed.type,
             val: this.data.content.toString(),
-            required: this.selectedTypeObjectComputed.required ? true : false,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            required: !!this.selectedTypeObjectComputed.required,
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
-        } else if (this.selectedTypeObjectComputed.type === "number") {
+        } else if (this.selectedTypeObjectComputed.type === 'number') {
           const payload = {
             label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
+              this.selectedTypeObjectComputed.required ? '*' : ''
             }`,
             type: this.selectedTypeObjectComputed.type,
             val: this.data.content.toString(),
             required: true,
-            labelFor: "input-content-Content",
-            feedback: "Content is required",
+            labelFor: 'input-content-Content',
+            feedback: 'Content is required',
           };
           arr.push(payload);
         } else if (
-          this.selectedTypeObjectComputed.type === "object" ||
-          this.selectedTypeObjectComputed.type === "array"
+          this.selectedTypeObjectComputed.type === 'object' ||
+          this.selectedTypeObjectComputed.type === 'array'
         ) {
           Object.keys(this.selectedTypeObjectComputed.properties).forEach(
             key => {
               const payload = {
-                label: `${key}${this.getRequired(key) ? "*" : ""}`,
+                label: `${key}${this.getRequired(key) ? '*' : ''}`,
                 type: this.selectedTypeObjectComputed.properties[key].type,
                 val: this.data.content[key].toString(),
                 required: this.getRequired(key),
-                labelFor: "input-content-" + key,
+                labelFor: 'input-content-' + key,
                 feedback: `${key} is required`,
                 labelKey: key,
               };
@@ -476,26 +477,26 @@ export default {
         return this.$store.state.eventsDisplayMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
+        this.$store.commit('UPDATE_DISPLAY_EVENTS_MAP', value);
       },
     },
   },
   methods: {
     getRequired(key) {
-      return this.selectedTypeObjectComputed.required &&
+      return !!(
+        this.selectedTypeObjectComputed.required &&
         this.selectedTypeObjectComputed.required.length > 0 &&
         this.selectedTypeObjectComputed.required.includes(key)
-        ? true
-        : false;
+      );
     },
     checkFormValidity() {
       const valid = this.$refs[this.data.id].checkValidity();
-      if (this.selectedStream === "") this.streamState = valid;
-      if (this.selectedType === "") this.typeState = valid;
+      if (this.selectedStream === '') this.streamState = valid;
+      if (this.selectedType === '') this.typeState = valid;
       if (this.contentNames) {
         this.contentNames.forEach(obj => {
-          let index = null;
-          if (obj.required === true && (obj.val === "" || obj.val === null)) {
+          let index;
+          if (obj.required === true && (obj.val === '' || obj.val === null)) {
             index = this.contentNames.indexOf(obj);
             this.$set(this.contentStatesCheck, index, valid);
           } else {
@@ -519,70 +520,67 @@ export default {
     async editEvent() {
       const obj = {};
       if (this.data.streamId !== this.selectedStreamComputed)
-        obj["streamId"] = this.selectedStreamComputed;
+        obj['streamId'] = this.selectedStreamComputed;
       if (this.data.type !== this.selectedTypeComputed) {
-        obj["type"] = this.selectedTypeComputed;
+        obj['type'] = this.selectedTypeComputed;
         let content = null;
-        if (this.selectedTypeObjectComputed.type === "string") {
+        if (this.selectedTypeObjectComputed.type === 'string') {
           content = this.contentNames[0].val;
-        } else if (this.selectedTypeObjectComputed.type === "number") {
+        } else if (this.selectedTypeObjectComputed.type === 'number') {
           content = +this.contentNames[0].val;
         } else if (
-          this.selectedTypeObjectComputed.type === "object" ||
-          this.selectedTypeObjectComputed.type === "array"
+          this.selectedTypeObjectComputed.type === 'object' ||
+          this.selectedTypeObjectComputed.type === 'array'
         ) {
-          content = new Object();
+          content = {};
           this.contentNames.forEach(obj => {
-            let value = obj.type === "number" ? +obj.val : obj.val;
-            content[obj.labelKey] = value;
+            content[obj.labelKey] = obj.type === 'number' ? +obj.val : obj.val;
           });
-        } else if (this.selectedTypeObjectComputed.type === "attachment") {
+        } else if (this.selectedTypeObjectComputed.type === 'attachment') {
           content = null;
         }
-        obj["content"] = content;
+        obj['content'] = content;
       } else {
         let content = null;
-        if (this.selectedTypeObjectComputed.type === "string") {
+        if (this.selectedTypeObjectComputed.type === 'string') {
           if (this.data.content !== this.contentNames[0].val)
             content = this.contentNames[0].val;
-        } else if (this.selectedTypeObjectComputed.type === "number") {
+        } else if (this.selectedTypeObjectComputed.type === 'number') {
           if (this.data.content !== +this.contentNames[0].val)
             content = +this.contentNames[0].val;
         } else if (
-          this.selectedTypeObjectComputed.type === "object" ||
-          this.selectedTypeObjectComputed.type === "array"
+          this.selectedTypeObjectComputed.type === 'object' ||
+          this.selectedTypeObjectComputed.type === 'array'
         ) {
-          content = new Object();
+          content = {};
           let modified = false;
           this.contentNames.forEach(obj => {
-            let value = obj.type === "number" ? +obj.val : obj.val;
+            let value = obj.type === 'number' ? +obj.val : obj.val;
             if (this.data.content[obj.labelKey] !== value) {
               modified = true;
-              return;
             }
           });
           if (modified === true) {
             this.contentNames.forEach(obj => {
-              let value = obj.type === "number" ? +obj.val : obj.val;
-              content[obj.label] = value;
+              content[obj.label] = obj.type === 'number' ? +obj.val : obj.val;
             });
           }
-        } else if (this.selectedTypeObjectComputed.type === "attachment") {
+        } else if (this.selectedTypeObjectComputed.type === 'attachment') {
           content = null;
         }
-        if (content !== null) obj["content"] = content;
+        if (content !== null) obj['content'] = content;
         if (this.data.time !== this.selectedTimeComputed)
-          obj["time"] = this.selectedTimeComputed;
+          obj['time'] = this.selectedTimeComputed;
         if (this.data.duration !== this.selectedDurationComputed)
-          obj["duration"] = this.selectedTimeComputed;
+          obj['duration'] = this.selectedTimeComputed;
         if (this.data.description !== this.selectedDescriptionComputed)
-          obj["description"] = this.selectedDescriptionComputed;
+          obj['description'] = this.selectedDescriptionComputed;
         if (this.data.clientData !== this.selectedClientDataComputed)
-          obj["clientData"] = this.selectedClientDataComputed;
+          obj['clientData'] = this.selectedClientDataComputed;
       }
       if (Object.keys(obj).length === 0) {
         alert(
-          "No changes to the event. Please cancel if you dont want to change the event"
+          'No changes to the event. Please cancel if you dont want to change the event'
         );
         return;
       }
@@ -595,14 +593,13 @@ export default {
         };
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].error) {
-          alert(result[0].error.id + " - " + result[0].error.message);
+          alert(result[0].error.id + ' - ' + result[0].error.message);
           this.resetModal();
           return;
         }
         await this.addEventsToStore(result[0].event);
       } catch (e) {
-        console.log("Error occurred when creating modals" + e);
-        return;
+        console.log('Error occurred when creating modals' + e);
       }
     },
     async addEventsToStore(event) {
@@ -630,7 +627,7 @@ export default {
       this.selectedTime = this.data.time;
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;
-      this.selectedClientData = this.data.clientData;
+      this.clientData = this.data.clientData;
       //reset states
       this.streamState = null;
       this.typeState = null;

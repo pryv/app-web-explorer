@@ -96,7 +96,7 @@
                     </template>
                   </b-table>
                   <PryvAlert
-                    v-if="fetchData.length == 0"
+                    v-if="fetchData.length === 0"
                     :show="show"
                     :message="message"
                   ></PryvAlert>
@@ -107,7 +107,7 @@
               <b-card-text class="text-left">
                 <vue-json-pretty :data="this.displayJSON" />
                 <PryvAlert
-                  v-if="fetchData.length == 0"
+                  v-if="fetchData.length === 0"
                   :show="show"
                   :message="message"
                 ></PryvAlert>
@@ -122,19 +122,19 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import VueJsonPretty from "vue-json-pretty";
-import PryvAlert from "../components/shared/PryvAlert";
-import FilterPanel from "../components/filters/FilterPanel";
-import { constants, filterTagsSort, states } from "../utilities/constants";
-import LoadEventsBtn from "../components/load/LoadEventsBtn";
-import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
-import PryvBtn from "../components/shared/PryvBtn";
-import EditEventModal from "../components/modals/EditEventModal";
-import AddEventModal from "../components/modals/AddEventModal";
+import { mapState } from 'vuex';
+import VueJsonPretty from 'vue-json-pretty';
+import PryvAlert from '../components/shared/PryvAlert';
+import FilterPanel from '../components/filters/FilterPanel';
+import { constants, filterTagsSort, states } from '../utilities/constants';
+import LoadEventsBtn from '../components/load/LoadEventsBtn';
+import LoadStreamsBtn from '../components/load/LoadStreamsBtn';
+import PryvBtn from '../components/shared/PryvBtn';
+import EditEventModal from '../components/modals/EditEventModal';
+import AddEventModal from '../components/modals/AddEventModal';
 
 export default {
-  name: "Events",
+  name: 'Events',
   components: {
     AddEventModal,
     EditEventModal,
@@ -149,61 +149,61 @@ export default {
     return {
       fetchData: [],
       show: true,
-      message: "No info available to display.",
+      message: 'No info available to display.',
       typesSet: new Set(),
-      showOverlay:false,
+      showOverlay: false,
       fields: [
-        { key: "id", label: "Id", sortable: true },
-        { key: "streamId", label: "Stream Id", sortable: true },
-        { key: "type", label: "Type", sortable: true },
+        { key: 'id', label: 'Id', sortable: true },
+        { key: 'streamId', label: 'Stream Id', sortable: true },
+        { key: 'type', label: 'Type', sortable: true },
         {
-          key: "time",
-          label: "Time",
+          key: 'time',
+          label: 'Time',
           formatter: value => {
             return new Date(value * 1000).toUTCString();
           },
           sortable: true,
         },
-        { key: "content", label: "Content" },
-        { key: "streamIds", label: "Stream Ids" },
-        { key: "tags", label: "Tags" },
-        { key: "attachments", label: "Attachments Id" },
-        { key: "description", label: "Description" },
-        { key: "clientData", label: "Client Data" },
+        { key: 'content', label: 'Content' },
+        { key: 'streamIds', label: 'Stream Ids' },
+        { key: 'tags', label: 'Tags' },
+        { key: 'attachments', label: 'Attachments Id' },
+        { key: 'description', label: 'Description' },
+        { key: 'clientData', label: 'Client Data' },
         {
-          key: "created",
-          label: "Created",
+          key: 'created',
+          label: 'Created',
           sortable: true,
           formatter: value => {
             return new Date(value * 1000).toUTCString();
           },
         },
-        { key: "createdBy", label: "Created By" },
+        { key: 'createdBy', label: 'Created By' },
         {
-          key: "modified",
-          label: "Modified",
+          key: 'modified',
+          label: 'Modified',
           sortable: true,
           formatter: value => {
             return new Date(value * 1000).toUTCString();
           },
         },
-        { key: "modifiedBy", label: "Modified By" },
+        { key: 'modifiedBy', label: 'Modified By' },
       ],
     };
   },
   computed: {
-    ...mapState(["selectedStreams"]),
-    ...mapState(["selectedFilters"]),
-    ...mapState(["eventsMap"]),
+    ...mapState(['selectedStreams']),
+    ...mapState(['selectedFilters']),
+    ...mapState(['eventsMap']),
     displayJSON() {
-      return this.fetchData.length > 0 ? this.fetchData : " ";
+      return this.fetchData.length > 0 ? this.fetchData : ' ';
     },
     types: {
       get() {
         return this.$store.state.types;
       },
       set(value) {
-        this.$store.commit("SET_TYPES", value);
+        this.$store.commit('SET_TYPES', value);
       },
     },
     typesAll: {
@@ -211,7 +211,7 @@ export default {
         return this.$store.state.typesAll;
       },
       set(value) {
-        this.$store.commit("SET_TYPES_ALL", value);
+        this.$store.commit('SET_TYPES_ALL', value);
       },
     },
     eventsDisplayMap: {
@@ -219,7 +219,7 @@ export default {
         return this.$store.state.eventsDisplayMap;
       },
       set([key, value]) {
-        this.$store.commit("ADD_DISPLAY_EVENTS_MAP", [key, value]);
+        this.$store.commit('ADD_DISPLAY_EVENTS_MAP', [key, value]);
       },
     },
   },
@@ -241,29 +241,32 @@ export default {
   },
   watch: {
     selectedStreams() {
-      console.log("selected streams")
+      console.log('selected streams');
       this.selectStreamsOrFilters();
     },
     selectedFilters() {
-      console.log("selected filters")
+      console.log('selected filters');
       this.selectStreamsOrFilters();
     },
     eventsDisplayMap() {
-      console.log("events display map")
+      console.log('events display map');
       this.selectStreamsOrFilters();
     },
   },
   methods: {
     async selectStreamsOrFilters() {
-      this.showOverlay = true
-      setTimeout(async function(){
-        await this.displayEvents();
-        await this.filterEvents();
-        this.showOverlay = false;
-      }.bind(this), 150);
+      this.showOverlay = true;
+      setTimeout(
+        async function() {
+          await this.displayEvents();
+          await this.filterEvents();
+          this.showOverlay = false;
+        }.bind(this),
+        150
+      );
     },
-     async displayEvents() {
-      console.log("display events method called")
+    async displayEvents() {
+      console.log('display events method called');
       this.fetchData = [];
       this.typesSet = new Set();
       const displayLimit = 20;
@@ -281,14 +284,14 @@ export default {
       ) {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-          this.eventsDisplayMap[apiEndpoint] = events.slice(-limit);
+          this.eventsDisplayMap[apiEndpoint] = events.slice(0, limit);
         }
       } else {
         for (const [apiEndpoint, events] of Object.entries(
           this.eventsDisplayMap
         )) {
           if (events.length > 20) {
-            this.eventsDisplayMap[apiEndpoint] = events.slice(-displayLimit);
+            this.eventsDisplayMap[apiEndpoint] = events.slice(0, displayLimit);
           }
         }
       }
@@ -298,15 +301,15 @@ export default {
       )) {
         for (let i = 0; i < streamIds.length; i++) {
           selectedEvents = this.eventsDisplayMap[apiEndpoint].filter(
-            event => event.streamId == streamIds[i]
+            event => event.streamId === streamIds[i]
           );
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }
-      console.log("display events method done")
+      console.log('display events method done');
     },
-     async filterEvents() {
-      console.log("filter events method called")
+    async filterEvents() {
+      console.log('filter events method called');
       let selectedEvents = this.fetchData;
       if (!this.selectedFilters) return;
       Object.keys(this.selectedFilters)
@@ -396,7 +399,7 @@ export default {
               break;
           }
         });
-      console.log("filter events method done")
+      console.log('filter events method done');
       this.fetchData = [...selectedEvents];
     },
     openJSON(endpoint, eventId, token) {
@@ -407,7 +410,7 @@ export default {
           var x = window.open();
           x.document.open();
           x.document.write(
-            "<html><body><pre>" + myjson + "</pre></body></html>"
+            '<html><body><pre>' + myjson + '</pre></body></html>'
           );
           x.document.close();
         });

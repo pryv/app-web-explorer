@@ -16,17 +16,15 @@ export default {
 
   methods: {
     async loadButton() {
-      var service = await Pryv.Browser.setupAuth(
+      await Pryv.Browser.setupAuth(
         loadSettings.call(this),
         this.serviceInfo
       );
-      console.log(service);
     },
   },
 };
 
 async function pryvAuthStateChange(state) {
-  console.log("##pryvAuthStateChange", state);
   let connection = null;
   if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
     connection = new Pryv.Connection(state.apiEndpoint);

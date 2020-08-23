@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: "TimePicker",
+  name: 'DatePicker',
   props: {
     value: {
       required: true,

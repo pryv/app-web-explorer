@@ -284,14 +284,14 @@ export default {
       ) {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-          this.eventsDisplayMap[apiEndpoint] = events.slice(0, limit);
+          this.eventsDisplayMap[apiEndpoint] = events.slice(-limit);
         }
       } else {
         for (const [apiEndpoint, events] of Object.entries(
           this.eventsDisplayMap
         )) {
           if (events.length > 20) {
-            this.eventsDisplayMap[apiEndpoint] = events.slice(0, displayLimit);
+            this.eventsDisplayMap[apiEndpoint] = events.slice(-displayLimit);
           }
         }
       }
@@ -300,9 +300,13 @@ export default {
         this.selectedStreams
       )) {
         for (let i = 0; i < streamIds.length; i++) {
-          selectedEvents = this.eventsDisplayMap[apiEndpoint].filter(
-            event => event.streamId === streamIds[i]
-          );
+          selectedEvents = this.eventsDisplayMap[apiEndpoint]
+            .filter(event => event.streamId === streamIds[i])
+            .map(event => {
+              const obj = Object.assign({}, event);
+              obj.apiEndpoint = apiEndpoint;
+              return obj
+            });
           if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
         }
       }

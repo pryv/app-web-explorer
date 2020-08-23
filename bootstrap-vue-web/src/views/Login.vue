@@ -310,7 +310,7 @@ export default {
       this.types = this.typesSet;
     },
     forEachDisplayEvent(event) {
-      this.displayEvents.push(event);
+      this.displayEvents.unshift(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },

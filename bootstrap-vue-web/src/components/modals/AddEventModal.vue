@@ -447,6 +447,7 @@ export default {
       }
     },
     async addEventsToStore(event) {
+      console.log("add events to store")
       let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
       clonedEvents[this.selectedEndpoint].push(event);
       this.eventsMap[this.selectedEndpoint].push(event);

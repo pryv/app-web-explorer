@@ -608,14 +608,13 @@ export default {
         key => key.id === event.id
       );
       clonedEvents[this.data.apiEndpoint][editedEventIndex] = event;
-      const editedDisplayEventIndex = this.eventsMap[
+      const editedDisplayEventIndex = this.eventsDisplayMap[
         this.data.apiEndpoint
       ].findIndex(key => key.id === event.id);
       this.eventsDisplayMap[this.data.apiEndpoint][
         editedDisplayEventIndex
       ] = event;
       this.eventsDisplayMap = clonedEvents;
-
       this.$bvModal.hide(this.data.id);
     },
     resetModal() {

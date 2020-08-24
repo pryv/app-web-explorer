@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import RecursiveCheckbox from './RecursiveCheckbox';
+import { mapState } from "vuex";
+import RecursiveCheckbox from "./RecursiveCheckbox";
 export default {
-  name: 'StreamCheckBox',
+  name: "StreamCheckBox",
   components: { RecursiveCheckbox },
   props: {
     selectedStreamsObjectArray: {
@@ -73,11 +73,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(['streamsMap']),
+    ...mapState(["streamsMap"]),
     accessInfoName() {
       if (this.streamObjectArray && this.streamObjectArray[0]) {
         return this.streamObjectArray[0].accessInfoName;
-      } else return '';
+      } else return "";
     },
     displayStreams: function() {
       return this.streamObjectArray.filter(e => e.streamName);
@@ -94,7 +94,7 @@ export default {
           endpoint: this.endpoint,
           streams: value,
         };
-        this.$emit('selectedStreamsMapUpdate', payload);
+        this.$emit("selectedStreamsMapUpdate", payload);
       },
     },
     viewAccessInfo: {
@@ -102,7 +102,7 @@ export default {
         return this.$store.state.viewAccessInfo;
       },
       set(value) {
-        this.$store.commit('SET_ACCESS_INFO', value);
+        this.$store.commit("SET_ACCESS_INFO", value);
       },
     },
     viewStreamInfo: {
@@ -110,7 +110,7 @@ export default {
         return this.$store.state.viewStreamInfo;
       },
       set(value) {
-        this.$store.commit('SET_STREAM_INFO', value);
+        this.$store.commit("SET_STREAM_INFO", value);
       },
     },
     viewStreamInfoObj: {
@@ -118,7 +118,7 @@ export default {
         return this.$store.state.viewStreamInfoObj;
       },
       set(value) {
-        this.$store.commit('UPDATE_STREAM_INFO_OBJ', value);
+        this.$store.commit("UPDATE_STREAM_INFO_OBJ", value);
       },
     },
   },
@@ -129,11 +129,11 @@ export default {
         clickedEndpointAndStreamId: value,
         endpointClicked: index,
       };
-      this.$emit('checkBoxClicked', payload);
+      this.$emit("checkBoxClicked", payload);
     },
     viewAccessInfoFunc(endpoint) {
-      if (this.currentRouteName !== 'Info') {
-        this.$router.push('info');
+      if (this.currentRouteName !== "Info") {
+        this.$router.push("info");
       }
       this.viewAccessInfo = endpoint;
     },
@@ -148,8 +148,8 @@ export default {
       this.viewStreamInfoObj = this.streamsMap[obj.endpoint].find(
         key => key.id === this.viewStreamInfo.id
       );
-      if (this.currentRouteName !== 'Stream') {
-        this.$router.push('stream');
+      if (this.currentRouteName !== "Stream") {
+        this.$router.push("stream");
       }
     },
   },
@@ -174,7 +174,7 @@ export default {
 }
 
 .custom-control-label {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: inline-block;
   padding-left: 0 !important;
   margin-bottom: 0;
@@ -224,12 +224,12 @@ export default {
 :not(.collapsed) > .when-closed {
   display: none;
 }
-  .border-access{
-    padding-top: 2%;
-    padding-bottom: 2%;
-    border-width: unset;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    margin-bottom: 2%;
-    border-radius: 4px;
-  }
+.border-access {
+  padding-top: 2%;
+  padding-bottom: 2%;
+  border-width: unset;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 2%;
+  border-radius: 4px;
+}
 </style>

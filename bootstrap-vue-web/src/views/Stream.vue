@@ -286,7 +286,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .info-card {
   border: none;
   padding: 0.5%;
@@ -298,4 +298,8 @@ export default {
 .trash {
   background-color: #9d0717;
 }
+  .modal-body{
+    padding-left: 2rem;
+  }
+
 </style>

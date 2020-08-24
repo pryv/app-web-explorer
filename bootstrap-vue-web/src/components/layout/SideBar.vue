@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 400px;min-width:400px;">
+  <div class="max-width">
     <b-row align-v="center" class="pt-2">
       <b-img
         alt="Responsive image"
@@ -22,3 +22,9 @@ export default {
   components: { ConnectionSidePanelBtn, GroupCheckBox },
 };
 </script>
+<style>
+  .max-width{
+    max-width: 450px;
+    min-width: 450px;
+  }
+</style>

@@ -396,7 +396,6 @@ export default {
         ) {
           let formData = new FormData();
           formData.append("file0", this.contentNames[0].val);
-
           connection
             .createEventWithFormData(
               {

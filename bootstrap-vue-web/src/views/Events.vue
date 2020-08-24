@@ -282,7 +282,7 @@ export default {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
         this.limit = limit;
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-          this.eventsDisplayMap[apiEndpoint] = events.slice(0,limit);
+          this.eventsDisplayMap[apiEndpoint] = events.slice(0, limit);
         }
       } else {
         this.limit = displayLimit;
@@ -290,7 +290,7 @@ export default {
           this.eventsDisplayMap
         )) {
           if (events.length > 20) {
-            this.eventsDisplayMap[apiEndpoint] = events.slice(0,displayLimit);
+            this.eventsDisplayMap[apiEndpoint] = events.slice(0, displayLimit);
           }
         }
       }
@@ -309,16 +309,25 @@ export default {
         }
         for (let i = 0; i < streamIds.length; i++) {
           if (Object.keys(streamEventMap).includes(streamIds[i]))
-            streamEventMap[streamIds[i]].forEach(stream =>
-              selectedEvents.push(stream)
-            );
+            streamEventMap[streamIds[i]].forEach(event => {
+              selectedEvents.push(event);
+              this.typesSet.add(event.type);
+            });
         }
       }
-      if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
+      if (selectedEvents.length > 0) {
+        this.fetchData.push(...selectedEvents);
+        this.types = this.typesSet;
+      }
     },
     async filterEvents() {
       let selectedEvents = this.fetchData;
       if (!this.selectedFilters) return;
+      if (
+        Object.keys(this.selectedFilters).length === 1 &&
+        Object.keys(this.selectedFilters).includes(filterTagsSort.LIMIT)
+      )
+        return;
       Object.keys(this.selectedFilters)
         .sort()
         .forEach(e => {

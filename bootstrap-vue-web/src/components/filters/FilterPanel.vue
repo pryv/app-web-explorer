@@ -544,6 +544,7 @@ export default {
         ? this.updateSelectedFiltersArray(filterTagsSort.TYPES, this.selected)
         : this.removeFromSelectedFiltersArray(filterTagsSort.TYPES);
       ok();
+      this.busy = false;
     },
   },
 };

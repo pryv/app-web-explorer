@@ -296,8 +296,6 @@ export default {
     },
     forEachEvent(event) {
       this.events.push(event);
-      this.typesSet.add(event.type);
-      this.types = this.typesSet;
     },
     forEachDisplayEvent(event) {
       this.displayEvents.unshift(event);

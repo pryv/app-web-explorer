@@ -21,10 +21,12 @@
           :class="{
             trashed: stream.trashed && stream.trashed === true,
             'not-trashed': !stream.trashed,
-            'text-left': stream.streamId
+            'text-left': stream.streamId,
+            'stream-font': stream.streamId
           }"
           :value="stream.streamId"
           @change="checkBoxClicked($event, stream.streamId, endpoint)"
+
           >{{ stream.streamName }}
         </b-form-checkbox>
       </b-col>
@@ -91,11 +93,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .card-body {
   padding-left: 0.1rem;
   padding-right: 0.1rem;
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
 }
+  .stream-font{
+    font-weight: lighter;
+  }
 </style>

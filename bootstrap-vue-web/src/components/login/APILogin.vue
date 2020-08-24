@@ -4,7 +4,7 @@
       <PryvAlert :message="alertMessage" :show="show"></PryvAlert>
     </div>
     <div>
-      <b-form>
+      <b-form @submit.prevent>
         <div class="mb-4 mb-sm-0">
           <PryvInput
             :id="id"
@@ -52,6 +52,7 @@ export default {
           ? this.$emit("authenticated", connection, false)
           : console.log("Please enter a valid endpoint.");
       } catch (e) {
+        alert();
         this.show = true;
         this.alertMessage = e.message;
         this.apiEndpoint = "";

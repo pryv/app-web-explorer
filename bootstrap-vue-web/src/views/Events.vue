@@ -27,7 +27,7 @@
             </PryvBtn>
           </b-col>
           <AddEventModal></AddEventModal>
-          <b-tabs card>
+          <b-tabs card class="table-font">
             <b-tab title="TABLE VIEW" active>
               <b-card-text>
                 <div>
@@ -103,7 +103,7 @@
                 </div>
               </b-card-text>
             </b-tab>
-            <b-tab title="JSON VIEW">
+            <b-tab title="JSON VIEW" v-if="this.limit < 500">
               <b-card-text class="text-left">
                 <vue-json-pretty :data="this.displayJSON" />
                 <PryvAlert
@@ -152,6 +152,7 @@ export default {
       message: 'No info available to display.',
       typesSet: new Set(),
       showOverlay: false,
+      limit : 20,
       fields: [
         { key: 'id', label: 'Id', sortable: true },
         { key: 'streamId', label: 'Stream Id', sortable: true },
@@ -237,7 +238,7 @@ export default {
     });
   },
   async created() {
-    this.displayEvents();
+    await this.displayEvents();
   },
   watch: {
     selectedStreams() {
@@ -253,17 +254,25 @@ export default {
       this.selectStreamsOrFilters();
     },
   },
+  updated: function () {
+    this.$nextTick(function () {
+      console.log("rendering is completed- 1")
+      console.log("rendering is completed -2")
+      console.log(JSON.parse(JSON.stringify(this.fetchData)))
+    })
+  },
   methods: {
-    async selectStreamsOrFilters() {
+    selectStreamsOrFilters() {
       this.showOverlay = true;
-      setTimeout(
-        async function() {
+      setTimeout(async function() {
           await this.displayEvents();
+          console.log("display events is done")
           await this.filterEvents();
           this.showOverlay = false;
         }.bind(this),
-        150
+        100
       );
+      console.log("select streams or filters method is done")
     },
     async displayEvents() {
       console.log('display events method called');
@@ -283,10 +292,12 @@ export default {
         Object.keys(this.selectedFilters).includes(filterTagsSort.LIMIT)
       ) {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
+        this.limit = limit
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
           this.eventsDisplayMap[apiEndpoint] = events.slice(-limit);
         }
       } else {
+        this.limit = displayLimit
         for (const [apiEndpoint, events] of Object.entries(
           this.eventsDisplayMap
         )) {
@@ -295,21 +306,30 @@ export default {
           }
         }
       }
+      console.log("events display map is created")
       let selectedEvents = [];
       for (const [apiEndpoint, streamIds] of Object.entries(
         this.selectedStreams
       )) {
+        let streamEventMap = {};
+        for (let j = 0; j < this.eventsDisplayMap[apiEndpoint].length; j++) {
+          let streamId = this.eventsDisplayMap[apiEndpoint][j].streamId;
+          if (!Object.keys(streamEventMap).includes(streamId))
+            streamEventMap[streamId] = [];
+          let eventObj = this.eventsDisplayMap[apiEndpoint][j];
+          eventObj.apiEndpoint = apiEndpoint;
+          streamEventMap[streamId].push(eventObj);
+        }
+        console.log(JSON.parse(JSON.stringify(streamEventMap)))
+        console.log("stream events map created")
         for (let i = 0; i < streamIds.length; i++) {
-          selectedEvents = this.eventsDisplayMap[apiEndpoint]
-            .filter(event => event.streamId === streamIds[i])
-            .map(event => {
-              const obj = Object.assign({}, event);
-              obj.apiEndpoint = apiEndpoint;
-              return obj
-            });
-          if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
+          if (Object.keys(streamEventMap).includes(streamIds[i]))
+            streamEventMap[streamIds[i]].forEach(stream => selectedEvents.push(stream));
         }
       }
+      if (selectedEvents.length > 0) this.fetchData.push(...selectedEvents);
+      console.log(JSON.parse(JSON.stringify(this.fetchData)))
+      console.log("pushed to fetch data")
       console.log('display events method done');
     },
     async filterEvents() {
@@ -385,11 +405,6 @@ export default {
               selectedEvents = [...copyModified];
               break;
             }
-            case filterTagsSort.LIMIT: {
-              const limit = parseInt(this.selectedFilters[e]);
-              selectedEvents = selectedEvents.slice(0, limit);
-              break;
-            }
             case filterTagsSort.SORT:
               //sort ascending and descending using time attribute
               if (this.selectedFilters[e] === true)
@@ -431,5 +446,15 @@ export default {
 }
 .b-table-sticky-header {
   max-height: 100%;
+}
+  .table-font{
+    font-size: 0.85rem !important;
+    color:gray;
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: gray;
 }
 </style>

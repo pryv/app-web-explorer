@@ -41,14 +41,18 @@
             v-b-toggle.collapse-1
             variant="danger"
             ref="button"
-            >Filters</b-button
-          >
+            >Filters<b-icon
+              icon="filter"
+              class="pl-1 pr-1 pt-2"
+              font-scale="2"
+            ></b-icon
+          ></b-button>
         </b-overlay>
       </b-col>
     </b-col>
-    <br />
     <b-col cols="12" class="px-0">
       <b-collapse id="collapse-1" class="mt-2">
+        <br />
         <b-card class="p-3">
           <b-row>
             <b-col cols="4">

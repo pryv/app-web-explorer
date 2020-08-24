@@ -6,12 +6,13 @@
           <b-col cols="10">
             <h4>Login Panel</h4>
           </b-col>
-          <b-col cols="1">
+          <b-col cols="2" class="text-right">
             <PryvBtn
               v-if="showBtn"
               @click="backToEvents"
               class="mt-0"
               :content="btnContent"
+              icon="arrow-left"
             ></PryvBtn>
           </b-col>
         </b-row>
@@ -36,7 +37,7 @@
                       >View Service Info
                     </b-button>
                     <b-collapse id="collapse-1" class="mt-2">
-                      <b-card class="card-style shadow border-0">
+                      <b-card class="card-style border-0">
                         <PryvLabel
                           :href="href_service_info"
                           :parentData="ServiceInfoURL"
@@ -320,19 +321,34 @@ export default {
       const str = await this.addStreamsToStore(connection);
       const acc = await this.addAccessInfoToStore(connection);
       const eve = await this.addInitialEventsToStore(connection);
-      if (conn && str && acc && eve)
-      {
+      if (conn && str && acc && eve) {
         this.showOverlay = false;
         return true;
       }
       return false;
     },
     async updateSessionStorage(connection, cookie) {
-      if (this.addAPIEndpointsToSessionStorage(connection, cookie)) {
-        if (await this.updateStore(connection))
-          await this.$router.push('events');
-        else console.log('Some error occured when loading');
-        await this.addEventsToStore(connection);
+      var sessionAdded = await this.addAPIEndpointsToSessionStorage(
+        connection,
+        cookie
+      );
+      if(sessionAdded === false && cookie=== false)
+      {
+        alert("Account already exists")
+      }
+      if(sessionAdded === true)
+      {
+        await this.updateStore(connection).then(
+                        async function(response_up) {
+                          if (response_up) {
+                            this.$router.push('events');
+                          }
+                          this.addEventsToStore(connection);
+                        }.bind(this)
+                )
+                .catch(function(error) {
+                  alert(error);
+                });
       }
     },
     currentRouteName() {

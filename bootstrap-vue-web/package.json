@@ -57,22 +57,12 @@
     ],
     "parserOptions": {
       "parser": "babel-eslint"
-    }
+    },
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "**/__tests__/*.{j,t}s?(x)",
-        "**/tests/unit/**/*.spec.{j,t}s?(x)"
-      ],
-      "env": {
-        "mocha": true
-      }
-    }
   ]
 }

@@ -6,7 +6,7 @@
       stacked
       v-model="selectedStreamsObjectArrayLocal"
     >
-      <b-row>
+      <b-row class="border-access">
         <b-col cols="2">
           <span v-b-toggle="`${endpoint}`">
             <b-icon
@@ -27,7 +27,7 @@
             :key="endpoint"
             :value="endpoint"
             @change="checkBoxClicked($event, endpoint, endpoint)"
-            class="font-weight-bold main text-left"
+            class="font-weight-bold main text-left access_font"
             @click.stop
             >{{ accessInfoName }}
           </b-form-checkbox>
@@ -224,4 +224,12 @@ export default {
 :not(.collapsed) > .when-closed {
   display: none;
 }
+  .border-access{
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-width: unset;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin-bottom: 2%;
+    border-radius: 4px;
+  }
 </style>

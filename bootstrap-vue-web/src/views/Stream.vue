@@ -6,11 +6,12 @@
           <b-col cols="10">
             <h4>Stream Info Panel - {{ viewStreamInfo.id }}</h4>
           </b-col>
-          <b-col cols="1">
+          <b-col cols="2" class="text-right">
             <PryvBtn
               v-if="viewStreamInfoObj"
               @click="backToEvents"
               class="mt-0"
+              icon="arrow-left"
               :content="btnContent"
             ></PryvBtn>
           </b-col>

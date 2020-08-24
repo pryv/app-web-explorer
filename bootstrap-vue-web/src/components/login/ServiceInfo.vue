@@ -12,7 +12,7 @@
     </b-form>
     <div class="pt-2">
       <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
-      <b-card class="card-style service-info-container">
+      <div class="service-info-container">
         <div class="text-left default-font">
           "register": {{ register }} <br />
           "access": {{ access }} <br />
@@ -22,9 +22,9 @@
           "support": {{ support }} <br />
           "terms": {{ terms }} <br />
           "eventTypes": {{ eventTypes }}<br />
-          "assets-": {{ assets }}<br />
+          "assets": {{ assets }}<br />
         </div>
-      </b-card>
+      </div>
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@ export default {
 </script>
 <style scoped>
 .service-info-container {
-  max-height: 150px;
+  max-height: 200px;
   overflow-y: auto;
 }
 </style>

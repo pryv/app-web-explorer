@@ -11,7 +11,7 @@
               v-if="infoJSON"
               @click="backToEvents"
               class="mt-0 mr-0"
-              :content="btnContent"
+              content="Back"
               icon="arrow-left"
             ></PryvBtn>
             <PryvBtn
@@ -36,13 +36,13 @@
             <PryvBtn
               class="mt-0"
               @click="logout"
-              :content="btnContentDisconnect"
+              content="Disconnect"
               icon="power"
             ></PryvBtn>
           </b-row>
         </b-card>
         <b-card class="text-info" v-else>
-          {{ message }}
+          Please select an endpoint to view the access data
         </b-card>
       </div>
     </div>
@@ -107,13 +107,6 @@ export default {
     PryvBtn,
     VueJsonPretty,
   },
-  data() {
-    return {
-      btnContent: 'Back',
-      message: 'Please select an endpoint to view the access data',
-      btnContentDisconnect: 'Disconnect',
-    };
-  },
   methods: {
     currentRouteName() {
       return this.$route.name;
@@ -146,7 +139,7 @@ export default {
     },
     logout() {
       let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
-      let obj = endpointArr.find(o => o.key === this.viewAccessInfo);
+      const obj = endpointArr.find(o => o.key === this.viewAccessInfo);
       if (obj.cookie) {
         this.$cookies.remove('pryv-libjs-web-app-explorer', null, '.l.rec.la');
       }

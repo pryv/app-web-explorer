@@ -446,10 +446,9 @@ export default {
       }
     },
     async addEventsToStore(event) {
-      console.log("add events to store");
       let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
-      clonedEvents[this.selectedEndpoint].push(event);
-      this.eventsMap[this.selectedEndpoint].push(event);
+      clonedEvents[this.selectedEndpoint].unshift(event);
+      this.eventsMap[this.selectedEndpoint].unshift(event);
       this.eventsDisplayMap = clonedEvents;
       this.$bvModal.hide("modal-scoped-event");
     },

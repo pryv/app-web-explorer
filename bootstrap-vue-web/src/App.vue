@@ -33,8 +33,8 @@
 }
 </style>
 <script>
-import MainLayout from './components/layout/MainLayout';
-import SideBar from './components/layout/SideBar';
+import MainLayout from "./components/layout/MainLayout";
+import SideBar from "./components/layout/SideBar";
 export default {
   components: { SideBar, MainLayout },
 };

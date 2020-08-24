@@ -282,7 +282,7 @@ export default {
         const limit = parseInt(this.selectedFilters[filterTagsSort.LIMIT]);
         this.limit = limit;
         for (const [apiEndpoint, events] of Object.entries(this.eventsMap)) {
-          this.eventsDisplayMap[apiEndpoint] = events.slice(-limit);
+          this.eventsDisplayMap[apiEndpoint] = events.slice(0,limit);
         }
       } else {
         this.limit = displayLimit;
@@ -290,7 +290,7 @@ export default {
           this.eventsDisplayMap
         )) {
           if (events.length > 20) {
-            this.eventsDisplayMap[apiEndpoint] = events.slice(-displayLimit);
+            this.eventsDisplayMap[apiEndpoint] = events.slice(0,displayLimit);
           }
         }
       }

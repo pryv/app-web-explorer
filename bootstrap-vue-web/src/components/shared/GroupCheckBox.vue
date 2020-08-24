@@ -15,10 +15,10 @@
 </template>
 
 <script>
-import StreamCheckBox from './StreamCheckBox';
-import { mapState } from 'vuex';
+import StreamCheckBox from "./StreamCheckBox";
+import { mapState } from "vuex";
 export default {
-  name: 'GroupCheckBox',
+  name: "GroupCheckBox",
   components: { StreamCheckBox },
   data() {
     return {
@@ -26,14 +26,14 @@ export default {
     };
   },
   computed: {
-    ...mapState(['streamsMap']),
-    ...mapState(['accessInfoMap']),
+    ...mapState(["streamsMap"]),
+    ...mapState(["accessInfoMap"]),
     selectedStreamsMap: {
       get() {
         return this.$store.state.selectedStreams;
       },
       set(value) {
-        this.$store.commit('UPDATE_SELECTED_ENDPOINTS', value);
+        this.$store.commit("UPDATE_SELECTED_ENDPOINTS", value);
       },
     },
     computedAccessInfoObjectArray() {
@@ -182,7 +182,7 @@ export default {
         stream.children.forEach(childStream =>
           children.push(this.createPayload(accessInfo, childStream))
         );
-        payload['children'] = children;
+        payload["children"] = children;
       }
       return payload;
     },

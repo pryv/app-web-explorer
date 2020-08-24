@@ -11,7 +11,7 @@
               v-if="showBtn"
               @click="backToEvents"
               class="mt-0"
-              :content="btnContent"
+              content="Back"
               icon="arrow-left"
             ></PryvBtn>
           </b-col>
@@ -24,8 +24,8 @@
               <b-card-text>
                 <b-card class="card-style shadow min-height-card">
                   <PryvLabel
-                    :href="href_web"
-                    :parentData="ButtonLogin"
+                    href="https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button"
+                    parentData="Login using Web Button"
                   ></PryvLabel>
                   <WebButton @authenticated="updateSessionStorage"></WebButton>
                   <br />
@@ -39,8 +39,8 @@
                     <b-collapse id="collapse-1" class="mt-2">
                       <b-card class="card-style border-0">
                         <PryvLabel
-                          :href="href_service_info"
-                          :parentData="ServiceInfoURL"
+                          href="https://github.com/pryv/lib-js#usage-of-pryvservice"
+                          parentData="Service Info URL"
                         ></PryvLabel>
                         <ServiceInfo id="Web based Login"></ServiceInfo>
                       </b-card>
@@ -53,8 +53,8 @@
               <b-card-text>
                 <b-card class="card-style shadow">
                   <PryvLabel
-                    :href="href_manual"
-                    :parentData="PasswordLogin"
+                    href="https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only"
+                    parentData="Login using Username, Password"
                   ></PryvLabel>
                   <UsernameLogin
                     @authenticated="updateSessionStorage"
@@ -70,8 +70,8 @@
                     <b-collapse id="collapse-2" class="mt-2">
                       <b-card class="card-style shadow border-0">
                         <PryvLabel
-                          :href="href_service_info"
-                          :parentData="ServiceInfoURL"
+                          href="https://github.com/pryv/lib-js#usage-of-pryvservice"
+                          parentData="Service Info URL"
                         ></PryvLabel>
                         <ServiceInfo
                           id="Username,Password based Login"
@@ -86,8 +86,8 @@
               <b-card-text>
                 <b-card class="card-style shadow">
                   <PryvLabel
-                    :href="href_api"
-                    :parentData="APILogin"
+                    href="https://github.com/pryv/lib-js#using-an-api-endpoint"
+                    parentData="Login Using API"
                   ></PryvLabel>
                   <APILogin @authenticated="updateSessionStorage"></APILogin>
                 </b-card>
@@ -102,15 +102,15 @@
 </template>
 
 <script>
-import PryvBtn from '../components/shared/PryvBtn';
-import APILogin from '../components/login/APILogin';
-import PryvLabel from '../components/shared/PryvLabel';
-import WebButton from '../components/login/WebButtonLogin';
-import UsernameLogin from '../components/login/UsernameLogin';
-import ServiceInfo from '../components/login/ServiceInfo';
-import GET_STREAMS_API from '../utilities/api';
-import ACCESS_INFO_API from '../utilities/api';
-import GET_EVENTS_API from '../utilities/api';
+import PryvBtn from "../components/shared/PryvBtn";
+import APILogin from "../components/login/APILogin";
+import PryvLabel from "../components/shared/PryvLabel";
+import WebButton from "../components/login/WebButtonLogin";
+import UsernameLogin from "../components/login/UsernameLogin";
+import ServiceInfo from "../components/login/ServiceInfo";
+import GET_STREAMS_API from "../utilities/api";
+import ACCESS_INFO_API from "../utilities/api";
+import GET_EVENTS_API from "../utilities/api";
 export default {
   components: {
     ServiceInfo,
@@ -127,7 +127,7 @@ export default {
       },
       set([key, value]) {
         if (!this.connectionsMap[key]) {
-          this.$store.commit('ADD_CONNECTIONS_MAP', [key, value]);
+          this.$store.commit("ADD_CONNECTIONS_MAP", [key, value]);
         }
       },
     },
@@ -141,7 +141,7 @@ export default {
           ? (streamArr = this.streamsMap[key])
           : (streamArr = []);
         streamArr.push(value);
-        this.$store.commit('ADD_STREAMS_MAP', [key, streamArr]);
+        this.$store.commit("ADD_STREAMS_MAP", [key, streamArr]);
       },
     },
     accessInfoMap: {
@@ -150,7 +150,7 @@ export default {
       },
       set([key, value]) {
         if (!this.accessInfoMap[key]) {
-          this.$store.commit('ADD_ACCESS_INFO_MAP', [key, value]);
+          this.$store.commit("ADD_ACCESS_INFO_MAP", [key, value]);
         }
       },
     },
@@ -159,7 +159,7 @@ export default {
         return this.$store.state.eventsMap;
       },
       set([key, value]) {
-        this.$store.commit('ADD_EVENTS_MAP', [key, value]);
+        this.$store.commit("ADD_EVENTS_MAP", [key, value]);
       },
     },
     eventsDisplayMap: {
@@ -167,7 +167,7 @@ export default {
         return this.$store.state.eventsDisplayMap;
       },
       set([key, value]) {
-        this.$store.commit('ADD_DISPLAY_EVENTS_MAP', [key, value]);
+        this.$store.commit("ADD_DISPLAY_EVENTS_MAP", [key, value]);
       },
     },
     modifiedSinceMap: {
@@ -175,7 +175,7 @@ export default {
         return this.$store.state.modifiedSinceMap;
       },
       set([key, value]) {
-        this.$store.commit('ADD_MODIFIED_SINCE_MAP', [key, value]);
+        this.$store.commit("ADD_MODIFIED_SINCE_MAP", [key, value]);
       },
     },
     types: {
@@ -183,7 +183,7 @@ export default {
         return this.$store.state.types;
       },
       set(value) {
-        this.$store.commit('SET_TYPES', value);
+        this.$store.commit("SET_TYPES", value);
       },
     },
     showBtn: function() {
@@ -194,20 +194,9 @@ export default {
   },
   data() {
     return {
-      APILogin: 'Login Using API',
-      ButtonLogin: 'Login using Web Button',
-      PasswordLogin: 'Login using Username, Password',
-      ServiceInfoURL: 'Service Info URL',
-      href_api: 'https://github.com/pryv/lib-js#using-an-api-endpoint',
-      href_web:
-        'https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button',
-      href_manual:
-        'https://github.com/pryv/lib-js#using-servicelogin-trusted-apps-only',
-      href_service_info: 'https://github.com/pryv/lib-js#usage-of-pryvservice',
       events: [],
       displayEvents: [],
       typesSet: new Set(),
-      btnContent: 'Back',
       showOverlay: false,
     };
   },
@@ -231,7 +220,7 @@ export default {
     },
     async addStreamsToStore(connection) {
       const apiObj = GET_STREAMS_API.GET_STREAMS_API;
-      apiObj[0].params = { state: 'all' };
+      apiObj[0].params = { state: "all" };
       try {
         const result = await connection.api(apiObj);
         if (result) {
@@ -240,7 +229,7 @@ export default {
           });
         }
       } catch (e) {
-        console.log('Error occurred when retrieving streams ' + e);
+        console.log("Error occurred when retrieving streams " + e);
         return false;
       }
       return true;
@@ -259,7 +248,7 @@ export default {
           this.eventsDisplayMap = [connection.apiEndpoint, this.displayEvents];
         }
       } catch (e) {
-        console.log('Error occurred when retrieving streams ' + e);
+        console.log("Error occurred when retrieving streams " + e);
         return false;
       }
       return true;
@@ -281,7 +270,7 @@ export default {
           this.accessInfoMap = [connection.apiEndpoint, result[0]];
         }
       } catch (e) {
-        console.log('Error occurred when retrieving access info ' + e);
+        console.log("Error occurred when retrieving access info " + e);
         return false;
       }
       return true;
@@ -300,7 +289,7 @@ export default {
         ];
         this.eventsMap = [connection.apiEndpoint, this.events];
       } catch (e) {
-        console.log('Error occurred when retrieving events ' + e);
+        console.log("Error occurred when retrieving events " + e);
         return false;
       }
       return true;
@@ -328,41 +317,40 @@ export default {
       return false;
     },
     async updateSessionStorage(connection, cookie) {
-      var sessionAdded = await this.addAPIEndpointsToSessionStorage(
+      const sessionAdded = await this.addAPIEndpointsToSessionStorage(
         connection,
         cookie
       );
-      if(sessionAdded === false && cookie=== false)
-      {
-        alert("Account already exists")
+      if (sessionAdded === false && cookie === false) {
+        alert("Account already exists");
       }
-      if(sessionAdded === true)
-      {
-        await this.updateStore(connection).then(
-                        async function(response_up) {
-                          if (response_up) {
-                            this.$router.push('events');
-                          }
-                          this.addEventsToStore(connection);
-                        }.bind(this)
-                )
-                .catch(function(error) {
-                  alert(error);
-                });
+      if (sessionAdded === true) {
+        await this.updateStore(connection)
+          .then(
+            async function(response_update_store) {
+              if (response_update_store) {
+                this.$router.push("events");
+              }
+              this.addEventsToStore(connection);
+            }.bind(this)
+          )
+          .catch(function(error) {
+            alert(error);
+          });
       }
     },
     currentRouteName() {
       return this.$route.name;
     },
     backToEvents() {
-      if (this.currentRouteName !== 'events') {
-        this.$router.push('events');
+      if (this.currentRouteName !== "events") {
+        this.$router.push("events");
       }
     },
   },
 };
 </script>
-<style scoped>
+<style>
 .card-body {
   padding: 0.75em !important;
 }
@@ -378,7 +366,7 @@ export default {
 }
 
 .pryv-btn-collapse {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
   width: 100%;

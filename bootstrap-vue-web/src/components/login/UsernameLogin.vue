@@ -5,28 +5,28 @@
     </div>
     <div>
       <b-form inline ref="form" v-on:submit.prevent="login">
-        <label class="sr-only" :for="id_username">Username</label>
+        <label class="sr-only" for="inline-form-input-username">Username</label>
         <b-input-group class="input-group-width mb-4 mr-sm-2 mb-sm-0">
           <PryvInput
-            :id="id_username"
-            :placeholder="placeholder_username"
+            id="inline-form-input-username"
+            placeholder="Enter username"
             v-model="username"
             @textInput="updateUsername"
-            :required="inputRequired"
+            required
           ></PryvInput>
         </b-input-group>
-        <label class="sr-only" :for="id_password">Password</label>
+        <label class="sr-only" for="inline-form-input-password">Password</label>
         <b-input-group class="input-group-width mb-4 mb-sm-0 w-40 float-right">
           <PryvPassword
-            :id="id_password"
-            :placeholder="placeholder_password"
+            id="inline-form-input-password"
+            placeholder="Enter password"
             v-model="password"
             @passwordInput="updatePassword"
           ></PryvPassword>
         </b-input-group>
         <PryvBtn
-          :content="btnContent"
-          :type="btnType"
+          content="Login"
+          type="submit"
           @click="login"
           id="submitBtn"
         ></PryvBtn>
@@ -49,15 +49,8 @@ export default {
     return {
       username: "",
       password: "",
-      btnContent: "Login",
-      id_username: "inline-form-input-username",
-      id_password: "inline-form-input-password",
-      placeholder_username: "Enter username",
-      placeholder_password: "Enter password",
       show: false,
       message: "",
-      inputRequired: true,
-      btnType: "submit",
     };
   },
   computed: {

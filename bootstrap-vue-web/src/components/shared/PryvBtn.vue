@@ -12,6 +12,6 @@
 
 <script>
 export default {
-  name: 'PryvBtn',
+  name: "PryvBtn",
 };
 </script>

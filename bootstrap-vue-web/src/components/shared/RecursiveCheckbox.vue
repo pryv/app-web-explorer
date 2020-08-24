@@ -22,11 +22,10 @@
             trashed: stream.trashed && stream.trashed === true,
             'not-trashed': !stream.trashed,
             'text-left': stream.streamId,
-            'stream-font': stream.streamId
+            'stream-font': stream.streamId,
           }"
           :value="stream.streamId"
           @change="checkBoxClicked($event, stream.streamId, endpoint)"
-
           >{{ stream.streamName }}
         </b-form-checkbox>
       </b-col>
@@ -63,7 +62,7 @@
 
 <script>
 export default {
-  name: 'RecursiveCheckbox',
+  name: "RecursiveCheckbox",
   props: {
     displayStreams: {
       type: Array,
@@ -79,7 +78,7 @@ export default {
         clickedEndpointAndStreamId: value,
         endpointClicked: index,
       };
-      this.$emit('checkBoxClicked', payload);
+      this.$emit("checkBoxClicked", payload);
     },
     viewStreamInfoRecursive(streamId, endpoint, event) {
       event.preventDefault();
@@ -87,7 +86,7 @@ export default {
         streamId: streamId,
         endpoint: endpoint,
       };
-      this.$emit('viewStreamInfo', payload);
+      this.$emit("viewStreamInfo", payload);
     },
   },
 };
@@ -100,7 +99,7 @@ export default {
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
 }
-  .stream-font{
-    font-weight: lighter;
-  }
+.stream-font {
+  font-weight: lighter;
+}
 </style>

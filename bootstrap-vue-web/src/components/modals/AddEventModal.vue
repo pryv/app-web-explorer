@@ -90,7 +90,6 @@
               :options="obj.enum"
               :valueSelected="obj.val"
               @input="updateValue(obj, $event)"
-              style="font-size: 1rem;"
               :id="obj.labelFor"
               :required="obj.required"
               :state="contentStates[index]"
@@ -447,7 +446,7 @@ export default {
       }
     },
     async addEventsToStore(event) {
-      console.log("add events to store")
+      console.log("add events to store");
       let clonedEvents = JSON.parse(JSON.stringify(this.eventsDisplayMap));
       clonedEvents[this.selectedEndpoint].push(event);
       this.eventsMap[this.selectedEndpoint].push(event);

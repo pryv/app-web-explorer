@@ -13,13 +13,13 @@
 
 <script>
 export default {
-  name: 'PryvLabel',
+  name: "PryvLabel",
 };
 </script>
 
 <style scoped>
 .pryv-label {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: inline-block;
   padding: 2px 6px;
   padding-left: 0 !important;

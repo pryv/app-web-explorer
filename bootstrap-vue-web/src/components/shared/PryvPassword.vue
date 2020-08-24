@@ -14,9 +14,9 @@
 
 <script>
 export default {
-  name: 'PryvPassword',
+  name: "PryvPassword",
   props: {
-    value: { type: String, default: '' },
+    value: { type: String, default: "" },
     placeholder: { type: String },
     id: { type: String },
     disabled: { type: Boolean, default: false },
@@ -26,7 +26,7 @@ export default {
 
 <style scoped>
 .pryv-input {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   line-height: 20px;
   text-decoration: none;

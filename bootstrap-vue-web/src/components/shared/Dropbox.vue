@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'Dropbox',
+  name: "Dropbox",
   props: {
     valueSelected: {
       required: true,

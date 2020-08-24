@@ -103,9 +103,7 @@ export default {
         this.eventsDisplayMap = clonedDisplayEvents;
       } catch (e) {
         console.log("Error occurred when retrieving events" + e);
-        return false;
       }
-      return true;
     },
     addEachEvent(event) {
       this.events.push(event);

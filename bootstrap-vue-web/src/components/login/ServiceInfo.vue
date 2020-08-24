@@ -4,9 +4,9 @@
       <b-input-group class="mb-4 mr-sm-4 mb-sm-0">
         <PryvInput
           :id="id"
-          :placeholder="placeholder"
+          placeholder="Enter Service Endpoint"
           v-model="this.serviceInfo"
-          :disabled="disabled"
+          disabled
         ></PryvInput>
       </b-input-group>
     </b-form>
@@ -48,9 +48,7 @@ export default {
   data() {
     return {
       endpoint: constants.DEFAULT_SERVICE_INFO_URL,
-      placeholder: "Enter Service Endpoint",
       ServiceInfo: "Service Info",
-      disabled: true,
       register: "",
       access: "",
       api: "",

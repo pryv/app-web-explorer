@@ -4,19 +4,19 @@
       <PryvAlert :message="alertMessage" :show="show"></PryvAlert>
     </div>
     <div>
-      <b-form @submit.prevent>
-        <div class="mb-4 mb-sm-0">
+      <b-form @submit.prevent class="text-right">
+        <div class="mb-4 mb-sm-0 text-right" >
           <PryvInput
-            :id="id"
-            :placeholder="placeHolder"
+            id="inline-form-input-endpoint"
+            placeholder="Enter API Endpoint"
             @textInput="updateEndpoint"
             v-model="apiEndpoint"
-            :required="requiredInput"
+            required
           ></PryvInput>
         </div>
         <PryvBtn
-          :content="btnContent"
-          :type="btnType"
+          content="Login"
+          type="submit"
           @click="loginAPI"
         ></PryvBtn>
       </b-form>
@@ -35,13 +35,9 @@ export default {
   data() {
     return {
       apiEndpoint: "",
-      btnContent: "Login",
-      id: "inline-form-input-endpoint",
-      placeHolder: "Enter API Endpoint",
+      placeHolder: "",
       show: false,
       alertMessage: "",
-      btnType: "submit",
-      requiredInput: true,
     };
   },
   methods: {
@@ -52,7 +48,6 @@ export default {
           ? this.$emit("authenticated", connection, false)
           : console.log("Please enter a valid endpoint.");
       } catch (e) {
-        alert();
         this.show = true;
         this.alertMessage = e.message;
         this.apiEndpoint = "";

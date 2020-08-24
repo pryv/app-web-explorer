@@ -16,10 +16,7 @@ export default {
 
   methods: {
     async loadButton() {
-      await Pryv.Browser.setupAuth(
-        loadSettings.call(this),
-        this.serviceInfo
-      );
+      await Pryv.Browser.setupAuth(loadSettings.call(this), this.serviceInfo);
     },
   },
 };

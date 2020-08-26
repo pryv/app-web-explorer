@@ -24,7 +24,7 @@ export default {
 </script>
 <style>
   .max-width{
-    max-width: 450px;
-    min-width: 450px;
+    max-width: 100%;
+    min-width: 100%;
   }
 </style>

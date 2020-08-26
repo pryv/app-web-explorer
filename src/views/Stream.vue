@@ -4,7 +4,7 @@
       <div class="card-style info-card">
         <b-row>
           <b-col cols="10">
-            <h4>Stream Info Panel - {{ viewStreamInfo.id }}</h4>
+            <h4>Stream Info Panel -check publish - {{ viewStreamInfo.id }}</h4>
           </b-col>
           <b-col cols="2" class="text-right">
             <PryvBtn

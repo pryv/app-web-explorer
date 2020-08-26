@@ -1,24 +1,29 @@
-# bootstrap-vue-web
+# app-web-skeleton
+VueJS skeleton app for bootstrapping Pryv.io web applications.
 
-## Project setup
-```
-npm install
-```
+_Prerequisites:_ 
+- Node v12+
+- Yarn v1+
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## How to?
 
-### Compiles and minifies for production
-```
-npm run build
-```
+| Task                              | Command                        |
+| --------------------------------- | ------------------------------ |
+| Install dependencies              | `yarn install`                 |
+| Setup dev environment             | `yarn serve`                   |
+| Create distribution               | `yarn build`                   |
+| Publish distribution              | `yarn run publish`
+| Clear distribution                | `yarn clear`                   |
+| Run the app locally               | `yarn start`                   |
+| Run eslint                        | `yarn lint`                    |
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Publish to github pages
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+If it is the first time you publish app-web-explorer, be sure to run `yarn serve` once.
+
+Create a distribution with your changes by running `yarn build`.
+
+Then, publish your changes by running `yarn run publish`
+
+If you encounter conflicts while publishing, run `yarn clear` to reset the `dist/` folder,
+then build and publish again.

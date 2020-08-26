@@ -12,9 +12,8 @@ _Prerequisites:_
 | Install dependencies              | `yarn install`                 |
 | Setup dev environment             | `yarn serve`                   |
 | Create distribution               | `yarn build`                   |
-| Publish distribution              | `yarn run publish`
+| Publish distribution              | `yarn run publish`             |
 | Clear distribution                | `yarn clear`                   |
-| Run the app locally               | `yarn start`                   |
 | Run eslint                        | `yarn lint`                    |
 
 ### Publish to github pages

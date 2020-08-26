@@ -1,11 +1,11 @@
 <template>
-  <b-container class="bg-white shadow h-75 w-75 p-3">
+  <b-container class="bg-white shadow w-75 p-3">
     <b-row class="align-items-center">
       <b-col cols="12">
         <h3>Swiss-made Personal Data & Privacy Management Software</h3>
       </b-col>
     </b-row>
-    <b-row class="align-items-center h-75">
+    <b-row class="align-items-center">
       <b-col cols="12">
         <img
           src="https://pryv.com/wp-content/themes/pryv2019/assets/img/Illustration-hero.svg"

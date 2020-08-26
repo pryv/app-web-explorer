@@ -480,6 +480,14 @@ export default {
         this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
       },
     },
+    eventsMap: {
+      get() {
+        return this.$store.state.eventsMap;
+      },
+      set(value) {
+        this.$store.commit("UPDATE_DISPLAY_EVENTS_MAP", value);
+      },
+    },
   },
   methods: {
     getRequired(key) {
@@ -603,18 +611,18 @@ export default {
       }
     },
     async addEventsToStore(event) {
-      const clonedEvents = Object.assign({}, this.eventsDisplayMap);
-      const editedEventIndex = clonedEvents[this.data.apiEndpoint].findIndex(
+      const clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
+      const editedDisplayEventIndex = clonedDisplayEvents[this.data.apiEndpoint].findIndex(
         key => key.id === event.id
       );
-      clonedEvents[this.data.apiEndpoint][editedEventIndex] = event;
-      const editedDisplayEventIndex = this.eventsDisplayMap[
+      clonedDisplayEvents[this.data.apiEndpoint][editedDisplayEventIndex] = event;
+      const editedEventIndex = this.eventsMap[
         this.data.apiEndpoint
       ].findIndex(key => key.id === event.id);
-      this.eventsDisplayMap[this.data.apiEndpoint][
-        editedDisplayEventIndex
+      this.eventsMap[this.data.apiEndpoint][
+              editedEventIndex
       ] = event;
-      this.eventsDisplayMap = clonedEvents;
+      this.eventsDisplayMap = clonedDisplayEvents;
       this.$bvModal.hide(this.data.id);
     },
     resetModal() {

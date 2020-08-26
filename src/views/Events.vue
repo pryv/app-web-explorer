@@ -306,6 +306,7 @@ export default {
           let eventObj = this.eventsDisplayMap[apiEndpoint][j];
           eventObj.apiEndpoint = apiEndpoint;
           eventObj.endpoint = apiEndpoint.split("@")[1];
+          eventObj.endpoint = apiEndpoint.split("@")[1];
           eventObj.token = apiEndpoint.split("@")[0].replace(/(^\w+:|^)\/\//, "");
           streamEventMap[streamId].push(eventObj);
         }

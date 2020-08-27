@@ -160,7 +160,7 @@ export default {
           for (let i = 0; i < streams.length; i++) {
             if (!streams[i].parentId || streams[i].parentId === null) {
               customUserObjectArray[key].push(
-                this.createPayload(accessInfo, streams[i])
+                this.createPayload(accessInfo, streams[i], key)
               );
             }
           }
@@ -169,7 +169,7 @@ export default {
       this.accessInfo = customUserObjectArray;
       this.displayAllInitial();
     },
-    createPayload(accessInfo, stream) {
+    createPayload(accessInfo, stream, key) {
       const payload = {
         accessInfoName: accessInfo.name,
         accessInfoType: accessInfo.type,
@@ -180,7 +180,11 @@ export default {
       if (stream.children && stream.children.length > 0) {
         let children = [];
         stream.children.forEach(childStream =>
-          children.push(this.createPayload(accessInfo, childStream))
+        {
+          var childObj = this.streamsMap[key].filter(stream =>childStream.id === stream.id);
+          if(childObj.length > 0 )
+            children.push(this.createPayload(accessInfo, childObj[0], key))
+        }
         );
         payload["children"] = children;
       }

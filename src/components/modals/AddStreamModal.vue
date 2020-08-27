@@ -173,30 +173,25 @@ export default {
     async addStreamsToStore(stream) {
       let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
       clonedStreams[this.viewAccessInfo].push(stream);
-      this.updateParent(clonedStreams, stream);
+      this.addChild(clonedStreams, stream);
       this.streamsMap = clonedStreams;
       this.$bvModal.hide("modal-scoped-stream");
       this.resetModal();
     },
-    updateParent(clonedStreams, stream) {
-      if (stream.parentId !== null) {
-        const index = this.getParentIndex(clonedStreams, stream);
-        const parentStream = clonedStreams[this.viewAccessInfo][index];
-        let findChild = null;
-        if (parentStream.children) {
-          parentStream.children.forEach((child, id) => {
-            if (child.id === stream.id) {
-              findChild = stream;
-              clonedStreams[this.viewAccessInfo][index].children[id] = stream;
-            }
-          });
-        }
-        if (findChild === null) {
-          if (!parentStream.children) parentStream["children"] = [];
-          parentStream.children.push(stream);
-        }
-        this.updateParent(clonedStreams, parentStream);
+    addChild(clonedStreams, stream) {
+      if (stream.parentId === null) return;
+      const parentIndex = this.getParentIndex(clonedStreams, stream);
+      const parentStream = this.getParent(clonedStreams, parentIndex);
+      if (parentStream.children) {
+        let clonedParent = Object.assign({}, parentStream);
+        clonedParent.children.push(stream);
+        clonedStreams[this.viewStreamInfo.endpoint][parentIndex] = clonedParent;
       }
+    },
+    getParent(clonedStreams, parentIndex) {
+      if (parentIndex >= 0)
+        return clonedStreams[this.viewStreamInfo.endpoint][parentIndex];
+      return null;
     },
     getParentIndex(clonedStreams, stream) {
       return clonedStreams[this.viewAccessInfo].findIndex(

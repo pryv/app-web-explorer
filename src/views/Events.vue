@@ -7,7 +7,7 @@
             <h4>Events Panel</h4>
           </b-col>
           <b-col cols="2" class="px-0 float-right">
-            <LoadStreamsBtn class="mr-2" />
+            <LoadAllBtn class="mr-2" />
             <LoadEventsBtn />
           </b-col>
         </b-row>
@@ -125,7 +125,7 @@ import PryvAlert from "../components/shared/PryvAlert";
 import FilterPanel from "../components/filters/FilterPanel";
 import { constants, filterTagsSort, states } from "../utilities/constants";
 import LoadEventsBtn from "../components/load/LoadEventsBtn";
-import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
+import LoadAllBtn from "../components/load/LoadAllBtn";
 import PryvBtn from "../components/shared/PryvBtn";
 import EditEventModal from "../components/modals/EditEventModal";
 import AddEventModal from "../components/modals/AddEventModal";
@@ -136,7 +136,7 @@ export default {
     AddEventModal,
     EditEventModal,
     PryvBtn,
-    LoadStreamsBtn,
+    LoadAllBtn,
     LoadEventsBtn,
     FilterPanel,
     PryvAlert,

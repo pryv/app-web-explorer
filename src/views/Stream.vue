@@ -123,7 +123,10 @@
           ></PryvBtn>
         </template>
       </b-modal>
-      <LoadStreamsBtn ref="reloadStreams" class="invisible"></LoadStreamsBtn>
+      <LoadStreamsForConnection
+        ref="reloadStreams"
+        class="invisible"
+      ></LoadStreamsForConnection>
     </div>
   </div>
 </template>
@@ -135,11 +138,13 @@ import PryvBtn from "../components/shared/PryvBtn";
 import VJsoneditor from "v-jsoneditor";
 import UPDATE_STREAM_API from "../utilities/api";
 import DELETE_STREAM_API from "../utilities/api";
-import LoadStreamsBtn from "../components/load/LoadStreamsBtn";
+import { constants } from "../utilities/constants";
+import LoadStreamsForConnection from "../components/load/LoadStreamsForConnectionBtn";
+
 export default {
   name: "Stream",
   components: {
-    LoadStreamsBtn,
+    LoadStreamsForConnection,
     PryvBtn,
     VueJsonPretty,
     VJsoneditor,
@@ -228,7 +233,11 @@ export default {
           update: updateObj,
         };
         const result = await connection.api(apiObj);
-        await this.addStreamsToStore(endpoint, result[0].stream);
+        await this.addStreamsToStore(
+          endpoint,
+          result[0].stream,
+          constants.EDIT
+        );
         if (result && result[0] && result[0].error) {
           alert(result[0].error.id + " - " + result[0].error.message);
         }
@@ -236,66 +245,66 @@ export default {
         console.log("Error occurred when creating events" + e);
       }
     },
-    async addStreamsToStore(endpoint, stream) {
+    async addStreamsToStore(endpoint, stream, action) {
       stream.children = this.viewStreamInfoObj.children;
       const clonedStreams = Object.assign({}, this.streamsMap);
       const streamIndex = clonedStreams[this.viewStreamInfo.endpoint].findIndex(
         key => key.id === this.viewStreamInfo.id
       );
+      if (constants.EDIT === action) {
+        const oldStream = clonedStreams[endpoint][streamIndex];
+        if (oldStream.parentId !== stream.parentId) {
+          this.addChild(clonedStreams, stream);
+          this.removeChild(clonedStreams, oldStream);
+        } else this.updateChild(clonedStreams, stream);
+      } else if (constants.DELETE === action)
+        this.updateChild(clonedStreams, stream);
       clonedStreams[endpoint][streamIndex] = stream;
-      //this.removeChild(clonedStreams);
-      this.updateParent(clonedStreams, stream);
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;
       this.saveDisable = true;
       this.editable = false;
     },
-    removeChild(clonedStreams, stream) {
-      if (stream.parentId !== null) {
-        const index = this.getParentIndex(clonedStreams, stream);
-        const parentStream = clonedStreams[this.viewStreamInfo.endpoint][index];
-        let findChild = false;
-        if (parentStream.children) {
-          parentStream.children.forEach((child) => {
-            if (child.id === stream.id) {
-              findChild = true;
-            }
-          });
-          if(findChild === true)
-          {
-            parentStream.children.filter(child => child.child.id != stream.id)
-          }
-          if(findChild === false)
-          {
-            parentStream.children.every((child, id) => {
-              this.removeChild(clonedStreams,child)
-              console.log(id)
-            });
-          }
-        }
-      }
-      //if(this.viewStreamInfoObj.)
+    getParent(clonedStreams, parentIndex) {
+      if (parentIndex >= 0)
+        return clonedStreams[this.viewStreamInfo.endpoint][parentIndex];
+      return null;
     },
-    updateParent(clonedStreams, stream) {
-      if (stream.parentId !== null) {
-        const index = this.getParentIndex(clonedStreams, stream);
-        const parentStream = clonedStreams[this.viewStreamInfo.endpoint][index];
-        let findChild = null;
-        if (parentStream.children) {
-          parentStream.children.forEach((child, id) => {
-            if (child.id === stream.id) {
-              findChild = stream;
-              clonedStreams[this.viewStreamInfo.endpoint][index].children[
-                id
-              ] = stream;
-            }
-          });
-        }
-        if (findChild === null) {
-          if (!parentStream.children) parentStream["children"] = [];
-          parentStream.children.push(stream);
-        }
-        this.updateParent(clonedStreams, parentStream);
+    removeChild(clonedStreams, oldStream) {
+      if (oldStream.parentId === null) return;
+      const parentIndex = this.getParentIndex(clonedStreams, oldStream);
+      const parentStream = this.getParent(clonedStreams, parentIndex);
+      if (parentStream !== null) {
+        let clonedParent = Object.assign({}, parentStream);
+        clonedParent.children = parentStream.children.filter(
+          child => child.id !== oldStream.id
+        );
+        clonedStreams[this.viewStreamInfo.endpoint][parentIndex] = clonedParent;
+      }
+    },
+    addChild(clonedStreams, stream) {
+      if (stream.parentId === null) return;
+      const parentIndex = this.getParentIndex(clonedStreams, stream);
+      const parentStream = this.getParent(clonedStreams, parentIndex);
+      if (parentStream.children) {
+        let clonedParent = Object.assign({}, parentStream);
+        clonedParent.children.push(stream);
+        clonedStreams[this.viewStreamInfo.endpoint][parentIndex] = clonedParent;
+      }
+    },
+    updateChild(clonedStreams, stream) {
+      if (stream.parentId === null) return;
+      const parentIndex = this.getParentIndex(clonedStreams, stream);
+      const parentStream = this.getParent(clonedStreams, parentIndex);
+      if (parentStream.children) {
+        parentStream.children
+          .filter(child => child.id === stream.id)
+          .map(
+            (child, id) =>
+              (clonedStreams[this.viewStreamInfo.endpoint][
+                parentIndex
+              ].children[id] = stream)
+          );
       }
     },
     getParentIndex(clonedStreams, stream) {
@@ -320,7 +329,7 @@ export default {
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].stream) {
           const stream = result[0].stream;
-          await this.addStreamsToStore(endpoint, stream);
+          await this.addStreamsToStore(endpoint, stream, constants.DELETE);
           stream.children = this.viewStreamInfoObj.children;
           this.viewStreamInfoObj = stream;
         }

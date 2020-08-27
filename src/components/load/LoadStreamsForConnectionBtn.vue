@@ -14,12 +14,6 @@ import { mapState } from "vuex";
 export default {
   name: "LoadStreamsForConnection",
   components: { PryvBtn },
-  data() {
-    return {
-      events: [],
-      typesSet: new Set(),
-    };
-  },
   computed: {
     ...mapState(["viewStreamInfo"]),
     ...mapState(["connectionsMap"]),

@@ -188,10 +188,10 @@ export default {
     isJSON: function(text) {
       try {
         JSON.parse(text);
+        this.saveDisable = false;
       } catch (e) {
         this.saveDisable = true;
       }
-      this.saveDisable = false;
     },
     currentRouteName() {
       return this.$route.name;
@@ -243,8 +243,66 @@ export default {
         key => key.id === this.viewStreamInfo.id
       );
       clonedStreams[endpoint][streamIndex] = stream;
+      //this.removeChild(clonedStreams);
+      this.updateParent(clonedStreams, stream);
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;
+      this.saveDisable = true;
+      this.editable = false;
+    },
+    removeChild(clonedStreams, stream) {
+      if (stream.parentId !== null) {
+        const index = this.getParentIndex(clonedStreams, stream);
+        const parentStream = clonedStreams[this.viewStreamInfo.endpoint][index];
+        let findChild = false;
+        if (parentStream.children) {
+          parentStream.children.forEach((child) => {
+            if (child.id === stream.id) {
+              findChild = true;
+            }
+          });
+          if(findChild === true)
+          {
+            parentStream.children.filter(child => child.child.id != stream.id)
+          }
+          if(findChild === false)
+          {
+            parentStream.children.every((child, id) => {
+              this.removeChild(clonedStreams,child)
+              console.log(id)
+            });
+          }
+        }
+      }
+      //if(this.viewStreamInfoObj.)
+    },
+    updateParent(clonedStreams, stream) {
+      if (stream.parentId !== null) {
+        const index = this.getParentIndex(clonedStreams, stream);
+        const parentStream = clonedStreams[this.viewStreamInfo.endpoint][index];
+        let findChild = null;
+        if (parentStream.children) {
+          parentStream.children.forEach((child, id) => {
+            if (child.id === stream.id) {
+              findChild = stream;
+              clonedStreams[this.viewStreamInfo.endpoint][index].children[
+                id
+              ] = stream;
+            }
+          });
+        }
+        if (findChild === null) {
+          if (!parentStream.children) parentStream["children"] = [];
+          parentStream.children.push(stream);
+        }
+        this.updateParent(clonedStreams, parentStream);
+      }
+    },
+    getParentIndex(clonedStreams, stream) {
+      const parentStreamIndex = clonedStreams[
+        this.viewStreamInfo.endpoint
+      ].findIndex(key => key.id === stream.parentId);
+      return parentStreamIndex;
     },
     reset() {
       Object.assign(this.$data, this.$options.data.call(this));
@@ -298,8 +356,7 @@ export default {
 .trash {
   background-color: #9d0717;
 }
-  .modal-body{
-    padding-left: 2rem;
-  }
-
+.modal-body {
+  padding-left: 2rem;
+}
 </style>

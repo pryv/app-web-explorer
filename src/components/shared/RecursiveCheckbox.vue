@@ -9,7 +9,7 @@
             font-scale="1"
           ></b-icon>
           <b-icon
-            icon="arrow-up-square-fill"
+            icon="arrow-right-square-fill"
             class="when-opened"
             variant="danger"
             font-scale="1"

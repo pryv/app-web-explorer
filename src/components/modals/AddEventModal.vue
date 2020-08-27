@@ -105,8 +105,18 @@
               :state="contentStates[index]"
             ></b-form-file>
             <b-form-input
-              v-else
-              :type="obj.type === 'string' ? 'text' : obj.type"
+              v-else-if="obj.type === 'number'"
+              type="number"
+              :value="obj.val"
+              :id="obj.labelFor"
+              :placeholder="obj.type"
+              @input="updateValue(obj, $event)"
+              :required="obj.required"
+              :state="contentStates[index]"
+            ></b-form-input>
+            <b-form-input
+              v-else-if="obj.type === 'string'"
+              type="text"
               :value="obj.val"
               :id="obj.labelFor"
               :placeholder="obj.type"
@@ -334,6 +344,10 @@ export default {
     },
   },
   methods: {
+    getType(obj) {
+      // evaluate whatever you need to determine disabled here...
+      return obj.type === "string" ? "text" : obj.type;
+    },
     getRequired(key) {
       return !!(
         this.selectedTypeObject.required &&
@@ -386,7 +400,12 @@ export default {
         ) {
           content = {};
           this.contentNames.forEach(obj => {
-            content[obj.labelKey] = obj.type === "number" ? +obj.val : obj.val;
+            if (obj.type === "number") {
+              let val = +obj.val;
+              if (!isNaN(val)) content[obj.labelKey] = val;
+            } else {
+              if (obj.val) content[obj.labelKey] = obj.val;
+            }
           });
         }
         if (
@@ -424,9 +443,9 @@ export default {
             type: this.selectedType.toLowerCase(),
             content: content,
           };
-          if (this.selectedTime !== null)
+          if (!(this.selectedTime === null || this.selectedTime === ""))
             apiObj[0].params["time"] = +this.selectedTime;
-          if (this.selectedDuration !== null)
+          if (!(this.selectedDuration === null || this.selectedDuration === ""))
             apiObj[0].params["duration"] = +this.selectedDuration;
           if (this.selectedDescription !== null)
             apiObj[0].params["description"] = this.selectedDescription;

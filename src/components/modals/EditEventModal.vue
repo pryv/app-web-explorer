@@ -1,5 +1,5 @@
 <template>
-  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk" @show="resetModal">
+  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk">
     <template v-slot:modal-header>
       <h5>Edit event - {{ data.id }}</h5>
     </template>
@@ -459,7 +459,14 @@ export default {
               const payload = {
                 label: `${key}${this.getRequired(key) ? "*" : ""}`,
                 type: this.selectedTypeObjectComputed.properties[key].type,
-                val: this.data.content[key].toString(),
+                val:
+                  this.selectedTypeObjectComputed.properties[key].type ===
+                  "string"
+                    ? this.data.content[key].toString()
+                    : this.selectedTypeObjectComputed.properties[key].type ===
+                      "number"
+                    ? +this.data.content[key]
+                    : null,
                 required: this.getRequired(key),
                 labelFor: "input-content-" + key,
                 feedback: `${key} is required`,
@@ -542,12 +549,24 @@ export default {
         ) {
           content = {};
           this.contentNames.forEach(obj => {
-            content[obj.labelKey] = obj.type === "number" ? +obj.val : obj.val;
+            if (obj.type === "number") {
+              let val = +obj.val;
+              if (!isNaN(val)) content[obj.labelKey] = val;
+            } else{
+              if(obj.val)
+                content[obj.labelKey] = obj.val
+            }
           });
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
         }
-        obj["content"] = content;
+        if(typeof content === "object")
+        {
+          if( Object.keys(content).length > 0 )
+            obj["content"] = content;
+        }
+        else if(content !== null)
+            obj["content"] = content;
       } else {
         let content = null;
         if (this.selectedTypeObjectComputed.type === "string") {
@@ -562,25 +581,46 @@ export default {
         ) {
           content = {};
           let modified = false;
-          this.contentNames.forEach(obj => {
-            let value = obj.type === "number" ? +obj.val : obj.val;
-            if (this.data.content[obj.labelKey] !== value) {
-              modified = true;
-            }
-          });
+          this.contentNames.every(
+            function(obj) {
+              let value = obj.type === "number" ? +obj.val : obj.val;
+              if (this.data.content[obj.labelKey] !== value) {
+                modified = true;
+                return false;
+              } else return true;
+            }.bind(this)
+          );
           if (modified === true) {
             this.contentNames.forEach(obj => {
-              content[obj.label] = obj.type === "number" ? +obj.val : obj.val;
+              if (obj.type === "number") {
+                let val = +obj.val;
+                if (!isNaN(val)) content[obj.labelKey] = val;
+              } else {
+                if(obj.val)
+                  content[obj.labelKey] = obj.val
+              }
             });
           }
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
         }
-        if (content !== null) obj["content"] = content;
+        if(typeof content === "object")
+        {
+          if( Object.keys(content).length > 0 )
+            obj["content"] = content;
+        }
+        else if(content !== null)
+          obj["content"] = content;
         if (this.data.time !== this.selectedTimeComputed)
-          obj["time"] = this.selectedTimeComputed;
+        {
+          if (!(this.selectedTime === null || this.selectedTime === ""))
+            obj["time"] = +this.selectedTimeComputed;
+        }
         if (this.data.duration !== this.selectedDurationComputed)
-          obj["duration"] = this.selectedTimeComputed;
+        {
+          if (!(this.selectedDuration === null || this.selectedDuration === ""))
+            obj["duration"] = +this.selectedDurationComputed;
+        }
         if (this.data.description !== this.selectedDescriptionComputed)
           obj["description"] = this.selectedDescriptionComputed;
         if (this.data.clientData !== this.selectedClientDataComputed)
@@ -612,16 +652,16 @@ export default {
     },
     async addEventsToStore(event) {
       const clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
-      const editedDisplayEventIndex = clonedDisplayEvents[this.data.apiEndpoint].findIndex(
-        key => key.id === event.id
-      );
-      clonedDisplayEvents[this.data.apiEndpoint][editedDisplayEventIndex] = event;
-      const editedEventIndex = this.eventsMap[
+      const editedDisplayEventIndex = clonedDisplayEvents[
         this.data.apiEndpoint
       ].findIndex(key => key.id === event.id);
-      this.eventsMap[this.data.apiEndpoint][
-              editedEventIndex
+      clonedDisplayEvents[this.data.apiEndpoint][
+        editedDisplayEventIndex
       ] = event;
+      const editedEventIndex = this.eventsMap[this.data.apiEndpoint].findIndex(
+        key => key.id === event.id
+      );
+      this.eventsMap[this.data.apiEndpoint][editedEventIndex] = event;
       this.eventsDisplayMap = clonedDisplayEvents;
       this.$bvModal.hide(this.data.id);
     },
@@ -631,6 +671,19 @@ export default {
       this.selectedStream = this.data.streamId;
       this.selectedType = this.data.type;
       this.selectedTypeObject = this.typesAll[this.selectedType];
+      if (this.data.type === this.selectedType) {
+        if (this.contentNames) {
+          if (this.data.type === "object" || this.data.type === "array")
+            this.contentNames.forEach(obj => {
+              let label = obj.labelKey;
+              obj.val = this.data.content[label];
+            });
+          else if (this.data.type === "string" || this.data.enum)
+            this.contentNames[0] = this.data.content.toString();
+          else if (this.data.type === "number")
+            this.contentNames[0] = this.data.content;
+        }
+      }
       this.selectedTime = this.data.time;
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;

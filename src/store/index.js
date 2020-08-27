@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { constants } from '../utilities/constants';
+import Vue from "vue";
+import Vuex from "vuex";
+import { constants } from "../utilities/constants";
 
 Vue.use(Vuex);
 
@@ -8,7 +8,7 @@ const store = new Vuex.Store({
   state: {
     selected: [],
     serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
-    viewAccessInfo: '', //set endpoint when clicked on info button of a connection
+    viewAccessInfo: "", //set endpoint when clicked on info button of a connection
     viewStreamInfo: {}, // set obj with endpoint and stream id when clicked on edit stream icon
     viewStreamInfoObj: {},
     selectedStreams: {},

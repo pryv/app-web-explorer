@@ -57,15 +57,12 @@
                       </div>
                       <p v-else>No Attachments</p>
                     </template>
-                    <template v-slot:cell(id)="data">
-                      <div>
-                        <PryvBtn
-                          class="mt-0 mr-5"
-                          icon="check2-square"
-                          @click="$bvModal.show(data.item.id)"
-                        ></PryvBtn
-                        >{{ data.item.id }}
-                      </div>
+                    <template v-slot:cell(edit)="data">
+                      <PryvBtn
+                        class="mt-0 mr-5"
+                        icon="check2-square"
+                        @click="$bvModal.show(data.item.id)"
+                      ></PryvBtn>
                       <EditEventModal
                         :data="data.item"
                         :apiEndpoint="data.item.apiEndpoint"
@@ -154,6 +151,7 @@ export default {
       showOverlay: false,
       limit: 20,
       fields: [
+        { key: "edit", label: "Edit" },
         { key: "id", label: "Id", sortable: true },
         { key: "streamId", label: "Stream Id", sortable: true },
         { key: "type", label: "Type", sortable: true },
@@ -307,7 +305,9 @@ export default {
           eventObj.apiEndpoint = apiEndpoint;
           eventObj.endpoint = apiEndpoint.split("@")[1];
           eventObj.endpoint = apiEndpoint.split("@")[1];
-          eventObj.token = apiEndpoint.split("@")[0].replace(/(^\w+:|^)\/\//, "");
+          eventObj.token = apiEndpoint
+            .split("@")[0]
+            .replace(/(^\w+:|^)\/\//, "");
           streamEventMap[streamId].push(eventObj);
         }
         for (let i = 0; i < streamIds.length; i++) {

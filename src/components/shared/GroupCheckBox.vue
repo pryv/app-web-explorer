@@ -166,6 +166,7 @@ export default {
           }
         }
       }
+
       this.accessInfo = customUserObjectArray;
       this.displayAllInitial();
     },

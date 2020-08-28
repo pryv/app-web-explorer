@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     displayAllInitial() {
-      console.log("display all initial method is called");
       Object.keys(this.accessInfo).forEach(apiEndpoint => {
         const payload = {
           eventClickedOrUnClicked: true,
@@ -156,13 +155,11 @@ export default {
         );
       });
     },
-    displayStreams() {
-      console.log("display streams");
+    displayStreams() {;
       const customUserObjectArray = {};
       for (const [key, accessInfo] of Object.entries(this.accessInfoMap)) {
         customUserObjectArray[key] = [];
         const streams = this.streamsMap[key];
-        console.log(this.streamsMap);
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
             if (!streams[i].parentId || streams[i].parentId === null) {

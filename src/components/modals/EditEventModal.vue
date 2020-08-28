@@ -124,6 +124,7 @@
         <b-form-group label="Client Data" label-for="input-client-data">
           <v-jsoneditor
             v-model="selectedClientDataComputed"
+            ref="json"
             height="200px"
             :plus="false"
             :options="{
@@ -134,6 +135,9 @@
               search: false,
               navigationBar: false,
               mode: 'code',
+              onChangeText: function(jsonText) {
+                isJSON(jsonText);
+              },
             }"
           ></v-jsoneditor>
         </b-form-group>
@@ -186,6 +190,7 @@ export default {
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
+      okDisable: false,
     };
   },
   computed: {
@@ -215,7 +220,14 @@ export default {
     },
     selectedStreamComputed: {
       get() {
-        return this.selectedStream ? this.selectedStream : this.data.streamId;
+        if (!this.selectedStream) {
+          const streamObj = this.streamsMap[this.data.apiEndpoint].filter(
+            stream => stream.id === this.data.streamId
+          );
+          return `${streamObj[0].name} [${this.data.streamId}]`;
+        } else {
+          return this.selectedStream;
+        }
       },
       set(value) {
         this.selectedStream = value;
@@ -290,7 +302,7 @@ export default {
           key => key === this.selectedEndpointComputed
         );
         return this.streamsMap[filteredObj].map(obj => ({
-          value: obj.id,
+          value: `${obj.name} [${obj.id}]`,
           text: filteredObj,
         }));
       }
@@ -497,6 +509,17 @@ export default {
     },
   },
   methods: {
+    isJSON: function(text) {
+      try {
+        JSON.parse(text);
+        this.okDisable = false;
+      } catch (e) {
+        this.okDisable = true;
+      }
+      if (text === "") {
+        this.okDisable = false;
+      }
+    },
     getRequired(key) {
       return !!(
         this.selectedTypeObjectComputed.required &&
@@ -534,8 +557,17 @@ export default {
     },
     async editEvent() {
       const obj = {};
-      if (this.data.streamId !== this.selectedStreamComputed)
-        obj["streamId"] = this.selectedStreamComputed;
+      if (
+        this.data.streamId !==
+        this.selectedStreamComputed
+          .split(" ")
+          .slice(-1)[0]
+          .replace(/[[\]]/g, "")
+      )
+        obj["streamId"] = this.selectedStreamComputed
+          .split(" ")
+          .slice(-1)[0]
+          .replace(/[[\]]/g, "");
       if (this.data.type !== this.selectedTypeComputed) {
         obj["type"] = this.selectedTypeComputed;
         let content = null;
@@ -552,21 +584,18 @@ export default {
             if (obj.type === "number") {
               let val = +obj.val;
               if (!isNaN(val)) content[obj.labelKey] = val;
-            } else{
-              if(obj.val)
-                content[obj.labelKey] = obj.val
+            } else {
+              if (obj.val) content[obj.labelKey] = obj.val;
             }
           });
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
+        } else if (this.selectedTypeObjectComputed.type === null) {
+          content = null;
         }
-        if(typeof content === "object")
-        {
-          if( Object.keys(content).length > 0 )
-            obj["content"] = content;
-        }
-        else if(content !== null)
-            obj["content"] = content;
+        if (typeof content === "object" && content !== null) {
+          if (Object.keys(content).length > 0) obj["content"] = content;
+        } else if (content !== null) obj["content"] = content;
       } else {
         let content = null;
         if (this.selectedTypeObjectComputed.type === "string") {
@@ -596,28 +625,23 @@ export default {
                 let val = +obj.val;
                 if (!isNaN(val)) content[obj.labelKey] = val;
               } else {
-                if(obj.val)
-                  content[obj.labelKey] = obj.val
+                if (obj.val) content[obj.labelKey] = obj.val;
               }
             });
           }
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
+        } else if (this.selectedTypeObjectComputed.type === null) {
+          content = null;
         }
-        if(typeof content === "object")
-        {
-          if( Object.keys(content).length > 0 )
-            obj["content"] = content;
-        }
-        else if(content !== null)
-          obj["content"] = content;
-        if (this.data.time !== this.selectedTimeComputed)
-        {
+        if (typeof content === "object" && content !== null) {
+          if (Object.keys(content).length > 0) obj["content"] = content;
+        } else if (content !== null) obj["content"] = content;
+        if (this.data.time !== this.selectedTimeComputed) {
           if (!(this.selectedTime === null || this.selectedTime === ""))
             obj["time"] = +this.selectedTimeComputed;
         }
-        if (this.data.duration !== this.selectedDurationComputed)
-        {
+        if (this.data.duration !== this.selectedDurationComputed) {
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
             obj["duration"] = +this.selectedDurationComputed;
         }
@@ -668,7 +692,10 @@ export default {
     resetModal() {
       this.selectedEndpoint = this.data.apiEndpoint;
       this.selectedConnection = this.accessInfoMap[this.data.apiEndpoint].name;
-      this.selectedStream = this.data.streamId;
+      const streamObj = this.streamsMap[this.data.apiEndpoint].filter(
+        stream => stream.id === this.data.streamId
+      );
+      this.selectedStream = `${streamObj[0].name} [${this.data.streamId}]`;
       this.selectedType = this.data.type;
       this.selectedTypeObject = this.typesAll[this.selectedType];
       if (this.data.type === this.selectedType) {

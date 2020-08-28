@@ -140,15 +140,8 @@ export default {
     logout() {
       let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
       const obj = endpointArr.find(o => o.key === this.viewAccessInfo);
-      if (obj.cookie)
-      {
-        console.log("remove cookies")
-        console.log("." + window.location.hostname)
-        this.$cookies.remove(
-                "pryv-libjs-web-app-explorer",
-                null,
-                ".yasarapeiris.github.io"
-        );
+      if (obj.cookie) {
+        this.$cookies.remove("pryv-libjs-web-app-explorer", null, ".yasarapeiris.github.io");
       }
       endpointArr = endpointArr.filter(obj => obj.key !== this.viewAccessInfo);
       this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);

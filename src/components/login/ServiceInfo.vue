@@ -2,13 +2,15 @@
   <div>
     <b-form>
       <b-input-group class="mb-4 mr-sm-4 mb-sm-0">
-        <PryvInput
+        <b-input
           :id="id"
           placeholder="Enter Service Endpoint"
-          v-model="this.serviceInfo"
-          disabled
-        ></PryvInput>
+          ref="serviceInfo"
+          :value="serviceInfoUrl"
+          @input="setServiceInfo"
+        ></b-input>
       </b-input-group>
+      <PryvBtn icon="arrow-clockwise" @click="fetchServiceInfo" content="Fetch Service Info" ></PryvBtn>
     </b-form>
     <div class="pt-2">
       <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
@@ -30,11 +32,11 @@
 </template>
 
 <script>
-import PryvInput from "../shared/PryvInput";
+import PryvBtn from "../shared/PryvBtn";
 import { constants } from "../../utilities/constants";
 export default {
   name: "APILogin",
-  components: { PryvInput },
+  components: { PryvBtn },
   computed: {
     serviceInfo: {
       get() {
@@ -47,7 +49,7 @@ export default {
   },
   data() {
     return {
-      endpoint: constants.DEFAULT_SERVICE_INFO_URL,
+      serviceInfoUrl : constants.DEFAULT_SERVICE_INFO_URL,
       ServiceInfo: "Service Info",
       register: "",
       access: "",
@@ -66,22 +68,72 @@ export default {
     },
   },
   async created() {
+    let service =null
+    let serviceInfoVar = null
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {
-      const serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
-      if (serviceInfoUrl) this.serviceInfo = serviceInfoUrl;
+      this.serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
     }
-    const service = new this.$pryv.Service(this.serviceInfo);
-    const serviceInfoVar = await service.info();
-    this.register = serviceInfoVar.register;
-    this.access = serviceInfoVar.access;
-    this.api = serviceInfoVar.api;
-    this.name = serviceInfoVar.name;
-    this.home = serviceInfoVar.home;
-    this.support = serviceInfoVar.support;
-    this.terms = serviceInfoVar.terms;
-    this.eventTypes = serviceInfoVar.eventTypes;
-    this.assets = serviceInfoVar.assets;
+    try{
+      service = new this.$pryv.Service(this.serviceInfoUrl);
+      serviceInfoVar = await service.info();
+    }
+    catch (e) {
+      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl
+      service = new this.$pryv.Service(this.serviceInfoUrl);
+      serviceInfoVar = await service.info();
+    }
+    finally {
+      this.serviceInfo = this.serviceInfoUrl
+      this.register = serviceInfoVar.register;
+      this.access = serviceInfoVar.access;
+      this.api = serviceInfoVar.api;
+      this.name = serviceInfoVar.name;
+      this.home = serviceInfoVar.home;
+      this.support = serviceInfoVar.support;
+      this.terms = serviceInfoVar.terms;
+      this.eventTypes = serviceInfoVar.eventTypes;
+      this.assets = serviceInfoVar.assets;
+    }
   },
+  methods:{
+    setServiceInfo(value)
+    {
+      console.log("value "+value)
+      this.serviceInfoUrl = value
+      console.log("value service info "+this.serviceInfo)
+    },
+    async fetchServiceInfo(){
+      let service = null;
+      let serviceInfoVar = null;
+      try{
+        service = new this.$pryv.Service(this.serviceInfoUrl);
+        serviceInfoVar = await service.info();
+      }
+      catch (e) {
+        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+        service = new this.$pryv.Service(this.serviceInfoUrl);
+        serviceInfoVar = await service.info();
+      }
+      finally {
+        this.serviceInfo = this.serviceInfoUrl
+        console.log("service")
+        console.log(service)
+        console.log("service info var")
+        console.log(serviceInfoVar)
+        this.register = serviceInfoVar.register;
+        this.access = serviceInfoVar.access;
+        this.api = serviceInfoVar.api;
+        this.name = serviceInfoVar.name;
+        this.home = serviceInfoVar.home;
+        this.support = serviceInfoVar.support;
+        this.terms = serviceInfoVar.terms;
+        this.eventTypes = serviceInfoVar.eventTypes;
+        this.assets = serviceInfoVar.assets;
+      }
+
+    }
+  }
 };
 </script>
 <style scoped>

@@ -27,13 +27,13 @@
                     href="https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button"
                     parentData="Login using Web Button"
                   ></PryvLabel>
-                  <WebButton @authenticated="updateSessionStorage"></WebButton>
+                  <WebButton :key="serviceInfo" @authenticated="updateSessionStorage"></WebButton>
                   <br />
                   <div class="text-left">
                     <b-button
                       class="pryv-btn-collapse"
                       v-b-toggle.collapse-1
-                      variant="primary"
+                      variant="secondary"
                       >View Service Info
                     </b-button>
                     <b-collapse id="collapse-1" class="mt-2">
@@ -64,7 +64,7 @@
                     <b-button
                       class="pryv-btn-collapse"
                       v-b-toggle="'collapse-2'"
-                      variant="primary"
+                      variant="secondary"
                       >View Service Info
                     </b-button>
                     <b-collapse id="collapse-2" class="mt-2">
@@ -111,6 +111,7 @@ import ServiceInfo from "../components/login/ServiceInfo";
 import GET_STREAMS_API from "../utilities/api";
 import ACCESS_INFO_API from "../utilities/api";
 import GET_EVENTS_API from "../utilities/api";
+import { mapState } from "vuex";
 export default {
   components: {
     ServiceInfo,
@@ -121,6 +122,7 @@ export default {
     PryvBtn,
   },
   computed: {
+    ...mapState(["serviceInfo"]),
     connectionsMap: {
       get() {
         return this.$store.state.connectionsMap;

@@ -99,9 +99,7 @@ export default {
   methods:{
     setServiceInfo(value)
     {
-      console.log("value "+value)
       this.serviceInfoUrl = value
-      console.log("value service info "+this.serviceInfo)
     },
     async fetchServiceInfo(){
       let service = null;
@@ -117,10 +115,6 @@ export default {
       }
       finally {
         this.serviceInfo = this.serviceInfoUrl
-        console.log("service")
-        console.log(service)
-        console.log("service info var")
-        console.log(serviceInfoVar)
         this.register = serviceInfoVar.register;
         this.access = serviceInfoVar.access;
         this.api = serviceInfoVar.api;

@@ -29,7 +29,7 @@
             @change="checkBoxClicked($event, endpoint, endpoint)"
             class="font-weight-bold main text-left access_font"
             @click.stop
-            >{{ accessInfoName }}
+            > {{ accessInfoName }}
           </b-form-checkbox>
         </b-col>
         <b-col cols="2">

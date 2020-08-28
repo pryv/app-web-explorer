@@ -433,8 +433,8 @@ export default {
               {
                 type: this.selectedType.toLowerCase(),
                 streamId: this.selectedStream
-                  .split(" ")[1]
-                  .replace(/[[\]]/g, ""),
+                  .split(" ").slice(-1)[0]
+                        .replace(/[[\]]/g, ""),
               },
               formData
             )
@@ -452,7 +452,8 @@ export default {
             );
         } else {
           apiObj[0].params = {
-            streamId: this.selectedStream.split(" ")[1].replace(/[[\]]/g, ""),
+            streamId: this.selectedStream.split(" ").slice(-1)[0]
+                    .replace(/[[\]]/g, ""),
             type: this.selectedType.toLowerCase(),
             content: content,
           };

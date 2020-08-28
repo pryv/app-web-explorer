@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     displayAllInitial() {
+      console.log("display all initial method is called");
       Object.keys(this.accessInfo).forEach(apiEndpoint => {
         const payload = {
           eventClickedOrUnClicked: true,
@@ -126,12 +127,14 @@ export default {
       if (!stream.children) return;
       stream.children.forEach(child => {
         clonedSelectedStreamsObjectArray[endpoint].push(child.id);
-        if (child.children && child.children.length > 0)
-          this.selectChildStreams(
-            child,
-            clonedSelectedStreamsObjectArray,
-            endpoint
-          );
+        let childObj = this.streamsMap[endpoint].filter(
+          stream => child.id === stream.id
+        );
+        this.selectChildStreams(
+          childObj[0],
+          clonedSelectedStreamsObjectArray,
+          endpoint
+        );
       });
     },
     unselectChildStreams(stream, clonedSelectedStreamsObjectArray, endpoint) {
@@ -143,19 +146,23 @@ export default {
         selectedStreamId => !childIds.includes(selectedStreamId)
       );
       stream.children.forEach(child => {
-        if (child.children && child.children.length > 0)
-          this.unselectChildStreams(
-            child,
-            clonedSelectedStreamsObjectArray,
-            endpoint
-          );
+        let childObj = this.streamsMap[endpoint].filter(
+          stream => child.id === stream.id
+        );
+        this.unselectChildStreams(
+          childObj[0],
+          clonedSelectedStreamsObjectArray,
+          endpoint
+        );
       });
     },
     displayStreams() {
+      console.log("display streams");
       const customUserObjectArray = {};
       for (const [key, accessInfo] of Object.entries(this.accessInfoMap)) {
         customUserObjectArray[key] = [];
         const streams = this.streamsMap[key];
+        console.log(this.streamsMap);
         if (streams) {
           for (let i = 0; i < streams.length; i++) {
             if (!streams[i].parentId || streams[i].parentId === null) {
@@ -166,7 +173,6 @@ export default {
           }
         }
       }
-
       this.accessInfo = customUserObjectArray;
       this.displayAllInitial();
     },
@@ -180,13 +186,13 @@ export default {
       };
       if (stream.children && stream.children.length > 0) {
         let children = [];
-        stream.children.forEach(childStream =>
-        {
-          var childObj = this.streamsMap[key].filter(stream =>childStream.id === stream.id);
-          if(childObj.length > 0 )
-            children.push(this.createPayload(accessInfo, childObj[0], key))
-        }
-        );
+        stream.children.forEach(childStream => {
+          let childObj = this.streamsMap[key].filter(
+            stream => childStream.id === stream.id
+          );
+          if (childObj.length > 0)
+            children.push(this.createPayload(accessInfo, childObj[0], key));
+        });
         payload["children"] = children;
       }
       return payload;

@@ -121,13 +121,46 @@ export default {
       const filteredObj = Object.keys(this.streamsMap).filter(
         key => key === this.viewAccessInfo
       );
-      return this.streamsMap[filteredObj].map(obj => ({
-        value: `${obj.name} [${obj.id}]`,
-        text: filteredObj,
+      let newStreamsMap = {};
+      newStreamsMap[filteredObj] = [];
+      this.streamsMap[filteredObj].forEach(stream => {
+        let parentStreams = [];
+        this.pushParentName(stream, parentStreams, filteredObj, newStreamsMap);
+        stream.parents = parentStreams;
+        let icons = [];
+        for (let i = 0; i < parentStreams.length; i++) {
+          if (i === 1 && parentStreams.length === 2) icons.push("\u25B8");
+          else if (i === 1 && parentStreams.length > 2) icons.push("\u25B8");
+          else if (i > 1) icons.push("\u25FE");
+        }
+        if (icons.length > 0) stream.icons = icons.join(" ");
+        else {
+          stream.icons = null;
+        }
+      });
+      return this.streamsMap[filteredObj].map(stream => ({
+        value: `${stream.icons} ${stream.name} [${stream.id}]`,
+        text: stream.parents.join("\u25B8"),
       }));
     },
   },
   methods: {
+    pushParentName(stream, parentStreams, filteredObj, newStreamsMap) {
+      if (stream.parentId) {
+        var parentStream = this.streamsMap[filteredObj].filter(
+          parent => stream.parentId === parent.id
+        );
+        parentStreams.unshift(parentStream[0].name);
+        this.pushParentName(
+          parentStream[0],
+          parentStreams,
+          filteredObj,
+          newStreamsMap
+        );
+      } else {
+        newStreamsMap[filteredObj].push(stream);
+      }
+    },
     isJSON: function(text) {
       try {
         JSON.parse(text);
@@ -171,7 +204,8 @@ export default {
         if (this.selectedId !== null) apiObj[0].params["id"] = this.selectedId;
         if (this.selectedParentId !== null) {
           apiObj[0].params["parentId"] = this.selectedParentId
-            .split(" ")[1]
+            .split(" ")
+            .slice(-1)[0]
             .replace(/[[\]]/g, "");
         }
         if (this.clientData !== null)

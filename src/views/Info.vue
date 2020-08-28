@@ -147,7 +147,7 @@ export default {
         this.$cookies.remove(
                 "pryv-libjs-web-app-explorer",
                 null,
-                "." + window.location.hostname
+                ".yasarapeiris.github.io"
         );
       }
       endpointArr = endpointArr.filter(obj => obj.key !== this.viewAccessInfo);

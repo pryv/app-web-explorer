@@ -18,12 +18,19 @@ const filterTagsSort = {
   LIMIT: "7",
   SORT: "8",
 };
+
 const states = {
   DEFAULT: "default",
   TRASHED: "trashed",
   ALL: "all",
 };
+
+const actions = {
+  EDIT: "edit",
+  DELETE: "delete",
+};
+
 const constants = {
   DEFAULT_SERVICE_INFO_URL: "https://reg.pryv.me/service/info",
 };
-export { filterTags, states, constants, filterTagsSort };
+export { filterTags, states, constants, filterTagsSort, actions };

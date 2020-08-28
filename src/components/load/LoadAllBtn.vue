@@ -12,7 +12,7 @@ import PryvBtn from "../shared/PryvBtn";
 import GET_STREAMS_API from "../../utilities/api";
 import { mapState } from "vuex";
 export default {
-  name: "LoadStreamsBtn",
+  name: "LoadAllBtn",
   components: { PryvBtn },
   data() {
     return {

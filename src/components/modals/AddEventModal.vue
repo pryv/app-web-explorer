@@ -152,7 +152,6 @@
         </b-form-group>
         <b-form-group label="Client Data" label-for="input-client-data">
           <v-jsoneditor
-            v-model="clientData"
             :plus="false"
             height="200px"
             :options="{
@@ -163,6 +162,9 @@
               search: false,
               navigationBar: false,
               mode: 'code',
+              onChangeText: function(jsonText) {
+                isJSON(jsonText);
+              },
             }"
           ></v-jsoneditor>
         </b-form-group>
@@ -176,6 +178,7 @@
         icon="check"
         type="submit"
         variant="success"
+        :disabled="okDisable"
       ></PryvBtn>
       <PryvBtn
         @click="cancel()"
@@ -213,6 +216,7 @@ export default {
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
+      okDisable:false
     };
   },
   computed: {
@@ -344,9 +348,18 @@ export default {
     },
   },
   methods: {
-    getType(obj) {
-      // evaluate whatever you need to determine disabled here...
-      return obj.type === "string" ? "text" : obj.type;
+    isJSON: function(text) {
+      try {
+        JSON.parse(text);
+        this.clientData = text;
+        this.okDisable = false;
+      } catch (e) {
+        this.okDisable = true;
+      }
+      if (text === "") {
+        this.clientData = null;
+        this.okDisable = false;
+      }
     },
     getRequired(key) {
       return !!(
@@ -450,7 +463,7 @@ export default {
           if (this.selectedDescription !== null)
             apiObj[0].params["description"] = this.selectedDescription;
           if (this.clientData !== null)
-            apiObj[0].params["clientData"] = this.clientData;
+            apiObj[0].params["clientData"] = JSON.parse(this.clientData);;
           const result = await connection.api(apiObj);
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
@@ -479,6 +492,7 @@ export default {
       this.selectedTime = null;
       this.selectedDuration = null;
       this.selectedDescription = null;
+      this.clientData = null
       //reset states
       this.connectionState = null;
       this.streamState = null;

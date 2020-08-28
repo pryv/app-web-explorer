@@ -129,16 +129,16 @@ export default {
   },
   methods: {
     isJSON: function(text) {
-      if (text === "") {
-        this.clientData = null;
-        this.okDisable = false;
-      }
       try {
         JSON.parse(text);
         this.clientData = text;
         this.okDisable = false;
       } catch (e) {
         this.okDisable = true;
+      }
+      if (text === "") {
+        this.clientData = null;
+        this.okDisable = false;
       }
     },
     checkFormValidity() {

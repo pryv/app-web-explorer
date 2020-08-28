@@ -50,7 +50,6 @@
         </b-form-group>
         <b-form-group label="Client Data" label-for="input-client-data">
           <v-jsoneditor
-            v-model="clientData"
             :plus="false"
             height="200px"
             :options="{
@@ -61,6 +60,9 @@
               search: false,
               navigationBar: false,
               mode: 'code',
+              onChangeText: function(jsonText) {
+                isJSON(jsonText);
+              },
             }"
           ></v-jsoneditor>
         </b-form-group>
@@ -74,6 +76,7 @@
         icon="check"
         type="submit"
         variant="success"
+        :disabled="okDisable"
       ></PryvBtn>
       <PryvBtn
         @click="cancel()"
@@ -100,6 +103,7 @@ export default {
       selectedName: null,
       clientData: null,
       nameState: null,
+      okDisable: false,
     };
   },
   computed: {
@@ -124,6 +128,19 @@ export default {
     },
   },
   methods: {
+    isJSON: function(text) {
+      if (text === "") {
+        this.clientData = null;
+        this.okDisable = false;
+      }
+      try {
+        JSON.parse(text);
+        this.clientData = text;
+        this.okDisable = false;
+      } catch (e) {
+        this.okDisable = true;
+      }
+    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
       if (this.selectedName === null || this.selectedName === "")
@@ -152,12 +169,13 @@ export default {
           name: this.selectedName,
         };
         if (this.selectedId !== null) apiObj[0].params["id"] = this.selectedId;
-        if (this.selectedParentId !== null)
+        if (this.selectedParentId !== null) {
           apiObj[0].params["parentId"] = this.selectedParentId
             .split(" ")[1]
             .replace(/[[\]]/g, "");
+        }
         if (this.clientData !== null)
-          apiObj[0].params["clientData"] = this.clientData;
+          apiObj[0].params["clientData"] = JSON.parse(this.clientData);
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].error) {
           alert(result[0].error.id + " - " + result[0].error.message);
@@ -167,7 +185,6 @@ export default {
         }
       } catch (e) {
         console.log("Error occurred when creating modals" + e);
-
       }
     },
     async addStreamsToStore(stream) {
@@ -183,14 +200,12 @@ export default {
       const parentIndex = this.getParentIndex(clonedStreams, stream);
       const parentStream = this.getParent(clonedStreams, parentIndex);
       if (parentStream.children) {
-        let clonedParent = Object.assign({}, parentStream);
-        clonedParent.children.push(stream);
-        clonedStreams[this.viewStreamInfo.endpoint][parentIndex] = clonedParent;
+        clonedStreams[this.viewAccessInfo][parentIndex].children.push(stream);
       }
     },
     getParent(clonedStreams, parentIndex) {
       if (parentIndex >= 0)
-        return clonedStreams[this.viewStreamInfo.endpoint][parentIndex];
+        return clonedStreams[this.viewAccessInfo][parentIndex];
       return null;
     },
     getParentIndex(clonedStreams, stream) {
@@ -208,4 +223,3 @@ export default {
   },
 };
 </script>
-

@@ -53,4 +53,20 @@ const router = new VueRouter({
   },
 });
 
+router.beforeEach((to, from, next) => {
+  let endpointArr = JSON.parse(router.app.$sessionStorage.endpoint_arr);
+  if (!(to.name === "Login" || to.name === "Main" || to.name === "Home")) {
+    if ((endpointArr && endpointArr.length === 0) || !endpointArr) {
+      next({
+        path: "/login",
+        name: "Login",
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
 export default router;

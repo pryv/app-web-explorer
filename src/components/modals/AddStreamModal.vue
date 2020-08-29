@@ -11,7 +11,7 @@
     </template>
     <template v-slot:default>
       <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group label="ID" label-for="isnput-id">
+        <b-form-group label="ID" label-for="input-id">
           <b-form-input
             type="text"
             v-model="selectedId"

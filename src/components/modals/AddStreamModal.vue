@@ -221,13 +221,8 @@ export default {
       }
     },
     async addStreamsToStore(stream) {
-      //let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
       const clonedStreams = Object.assign({}, this.streamsMap);
-      console.log("add streams to store");
-      console.log(clonedStreams[this.viewAccessInfo]);
-      console.log(stream);
       clonedStreams[this.viewAccessInfo].push(stream);
-      console.log(clonedStreams[this.viewAccessInfo]);
       this.addChild(clonedStreams, stream);
       this.streamsMap = clonedStreams;
       this.$bvModal.hide("modal-scoped-stream");

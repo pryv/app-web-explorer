@@ -10,7 +10,11 @@
           @input="setServiceInfo"
         ></b-input>
       </b-input-group>
-      <PryvBtn icon="arrow-clockwise" @click="fetchServiceInfo" content="Fetch Service Info" ></PryvBtn>
+      <PryvBtn
+        icon="arrow-clockwise"
+        @click="fetchServiceInfo"
+        content="Fetch Service Info"
+      ></PryvBtn>
     </b-form>
     <div class="pt-2">
       <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
@@ -49,7 +53,7 @@ export default {
   },
   data() {
     return {
-      serviceInfoUrl : constants.DEFAULT_SERVICE_INFO_URL,
+      serviceInfoUrl: constants.DEFAULT_SERVICE_INFO_URL,
       ServiceInfo: "Service Info",
       register: "",
       access: "",
@@ -68,23 +72,21 @@ export default {
     },
   },
   async created() {
-    let service =null
-    let serviceInfoVar = null
+    let service = null;
+    let serviceInfoVar = null;
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {
       this.serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
     }
-    try{
+    try {
       service = new this.$pryv.Service(this.serviceInfoUrl);
       serviceInfoVar = await service.info();
-    }
-    catch (e) {
-      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
-      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl
+    } catch (e) {
+      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL;
+      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl;
       service = new this.$pryv.Service(this.serviceInfoUrl);
       serviceInfoVar = await service.info();
-    }
-    finally {
-      this.serviceInfo = this.serviceInfoUrl
+    } finally {
+      this.serviceInfo = this.serviceInfoUrl;
       this.register = serviceInfoVar.register;
       this.access = serviceInfoVar.access;
       this.api = serviceInfoVar.api;
@@ -96,25 +98,22 @@ export default {
       this.assets = serviceInfoVar.assets;
     }
   },
-  methods:{
-    setServiceInfo(value)
-    {
-      this.serviceInfoUrl = value
+  methods: {
+    setServiceInfo(value) {
+      this.serviceInfoUrl = value;
     },
-    async fetchServiceInfo(){
+    async fetchServiceInfo() {
       let service = null;
       let serviceInfoVar = null;
-      try{
+      try {
         service = new this.$pryv.Service(this.serviceInfoUrl);
         serviceInfoVar = await service.info();
-      }
-      catch (e) {
-        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+      } catch (e) {
+        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL;
         service = new this.$pryv.Service(this.serviceInfoUrl);
         serviceInfoVar = await service.info();
-      }
-      finally {
-        this.serviceInfo = this.serviceInfoUrl
+      } finally {
+        this.serviceInfo = this.serviceInfoUrl;
         this.register = serviceInfoVar.register;
         this.access = serviceInfoVar.access;
         this.api = serviceInfoVar.api;
@@ -125,9 +124,8 @@ export default {
         this.eventTypes = serviceInfoVar.eventTypes;
         this.assets = serviceInfoVar.assets;
       }
-
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

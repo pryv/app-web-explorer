@@ -11,17 +11,10 @@ export default {
     ...mapState(["serviceInfo"]),
   },
   async mounted() {
-    console.log("this service info mounted web button login")
-    console.log(this.serviceInfo)
     await this.loadButton();
-  },
-  created() {
-    console.log("this service info created web button login")
-    console.log(this.serviceInfo)
   },
   methods: {
     async loadButton() {
-      console.log("reload web button")
       await Pryv.Browser.setupAuth(loadSettings.call(this), this.serviceInfo);
     },
   },

@@ -23,8 +23,8 @@ export default {
 };
 </script>
 <style>
-  .sidebar{
-    max-width: 100%;
-    min-width: 100%;
-  }
+.sidebar {
+  max-width: 100%;
+  min-width: 100%;
+}
 </style>

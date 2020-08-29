@@ -27,7 +27,10 @@
                     href="https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button"
                     parentData="Login using Web Button"
                   ></PryvLabel>
-                  <WebButton :key="serviceInfo" @authenticated="updateSessionStorage"></WebButton>
+                  <WebButton
+                    :key="serviceInfo"
+                    @authenticated="updateSessionStorage"
+                  ></WebButton>
                   <br />
                   <div class="text-left">
                     <b-button

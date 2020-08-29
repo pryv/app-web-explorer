@@ -5,7 +5,7 @@
     </div>
     <div>
       <b-form @submit.prevent class="text-right">
-        <div class="mb-4 mb-sm-0 text-right" >
+        <div class="mb-4 mb-sm-0 text-right">
           <PryvInput
             id="inline-form-input-endpoint"
             placeholder="Enter API Endpoint"
@@ -14,11 +14,7 @@
             required
           ></PryvInput>
         </div>
-        <PryvBtn
-          content="Login"
-          type="submit"
-          @click="loginAPI"
-        ></PryvBtn>
+        <PryvBtn content="Login" type="submit" @click="loginAPI"></PryvBtn>
       </b-form>
     </div>
   </div>

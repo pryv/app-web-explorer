@@ -216,7 +216,7 @@ export default {
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
-      okDisable:false
+      okDisable: false,
     };
   },
   computed: {
@@ -433,8 +433,9 @@ export default {
               {
                 type: this.selectedType.toLowerCase(),
                 streamId: this.selectedStream
-                  .split(" ").slice(-1)[0]
-                        .replace(/[[\]]/g, ""),
+                  .split(" ")
+                  .slice(-1)[0]
+                  .replace(/[[\]]/g, ""),
               },
               formData
             )
@@ -452,8 +453,10 @@ export default {
             );
         } else {
           apiObj[0].params = {
-            streamId: this.selectedStream.split(" ").slice(-1)[0]
-                    .replace(/[[\]]/g, ""),
+            streamId: this.selectedStream
+              .split(" ")
+              .slice(-1)[0]
+              .replace(/[[\]]/g, ""),
             type: this.selectedType.toLowerCase(),
             content: content,
           };
@@ -464,7 +467,7 @@ export default {
           if (this.selectedDescription !== null)
             apiObj[0].params["description"] = this.selectedDescription;
           if (this.clientData !== null)
-            apiObj[0].params["clientData"] = JSON.parse(this.clientData);;
+            apiObj[0].params["clientData"] = JSON.parse(this.clientData);
           const result = await connection.api(apiObj);
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
@@ -493,7 +496,7 @@ export default {
       this.selectedTime = null;
       this.selectedDuration = null;
       this.selectedDescription = null;
-      this.clientData = null
+      this.clientData = null;
       //reset states
       this.connectionState = null;
       this.streamState = null;

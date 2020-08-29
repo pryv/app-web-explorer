@@ -4,5 +4,6 @@ recLaOptions.host = "l.rec.la";
 
 module.exports = {
   devServer: recLaOptions,
-  publicPath: process.env.NODE_ENV === "production" ? "/app-web-explorer/" : "/",
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/app-web-explorer/" : "/",
 };

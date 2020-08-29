@@ -141,7 +141,11 @@ export default {
       let endpointArr = JSON.parse(this.$sessionStorage.endpoint_arr);
       const obj = endpointArr.find(o => o.key === this.viewAccessInfo);
       if (obj.cookie) {
-        this.$cookies.remove("pryv-libjs-web-app-explorer", window.location.pathname, "."+window.location.hostname);
+        this.$cookies.remove(
+          "pryv-libjs-web-app-explorer",
+          window.location.pathname,
+          "." + window.location.hostname
+        );
       }
       endpointArr = endpointArr.filter(obj => obj.key !== this.viewAccessInfo);
       this.$sessionStorage.endpoint_arr = JSON.stringify(endpointArr);

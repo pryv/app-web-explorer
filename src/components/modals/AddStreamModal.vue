@@ -135,7 +135,7 @@ export default {
         }
         if (icons.length > 0) stream.icons = icons.join(" ");
         else {
-          stream.icons = null;
+          stream.icons = "";
         }
       });
       return this.streamsMap[filteredObj].map(stream => ({

@@ -6,7 +6,7 @@
       name="checkbox-1"
       type="checkbox"
     />
-    <label class="label-class">
+    <label class="checkbox-label">
       {{ content }}
     </label>
   </span>
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style>
-.label-class {
+.checkbox-label {
   font-size: 12px;
   margin-left: 5px;
   margin-top: -5%;

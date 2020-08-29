@@ -176,8 +176,7 @@ export default {
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
-      if (this.selectedName === null || this.selectedName === "")
-        this.nameState = valid;
+      if (!this.selectedName) this.nameState = valid;
       return valid;
     },
     handleOk(bvModalEvt) {
@@ -222,8 +221,13 @@ export default {
       }
     },
     async addStreamsToStore(stream) {
-      let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
+      //let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
+      const clonedStreams = Object.assign({}, this.streamsMap);
+      console.log("add streams to store");
+      console.log(clonedStreams[this.viewAccessInfo]);
+      console.log(stream);
       clonedStreams[this.viewAccessInfo].push(stream);
+      console.log(clonedStreams[this.viewAccessInfo]);
       this.addChild(clonedStreams, stream);
       this.streamsMap = clonedStreams;
       this.$bvModal.hide("modal-scoped-stream");
@@ -233,9 +237,9 @@ export default {
       if (stream.parentId === null) return;
       const parentIndex = this.getParentIndex(clonedStreams, stream);
       const parentStream = this.getParent(clonedStreams, parentIndex);
-      if (parentStream.children) {
-        clonedStreams[this.viewAccessInfo][parentIndex].children.push(stream);
-      }
+      if (!parentStream.children)
+        clonedStreams[this.viewAccessInfo][parentIndex].children = [];
+      clonedStreams[this.viewAccessInfo][parentIndex].children.push(stream);
     },
     getParent(clonedStreams, parentIndex) {
       if (parentIndex >= 0)

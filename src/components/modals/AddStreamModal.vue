@@ -129,8 +129,7 @@ export default {
         stream.parents = parentStreams;
         let icons = [];
         for (let i = 0; i < parentStreams.length; i++) {
-          if (i === 1 && parentStreams.length === 2) icons.push("\u25B8");
-          else if (i === 1 && parentStreams.length > 2) icons.push("\u25B8");
+          if (i === 1 && parentStreams.length >= 2) icons.push("\u25B8");
           else if (i > 1) icons.push("\u25FE");
         }
         if (icons.length > 0) stream.icons = icons.join(" ");

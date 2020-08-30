@@ -8,14 +8,14 @@ import { mapState } from "vuex";
 export default {
   name: "WebButton",
   computed: {
-    ...mapState(["serviceInfo"]),
+    ...mapState(["serviceInfoMap"]),
   },
   async mounted() {
     await this.loadButton();
   },
   methods: {
     async loadButton() {
-      await Pryv.Browser.setupAuth(loadSettings.call(this), this.serviceInfo);
+      await Pryv.Browser.setupAuth(loadSettings.call(this), this.serviceInfoMap["web"]);
     },
   },
 };

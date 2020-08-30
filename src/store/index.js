@@ -7,7 +7,10 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     selected: [],
-    serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
+    serviceInfoMap: {
+      manual: constants.DEFAULT_SERVICE_INFO_URL,
+      web: constants.DEFAULT_SERVICE_INFO_URL,
+    },
     viewAccessInfo: "", //set endpoint when clicked on info button of a connection
     viewStreamInfo: {}, // set obj with endpoint and stream id when clicked on edit stream icon
     viewStreamInfoObj: {},
@@ -26,9 +29,6 @@ const store = new Vuex.Store({
     UPDATE_CHECKBOX: (state, selected) => {
       state.selected = selected;
     },
-    UPDATE_SERVICE_INFO: (state, serviceInfo) => {
-      state.serviceInfo = serviceInfo;
-    },
     SET_ACCESS_INFO: (state, endpoint) => {
       state.viewAccessInfo = endpoint;
     },
@@ -44,6 +44,9 @@ const store = new Vuex.Store({
     },
     UPDATE_SELECTED_FILTERS: (state, selectedFilters) => {
       state.selectedFilters = selectedFilters;
+    },
+    UPDATE_SERVICE_INFO_MAP: (state, serviceInfo) => {
+      state.serviceInfoMap = serviceInfo;
     },
     SET_TYPES: (state, loadTypes) => {
       state.types = loadTypes;
@@ -101,9 +104,6 @@ const store = new Vuex.Store({
     getSelected() {
       return this.state.selected;
     },
-    getServiceInfo() {
-      return this.state.serviceInfo;
-    },
     getAccessInfo() {
       return this.state.viewAccessInfo;
     },
@@ -139,6 +139,9 @@ const store = new Vuex.Store({
     },
     getModifiedSinceMap() {
       return this.state.modifiedSinceMap;
+    },
+    getServiceInfoMap() {
+      return this.state.serviceInfoMap;
     },
   },
 });

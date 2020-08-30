@@ -28,7 +28,7 @@
                     parentData="Login using Web Button"
                   ></PryvLabel>
                   <WebButton
-                    :key="serviceInfo"
+                    :key="serviceInfoMap.web"
                     @authenticated="updateSessionStorage"
                   ></WebButton>
                   <br />
@@ -45,7 +45,7 @@
                           href="https://github.com/pryv/lib-js#usage-of-pryvservice"
                           parentData="Service Info URL"
                         ></PryvLabel>
-                        <ServiceInfo id="Web based Login"></ServiceInfo>
+                        <ServiceInfo id="web_login"></ServiceInfo>
                       </b-card>
                     </b-collapse>
                   </div>
@@ -77,7 +77,7 @@
                           parentData="Service Info URL"
                         ></PryvLabel>
                         <ServiceInfo
-                          id="Username,Password based Login"
+                          id="manual_login"
                         ></ServiceInfo>
                       </b-card>
                     </b-collapse>
@@ -125,7 +125,7 @@ export default {
     PryvBtn,
   },
   computed: {
-    ...mapState(["serviceInfo"]),
+    ...mapState(["serviceInfoMap"]),
     connectionsMap: {
       get() {
         return this.$store.state.connectionsMap;
@@ -217,6 +217,8 @@ export default {
         cookie: cookie,
       });
       this.$sessionStorage.endpoint_arr = JSON.stringify(existing);
+      console.log("session endpoint array")
+      console.log(this.$sessionStorage.endpoint_arr )
       return true;
     },
     addConnectionToStore(connection) {
@@ -324,9 +326,6 @@ export default {
         connection,
         cookie
       );
-      if (sessionAdded === false && cookie === false) {
-        alert("Account already exists");
-      }
       if (sessionAdded === true) {
         await this.updateStore(connection)
           .then(

@@ -10,14 +10,10 @@
           @input="setServiceInfo"
         ></b-input>
       </b-input-group>
-      <PryvBtn
-        icon="arrow-clockwise"
-        @click="fetchServiceInfo"
-        content="Fetch Service Info"
-      ></PryvBtn>
+      <PryvBtn icon="arrow-clockwise" @click="fetchServiceInfo" content="Fetch Service Info" ></PryvBtn>
     </b-form>
     <div class="pt-2">
-      <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
+      <h6 class="text-left default-font">{{ ServiceInfoLabel }}</h6>
       <div class="service-info-container">
         <div class="text-left default-font">
           "register": {{ register }} <br />
@@ -42,19 +38,19 @@ export default {
   name: "APILogin",
   components: { PryvBtn },
   computed: {
-    serviceInfo: {
+    serviceInfoMap: {
       get() {
-        return this.$store.state.serviceInfo;
+        return this.$store.state.serviceInfoMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_SERVICE_INFO", value);
+        this.$store.commit("UPDATE_SERVICE_INFO_MAP", value);
       },
     },
   },
   data() {
     return {
-      serviceInfoUrl: constants.DEFAULT_SERVICE_INFO_URL,
-      ServiceInfo: "Service Info",
+      serviceInfoUrl : this.id === "manual_login" ? this.$store.state.serviceInfo["manual"]: this.$store.state.serviceInfo["web"],
+      ServiceInfoLabel: "Service Info",
       register: "",
       access: "",
       api: "",
@@ -72,21 +68,30 @@ export default {
     },
   },
   async created() {
-    let service = null;
-    let serviceInfoVar = null;
+    console.log("created service info")
+    console.log(this.id)
+    console.log(this.serviceInfoMap)
+    let service =null
+    let serviceInfoVar = null
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {
       this.serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
     }
-    try {
+    try{
       service = new this.$pryv.Service(this.serviceInfoUrl);
       serviceInfoVar = await service.info();
-    } catch (e) {
-      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL;
-      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl;
+    }
+    catch (e) {
+      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl
       service = new this.$pryv.Service(this.serviceInfoUrl);
       serviceInfoVar = await service.info();
-    } finally {
-      this.serviceInfo = this.serviceInfoUrl;
+    }
+    finally {
+      if(this.id === "manual_login")
+        this.serviceInfoMap.manual = this.serviceInfoUrl;
+      else if(this.id === "web_login")
+        this.serviceInfoMap.web = this.serviceInfoUrl;
+      //this.serviceInfo = this.serviceInfoUrl
       this.register = serviceInfoVar.register;
       this.access = serviceInfoVar.access;
       this.api = serviceInfoVar.api;
@@ -98,22 +103,30 @@ export default {
       this.assets = serviceInfoVar.assets;
     }
   },
-  methods: {
-    setServiceInfo(value) {
-      this.serviceInfoUrl = value;
+  methods:{
+    setServiceInfo(value)
+    {
+      this.serviceInfoUrl = value
     },
-    async fetchServiceInfo() {
+    async fetchServiceInfo(){
       let service = null;
       let serviceInfoVar = null;
-      try {
+      try{
         service = new this.$pryv.Service(this.serviceInfoUrl);
         serviceInfoVar = await service.info();
-      } catch (e) {
-        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL;
+      }
+      catch (e) {
+        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
         service = new this.$pryv.Service(this.serviceInfoUrl);
         serviceInfoVar = await service.info();
-      } finally {
-        this.serviceInfo = this.serviceInfoUrl;
+      }
+      finally {
+        if(this.id === "manual_login")
+          this.serviceInfoMap.manual = this.serviceInfoUrl;
+        else if(this.id === "web_login")
+          this.serviceInfoMap.web = this.serviceInfoUrl;
+        console.log("fianall service info")
+        console.log(this.serviceInfo)
         this.register = serviceInfoVar.register;
         this.access = serviceInfoVar.access;
         this.api = serviceInfoVar.api;
@@ -124,8 +137,9 @@ export default {
         this.eventTypes = serviceInfoVar.eventTypes;
         this.assets = serviceInfoVar.assets;
       }
-    },
-  },
+
+    }
+  }
 };
 </script>
 <style scoped>

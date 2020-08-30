@@ -54,11 +54,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["serviceInfo"]),
+    ...mapState(["serviceInfoMap"]),
   },
   methods: {
     async login() {
-      const serviceInfoUrl = this.serviceInfo;
+      const serviceInfoUrl = this.serviceInfoMap["manual"];
       const appId = "web-app-explorer";
       const service = new this.$pryv.Service(serviceInfoUrl);
       try {

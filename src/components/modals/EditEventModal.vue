@@ -97,13 +97,16 @@
             ></b-form-input>
           </b-form-group>
         </div>
-        <b-form-group label="Time" label-for="input-time">
+       <!-- <b-form-group label="Time" label-for="input-time">
           <b-form-input
             type="text"
             v-model="selectedTimeComputed"
             id="input-time"
             placeholder="Enter Time"
           ></b-form-input>
+        </b-form-group>-->
+        <b-form-group label="Time" label-for="input-time-pick">
+          <date-picker id="input-time" aria-placeholder="Enter Time" v-model="selectedTimeComputed" :config="options"></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -175,6 +178,12 @@ export default {
   },
   data() {
     return {
+      options: {
+        format: "MM/DD/YYYY h:mm:ss",
+        useCurrent: false,
+        showClear: true,
+        showClose: true,
+      },
       connectionLbl: "Select the Connection",
       selectedConnection: null,
       selectedEndpoint: null,
@@ -253,7 +262,7 @@ export default {
     },
     selectedTimeComputed: {
       get() {
-        return this.selectedTime ? this.selectedTime : this.data.time;
+        return this.selectedTime ? this.selectedTime : new Date(this.data.time*1000);
       },
       set(value) {
         this.selectedTime = value;
@@ -637,9 +646,11 @@ export default {
         if (typeof content === "object" && content !== null) {
           if (Object.keys(content).length > 0) obj["content"] = content;
         } else if (content !== null) obj["content"] = content;
-        if (this.data.time !== this.selectedTimeComputed) {
+        if (new Date(this.data.time*1000) !== this.selectedTimeComputed) {
           if (!(this.selectedTime === null || this.selectedTime === ""))
-            obj["time"] = +this.selectedTimeComputed;
+          {
+            obj["time"] = new Date(this.selectedTimeComputed).getTime()/1000;
+          }
         }
         if (this.data.duration !== this.selectedDurationComputed) {
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
@@ -711,7 +722,7 @@ export default {
             this.contentNames[0] = this.data.content;
         }
       }
-      this.selectedTime = this.data.time;
+      this.selectedTime = new Date(this.data.time*1000);
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;
       this.clientData = this.data.clientData;

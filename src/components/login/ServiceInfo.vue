@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      serviceInfoUrl : this.id === "manual_login" ? this.$store.state.serviceInfo["manual"]: this.$store.state.serviceInfo["web"],
+      serviceInfoUrl : this.id === "manual_login" ? this.$store.state.serviceInfoMap["manual"]: this.$store.state.serviceInfoMap["web"],
       ServiceInfoLabel: "Service Info",
       register: "",
       access: "",

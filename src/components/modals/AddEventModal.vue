@@ -126,13 +126,8 @@
             ></b-form-input>
           </b-form-group>
         </div>
-        <b-form-group label="Time" label-for="input-time">
-          <b-form-input
-            type="text"
-            v-model="selectedTime"
-            id="input-time"
-            placeholder="Enter Time"
-          ></b-form-input>
+        <b-form-group label="Time" label-for="input-time-pick">
+          <date-picker aria-placeholder="Enter Time" v-model="selectedTimeStamp" :config="options"></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -213,6 +208,13 @@ export default {
       typeState: null,
       contentStatesCheck: [],
       selectedTime: null,
+      selectedTimeStamp : new Date(),
+      options: {
+        format: "MM/DD/YYYY h:mm:ss",
+        useCurrent: false,
+        showClear: true,
+        showClose: true,
+      },
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
@@ -460,8 +462,8 @@ export default {
             type: this.selectedType.toLowerCase(),
             content: content,
           };
-          if (!(this.selectedTime === null || this.selectedTime === ""))
-            apiObj[0].params["time"] = +this.selectedTime;
+          if (!(this.selectedTimeStamp === null || this.selectedTimeStamp === ""))
+            apiObj[0].params["time"] = new Date(this.selectedTimeStamp).getTime()/1000;
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
             apiObj[0].params["duration"] = +this.selectedDuration;
           if (this.selectedDescription !== null)
@@ -493,7 +495,7 @@ export default {
       this.selectedStream = null;
       this.selectedType = null;
       this.selectedTypeObject = null;
-      this.selectedTime = null;
+      this.selectedTimeStamp = new Date();
       this.selectedDuration = null;
       this.selectedDescription = null;
       this.clientData = null;

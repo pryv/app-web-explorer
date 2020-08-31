@@ -48,8 +48,6 @@ export default {
   },
   methods: {
     loadStreams() {
-      console.log("load streams")
-      console.log(this.merge)
       const endpoint = this.viewStreamInfo.endpoint;
       const connection = this.connectionsMap[endpoint];
       if (connection)
@@ -95,7 +93,6 @@ export default {
       }
     },
     async addInitialEventsToStore(connection) {
-      console.log("add initial events to store")
       this.displayEvents = [];
       this.typesSet = new Set();
       const apiObj = GET_EVENTS_API.GET_EVENTS_API;

@@ -475,9 +475,9 @@ export default {
           if (this.clientData !== null)
             apiObj[0].params["clientData"] = JSON.parse(this.clientData);
           const result = await connection.api(apiObj);
-          console.log(apiObj[0].params["time"])
-          console.log("result add event")
-          console.log(result)
+          console.log(apiObj[0].params["time"]);
+          console.log("result add event");
+          console.log(result);
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
             this.resetModal();

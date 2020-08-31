@@ -241,6 +241,7 @@ export default {
     },
     async addInitialEventsToStore(connection) {
       this.displayEvents = [];
+      this.typesSet = new Set();
       const apiObj = GET_EVENTS_API.GET_EVENTS_API;
       apiObj[0].params = {};
       try {
@@ -250,6 +251,7 @@ export default {
           result[0].events.forEach(event => {
             this.forEachDisplayEvent(event);
           });
+          this.types = this.typesSet;
           this.eventsDisplayMap = [connection.apiEndpoint, this.displayEvents];
         }
       } catch (e) {
@@ -305,7 +307,6 @@ export default {
     forEachDisplayEvent(event) {
       this.displayEvents.push(event);
       this.typesSet.add(event.type);
-      this.types = this.typesSet;
     },
     async updateStore(connection) {
       this.showOverlay = true;

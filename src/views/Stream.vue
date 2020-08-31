@@ -126,6 +126,7 @@
       <LoadStreamsForConnection
         ref="reloadStreams"
         class="invisible"
+        :merge="merge"
       ></LoadStreamsForConnection>
     </div>
   </div>
@@ -349,7 +350,6 @@ export default {
         if (result && result[0] && result[0].streamDeletion) {
           this.$refs.reloadStreams.$el.click();
           this.$bvModal.hide(result[0].streamDeletion.id);
-          this.deleteEvents(endpoint, result[0].streamDeletion.id);
           this.backToEvents();
         }
         if (result && result[0] && result[0].error) {

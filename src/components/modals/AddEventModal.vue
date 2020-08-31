@@ -209,8 +209,7 @@ export default {
       streamState: null,
       typeState: null,
       contentStatesCheck: [],
-      selectedTime: null,
-      selectedTimeStamp: new Date(),
+      selectedTimeStamp: null,
       options: {
         format: "MM/DD/YYYY h:mm:ss",
         useCurrent: false,
@@ -476,6 +475,9 @@ export default {
           if (this.clientData !== null)
             apiObj[0].params["clientData"] = JSON.parse(this.clientData);
           const result = await connection.api(apiObj);
+          console.log(apiObj[0].params["time"])
+          console.log("result add event")
+          console.log(result)
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
             this.resetModal();
@@ -500,7 +502,7 @@ export default {
       this.selectedStream = null;
       this.selectedType = null;
       this.selectedTypeObject = null;
-      this.selectedTimeStamp = new Date();
+      this.selectedTimeStamp = null;
       this.selectedDuration = null;
       this.selectedDescription = null;
       this.clientData = null;

@@ -119,21 +119,27 @@ export default {
           result.meta.serverTime,
         ];
         this.typesSet = new Set();
-        const clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
+        let clonedDisplayEvents = Object.assign({}, this.eventsDisplayMap);
         this.events.forEach(event => {
-          if (
-            this.eventsMap[connection.apiEndpoint].filter(
-              e => e.id === event.id
-            ).length === 0
+          const editedIndexEventMap = this.eventsMap[this.data.apiEndpoint].findIndex(
+                  e => e.id === event.id
+          );
+          if (editedIndexEventMap <= -1
           ) {
             this.eventsMap[connection.apiEndpoint].push(event);
           }
-          if (
-            clonedDisplayEvents[connection.apiEndpoint].filter(
-              e => e.id === event.id
-            ).length === 0
+          else{
+            this.eventsMap[connection.apiEndpoint][editedIndexEventMap] = event;
+          }
+          const editedIndexEventDisplayMap = clonedDisplayEvents[this.data.apiEndpoint].findIndex(
+                  e => e.id === event.id
+          );
+          if (editedIndexEventDisplayMap <= -1
           ) {
             clonedDisplayEvents[connection.apiEndpoint].push(event);
+          }
+          else{
+            clonedDisplayEvents[connection.apiEndpoint][editedIndexEventMap] = event;
           }
         });
         this.eventsDisplayMap = clonedDisplayEvents;

@@ -275,8 +275,6 @@ export default {
         } else this.updateChild(clonedStreams, stream);
       } else if (constants.DELETE === action)
         this.updateChild(clonedStreams, stream);
-      console.log("stream obj");
-      console.log(stream);
       clonedStreams[endpoint][streamIndex] = stream;
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;

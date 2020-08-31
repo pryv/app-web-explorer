@@ -11,13 +11,13 @@
           <span v-b-toggle="`${endpoint}`">
             <b-icon
               icon="arrow-down-square-fill"
-              class="when-closed"
+              class="when-opened"
+              variant="danger"
               font-scale="1"
             ></b-icon>
             <b-icon
               icon="arrow-right-square-fill"
-              class="when-opened"
-              variant="danger"
+              class="when-closed"
               font-scale="1"
             ></b-icon>
           </span>

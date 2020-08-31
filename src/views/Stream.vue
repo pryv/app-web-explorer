@@ -261,7 +261,8 @@ export default {
       }
     },
     async addStreamsToStore(endpoint, stream, action) {
-      stream.children = this.viewStreamInfoObj.children;
+      if (this.viewStreamInfoObj.children)
+        stream.children = this.viewStreamInfoObj.children;
       const clonedStreams = Object.assign({}, this.streamsMap);
       const streamIndex = clonedStreams[this.viewStreamInfo.endpoint].findIndex(
         key => key.id === this.viewStreamInfo.id
@@ -274,6 +275,8 @@ export default {
         } else this.updateChild(clonedStreams, stream);
       } else if (constants.DELETE === action)
         this.updateChild(clonedStreams, stream);
+      console.log("stream obj");
+      console.log(stream);
       clonedStreams[endpoint][streamIndex] = stream;
       this.viewStreamInfoObj = stream;
       this.streamsMap = clonedStreams;
@@ -312,14 +315,12 @@ export default {
       const parentIndex = this.getParentIndex(clonedStreams, stream);
       const parentStream = this.getParent(clonedStreams, parentIndex);
       if (parentStream.children) {
-        parentStream.children
-          .filter(child => child.id === stream.id)
-          .map(
-            (child, id) =>
-              (clonedStreams[this.viewStreamInfo.endpoint][
-                parentIndex
-              ].children[id] = stream)
-          );
+        let childIndex = parentStream.children.findIndex(
+          child => child.id === stream.id
+        );
+        clonedStreams[this.viewStreamInfo.endpoint][parentIndex].children[
+          childIndex
+        ] = stream;
       }
     },
     getParentIndex(clonedStreams, stream) {
@@ -340,7 +341,6 @@ export default {
           id: this.viewStreamInfoObj.id,
           mergeEventsWithParent: this.merge === "accepted",
         };
-
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].stream) {
           const stream = result[0].stream;
@@ -351,6 +351,7 @@ export default {
         if (result && result[0] && result[0].streamDeletion) {
           this.$refs.reloadStreams.$el.click();
           this.$bvModal.hide(result[0].streamDeletion.id);
+          this.deleteEvents(endpoint, result[0].streamDeletion.id);
           this.backToEvents();
         }
         if (result && result[0] && result[0].error) {

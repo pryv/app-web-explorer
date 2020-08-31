@@ -5,10 +5,8 @@
     @hidden="resetModal"
     @ok="handleOk"
     @show="resetModal"
+    title="Add a new stream"
   >
-    <template v-slot:modal-header>
-      <h5>Add a new stream</h5>
-    </template>
     <template v-slot:default>
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group label="ID" label-for="input-id">

@@ -1,8 +1,5 @@
 <template>
-  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk">
-    <template v-slot:modal-header>
-      <h5>Edit event - {{ data.id }}</h5>
-    </template>
+  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk" title="Edit event">
     <template v-slot:default>
       <form :ref="data.id" @submit.stop.prevent="handleSubmit">
         <b-form-group label="Connection *" label-for="input-connection">

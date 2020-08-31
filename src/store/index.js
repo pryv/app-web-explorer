@@ -6,29 +6,25 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    selected: [],
-    serviceInfo: constants.DEFAULT_SERVICE_INFO_URL,
+    serviceInfoMap: {
+      manual: constants.DEFAULT_SERVICE_INFO_URL,
+      web: constants.DEFAULT_SERVICE_INFO_URL,
+    }, //seperate service info urls for web login and manual login
     viewAccessInfo: "", //set endpoint when clicked on info button of a connection
     viewStreamInfo: {}, // set obj with endpoint and stream id when clicked on edit stream icon
-    viewStreamInfoObj: {},
-    selectedStreams: {},
-    connectionsMap: {},
-    streamsMap: {},
-    accessInfoMap: {},
-    eventsMap: {},
-    selectedFilters: {},
-    types: new Set(),
-    typesAll: {},
-    modifiedSinceMap: {},
-    eventsDisplayMap: {},
+    viewStreamInfoObj: {}, //set streamObj when clicked on edit stream icon
+    selectedStreams: {}, //{apiendpoint : selectedStreamlist[]}
+    connectionsMap: {}, //apiendpoints
+    streamsMap: {}, //{apiendpoint : streamlist[]}
+    accessInfoMap: {}, //{apiendpoint : accessInfoList[]}
+    eventsMap: {}, //{apiendpoint : eventsList[]}
+    selectedFilters: {}, //{limit : 50}
+    types: new Set(), //all the types of display events
+    typesAll: {}, //all the types of events flat.json
+    modifiedSinceMap: {}, //{apiendpoint : modifiedTime}
+    eventsDisplayMap: {}, //{apiendpoint : onlyDisplayEventsList[]}
   },
   mutations: {
-    UPDATE_CHECKBOX: (state, selected) => {
-      state.selected = selected;
-    },
-    UPDATE_SERVICE_INFO: (state, serviceInfo) => {
-      state.serviceInfo = serviceInfo;
-    },
     SET_ACCESS_INFO: (state, endpoint) => {
       state.viewAccessInfo = endpoint;
     },
@@ -44,6 +40,9 @@ const store = new Vuex.Store({
     },
     UPDATE_SELECTED_FILTERS: (state, selectedFilters) => {
       state.selectedFilters = selectedFilters;
+    },
+    UPDATE_SERVICE_INFO_MAP: (state, serviceInfo) => {
+      state.serviceInfoMap = serviceInfo;
     },
     SET_TYPES: (state, loadTypes) => {
       state.types = loadTypes;
@@ -98,12 +97,6 @@ const store = new Vuex.Store({
     },
   },
   getters: {
-    getSelected() {
-      return this.state.selected;
-    },
-    getServiceInfo() {
-      return this.state.serviceInfo;
-    },
     getAccessInfo() {
       return this.state.viewAccessInfo;
     },
@@ -139,6 +132,9 @@ const store = new Vuex.Store({
     },
     getModifiedSinceMap() {
       return this.state.modifiedSinceMap;
+    },
+    getServiceInfoMap() {
+      return this.state.serviceInfoMap;
     },
   },
 });

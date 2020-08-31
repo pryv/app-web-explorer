@@ -1,8 +1,5 @@
 <template>
-  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk">
-    <template v-slot:modal-header>
-      <h5>Edit event - {{ data.id }}</h5>
-    </template>
+  <b-modal :id="data.id" @hidden="resetModal" @ok="handleOk" title="Edit event">
     <template v-slot:default>
       <form :ref="data.id" @submit.stop.prevent="handleSubmit">
         <b-form-group label="Connection *" label-for="input-connection">
@@ -97,13 +94,13 @@
             ></b-form-input>
           </b-form-group>
         </div>
-        <b-form-group label="Time" label-for="input-time">
-          <b-form-input
-            type="text"
-            v-model="selectedTimeComputed"
+        <b-form-group label="Time" label-for="input-time-pick">
+          <date-picker
             id="input-time"
-            placeholder="Enter Time"
-          ></b-form-input>
+            aria-placeholder="Enter Time"
+            v-model="selectedTimeComputed"
+            :config="options"
+          ></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -124,6 +121,7 @@
         <b-form-group label="Client Data" label-for="input-client-data">
           <v-jsoneditor
             v-model="selectedClientDataComputed"
+            ref="json"
             height="200px"
             :plus="false"
             :options="{
@@ -134,6 +132,9 @@
               search: false,
               navigationBar: false,
               mode: 'code',
+              onChangeText: function(jsonText) {
+                isJSON(jsonText);
+              },
             }"
           ></v-jsoneditor>
         </b-form-group>
@@ -171,6 +172,12 @@ export default {
   },
   data() {
     return {
+      options: {
+        format: "MM/DD/YYYY h:mm:ss",
+        useCurrent: false,
+        showClear: true,
+        showClose: true,
+      },
       connectionLbl: "Select the Connection",
       selectedConnection: null,
       selectedEndpoint: null,
@@ -186,6 +193,7 @@ export default {
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
+      okDisable: false,
     };
   },
   computed: {
@@ -215,7 +223,14 @@ export default {
     },
     selectedStreamComputed: {
       get() {
-        return this.selectedStream ? this.selectedStream : this.data.streamId;
+        if (!this.selectedStream) {
+          const streamObj = this.streamsMap[this.data.apiEndpoint].filter(
+            stream => stream.id === this.data.streamId
+          );
+          return `${streamObj[0].name} [${this.data.streamId}]`;
+        } else {
+          return this.selectedStream;
+        }
       },
       set(value) {
         this.selectedStream = value;
@@ -241,7 +256,9 @@ export default {
     },
     selectedTimeComputed: {
       get() {
-        return this.selectedTime ? this.selectedTime : this.data.time;
+        return this.selectedTime
+          ? this.selectedTime
+          : new Date(this.data.time * 1000);
       },
       set(value) {
         this.selectedTime = value;
@@ -290,7 +307,7 @@ export default {
           key => key === this.selectedEndpointComputed
         );
         return this.streamsMap[filteredObj].map(obj => ({
-          value: obj.id,
+          value: `${obj.name} [${obj.id}]`,
           text: filteredObj,
         }));
       }
@@ -342,7 +359,9 @@ export default {
           this.selectedTypeObjectComputed.attachmentRequired
         ) {
           const payload = {
-            label: "Attachment",
+            label: `Attachment ${
+              this.selectedTypeObjectComputed.required ? "*" : ""
+            }`,
             type: "attachment",
             val: null,
             required: !!this.selectedTypeObjectComputed.required,
@@ -364,12 +383,10 @@ export default {
           arr.push(payload);
         } else if (this.selectedTypeObjectComputed.type === "number") {
           const payload = {
-            label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
-            }`,
+            label: "Content *",
             type: this.selectedTypeObjectComputed.type,
             val: null,
-            required: !!this.selectedTypeObjectComputed.required,
+            required: true,
             labelFor: "input-content-Content",
             feedback: "Content is required",
           };
@@ -440,9 +457,7 @@ export default {
           arr.push(payload);
         } else if (this.selectedTypeObjectComputed.type === "number") {
           const payload = {
-            label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
-            }`,
+            label: "Content *",
             type: this.selectedTypeObjectComputed.type,
             val: this.data.content.toString(),
             required: true,
@@ -497,6 +512,17 @@ export default {
     },
   },
   methods: {
+    isJSON: function(text) {
+      try {
+        JSON.parse(text);
+        this.okDisable = false;
+      } catch (e) {
+        this.okDisable = true;
+      }
+      if (text === "") {
+        this.okDisable = false;
+      }
+    },
     getRequired(key) {
       return !!(
         this.selectedTypeObjectComputed.required &&
@@ -534,8 +560,17 @@ export default {
     },
     async editEvent() {
       const obj = {};
-      if (this.data.streamId !== this.selectedStreamComputed)
-        obj["streamId"] = this.selectedStreamComputed;
+      if (
+        this.data.streamId !==
+        this.selectedStreamComputed
+          .split(" ")
+          .slice(-1)[0]
+          .replace(/[[\]]/g, "")
+      )
+        obj["streamId"] = this.selectedStreamComputed
+          .split(" ")
+          .slice(-1)[0]
+          .replace(/[[\]]/g, "");
       if (this.data.type !== this.selectedTypeComputed) {
         obj["type"] = this.selectedTypeComputed;
         let content = null;
@@ -552,21 +587,18 @@ export default {
             if (obj.type === "number") {
               let val = +obj.val;
               if (!isNaN(val)) content[obj.labelKey] = val;
-            } else{
-              if(obj.val)
-                content[obj.labelKey] = obj.val
+            } else {
+              if (obj.val) content[obj.labelKey] = obj.val;
             }
           });
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
+        } else if (this.selectedTypeObjectComputed.type === "null") {
+          content = null;
         }
-        if(typeof content === "object")
-        {
-          if( Object.keys(content).length > 0 )
-            obj["content"] = content;
-        }
-        else if(content !== null)
-            obj["content"] = content;
+        if (typeof content === "object" && content !== null) {
+          if (Object.keys(content).length > 0) obj["content"] = content;
+        } else if (content !== null) obj["content"] = content;
       } else {
         let content = null;
         if (this.selectedTypeObjectComputed.type === "string") {
@@ -596,28 +628,24 @@ export default {
                 let val = +obj.val;
                 if (!isNaN(val)) content[obj.labelKey] = val;
               } else {
-                if(obj.val)
-                  content[obj.labelKey] = obj.val
+                if (obj.val) content[obj.labelKey] = obj.val;
               }
             });
           }
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
+        } else if (this.selectedTypeObjectComputed.type === "null") {
+          content = null;
         }
-        if(typeof content === "object")
-        {
-          if( Object.keys(content).length > 0 )
-            obj["content"] = content;
+        if (typeof content === "object" && content !== null) {
+          if (Object.keys(content).length > 0) obj["content"] = content;
+        } else if (content !== null) obj["content"] = content;
+        if (new Date(this.data.time * 1000) !== this.selectedTimeComputed) {
+          if (!(this.selectedTime === null || this.selectedTime === "")) {
+            obj["time"] = new Date(this.selectedTimeComputed).getTime() / 1000;
+          }
         }
-        else if(content !== null)
-          obj["content"] = content;
-        if (this.data.time !== this.selectedTimeComputed)
-        {
-          if (!(this.selectedTime === null || this.selectedTime === ""))
-            obj["time"] = +this.selectedTimeComputed;
-        }
-        if (this.data.duration !== this.selectedDurationComputed)
-        {
+        if (this.data.duration !== this.selectedDurationComputed) {
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
             obj["duration"] = +this.selectedDurationComputed;
         }
@@ -668,7 +696,10 @@ export default {
     resetModal() {
       this.selectedEndpoint = this.data.apiEndpoint;
       this.selectedConnection = this.accessInfoMap[this.data.apiEndpoint].name;
-      this.selectedStream = this.data.streamId;
+      const streamObj = this.streamsMap[this.data.apiEndpoint].filter(
+        stream => stream.id === this.data.streamId
+      );
+      this.selectedStream = `${streamObj[0].name} [${this.data.streamId}]`;
       this.selectedType = this.data.type;
       this.selectedTypeObject = this.typesAll[this.selectedType];
       if (this.data.type === this.selectedType) {
@@ -684,7 +715,7 @@ export default {
             this.contentNames[0] = this.data.content;
         }
       }
-      this.selectedTime = this.data.time;
+      this.selectedTime = new Date(this.data.time * 1000);
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;
       this.clientData = this.data.clientData;

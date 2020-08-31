@@ -5,13 +5,11 @@
     @hidden="resetModal"
     @ok="handleOk"
     @show="resetModal"
+    title="Add a new stream"
   >
-    <template v-slot:modal-header>
-      <h5>Add a new stream</h5>
-    </template>
     <template v-slot:default>
       <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group label="ID" label-for="isnput-id">
+        <b-form-group label="ID" label-for="input-id">
           <b-form-input
             type="text"
             v-model="selectedId"
@@ -121,13 +119,45 @@ export default {
       const filteredObj = Object.keys(this.streamsMap).filter(
         key => key === this.viewAccessInfo
       );
-      return this.streamsMap[filteredObj].map(obj => ({
-        value: `${obj.name} [${obj.id}]`,
-        text: filteredObj,
+      let newStreamsMap = {};
+      newStreamsMap[filteredObj] = [];
+      this.streamsMap[filteredObj].forEach(stream => {
+        let parentStreams = [];
+        this.pushParentName(stream, parentStreams, filteredObj, newStreamsMap);
+        stream.parents = parentStreams;
+        let icons = [];
+        for (let i = 0; i < parentStreams.length; i++) {
+          if (i === 1 && parentStreams.length >= 2) icons.push("\u25B8");
+          else if (i > 1) icons.push("\u25FE");
+        }
+        if (icons.length > 0) stream.icons = icons.join(" ");
+        else {
+          stream.icons = "";
+        }
+      });
+      return this.streamsMap[filteredObj].map(stream => ({
+        value: `${stream.icons} ${stream.name} [${stream.id}]`,
+        text: stream.parents.join("\u25B8"),
       }));
     },
   },
   methods: {
+    pushParentName(stream, parentStreams, filteredObj, newStreamsMap) {
+      if (stream.parentId) {
+        var parentStream = this.streamsMap[filteredObj].filter(
+          parent => stream.parentId === parent.id
+        );
+        parentStreams.unshift(parentStream[0].name);
+        this.pushParentName(
+          parentStream[0],
+          parentStreams,
+          filteredObj,
+          newStreamsMap
+        );
+      } else {
+        newStreamsMap[filteredObj].push(stream);
+      }
+    },
     isJSON: function(text) {
       try {
         JSON.parse(text);
@@ -143,8 +173,7 @@ export default {
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
-      if (this.selectedName === null || this.selectedName === "")
-        this.nameState = valid;
+      if (!this.selectedName) this.nameState = valid;
       return valid;
     },
     handleOk(bvModalEvt) {
@@ -171,7 +200,8 @@ export default {
         if (this.selectedId !== null) apiObj[0].params["id"] = this.selectedId;
         if (this.selectedParentId !== null) {
           apiObj[0].params["parentId"] = this.selectedParentId
-            .split(" ")[1]
+            .split(" ")
+            .slice(-1)[0]
             .replace(/[[\]]/g, "");
         }
         if (this.clientData !== null)
@@ -188,7 +218,7 @@ export default {
       }
     },
     async addStreamsToStore(stream) {
-      let clonedStreams = JSON.parse(JSON.stringify(this.streamsMap));
+      const clonedStreams = Object.assign({}, this.streamsMap);
       clonedStreams[this.viewAccessInfo].push(stream);
       this.addChild(clonedStreams, stream);
       this.streamsMap = clonedStreams;
@@ -199,9 +229,9 @@ export default {
       if (stream.parentId === null) return;
       const parentIndex = this.getParentIndex(clonedStreams, stream);
       const parentStream = this.getParent(clonedStreams, parentIndex);
-      if (parentStream.children) {
-        clonedStreams[this.viewAccessInfo][parentIndex].children.push(stream);
-      }
+      if (!parentStream.children)
+        clonedStreams[this.viewAccessInfo][parentIndex].children = [];
+      clonedStreams[this.viewAccessInfo][parentIndex].children.push(stream);
     },
     getParent(clonedStreams, parentIndex) {
       if (parentIndex >= 0)

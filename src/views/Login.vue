@@ -27,13 +27,16 @@
                     href="https://github.com/pryv/lib-js#within-a-webpage-with-a-login-button"
                     parentData="Login using Web Button"
                   ></PryvLabel>
-                  <WebButton @authenticated="updateSessionStorage"></WebButton>
+                  <WebButton
+                    :key="serviceInfoMap.web"
+                    @authenticated="updateSessionStorage"
+                  ></WebButton>
                   <br />
                   <div class="text-left">
                     <b-button
                       class="pryv-btn-collapse"
                       v-b-toggle.collapse-1
-                      variant="primary"
+                      variant="secondary"
                       >View Service Info
                     </b-button>
                     <b-collapse id="collapse-1" class="mt-2">
@@ -42,7 +45,7 @@
                           href="https://github.com/pryv/lib-js#usage-of-pryvservice"
                           parentData="Service Info URL"
                         ></PryvLabel>
-                        <ServiceInfo id="Web based Login"></ServiceInfo>
+                        <ServiceInfo id="web_login"></ServiceInfo>
                       </b-card>
                     </b-collapse>
                   </div>
@@ -64,7 +67,7 @@
                     <b-button
                       class="pryv-btn-collapse"
                       v-b-toggle="'collapse-2'"
-                      variant="primary"
+                      variant="secondary"
                       >View Service Info
                     </b-button>
                     <b-collapse id="collapse-2" class="mt-2">
@@ -74,7 +77,7 @@
                           parentData="Service Info URL"
                         ></PryvLabel>
                         <ServiceInfo
-                          id="Username,Password based Login"
+                          id="manual_login"
                         ></ServiceInfo>
                       </b-card>
                     </b-collapse>
@@ -111,6 +114,7 @@ import ServiceInfo from "../components/login/ServiceInfo";
 import GET_STREAMS_API from "../utilities/api";
 import ACCESS_INFO_API from "../utilities/api";
 import GET_EVENTS_API from "../utilities/api";
+import { mapState } from "vuex";
 export default {
   components: {
     ServiceInfo,
@@ -121,6 +125,7 @@ export default {
     PryvBtn,
   },
   computed: {
+    ...mapState(["serviceInfoMap"]),
     connectionsMap: {
       get() {
         return this.$store.state.connectionsMap;
@@ -298,7 +303,7 @@ export default {
       this.events.push(event);
     },
     forEachDisplayEvent(event) {
-      this.displayEvents.unshift(event);
+      this.displayEvents.push(event);
       this.typesSet.add(event.type);
       this.types = this.typesSet;
     },
@@ -319,9 +324,6 @@ export default {
         connection,
         cookie
       );
-      if (sessionAdded === false && cookie === false) {
-        alert("Account already exists");
-      }
       if (sessionAdded === true) {
         await this.updateStore(connection)
           .then(

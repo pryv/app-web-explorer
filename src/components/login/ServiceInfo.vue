@@ -2,16 +2,18 @@
   <div>
     <b-form>
       <b-input-group class="mb-4 mr-sm-4 mb-sm-0">
-        <PryvInput
+        <b-input
           :id="id"
           placeholder="Enter Service Endpoint"
-          v-model="this.serviceInfo"
-          disabled
-        ></PryvInput>
+          ref="serviceInfo"
+          :value="serviceInfoUrl"
+          @input="setServiceInfo"
+        ></b-input>
       </b-input-group>
+      <PryvBtn icon="arrow-clockwise" @click="fetchServiceInfo" content="Fetch Service Info" ></PryvBtn>
     </b-form>
     <div class="pt-2">
-      <h6 class="text-left default-font">{{ ServiceInfo }}</h6>
+      <h6 class="text-left default-font">{{ ServiceInfoLabel }}</h6>
       <div class="service-info-container">
         <div class="text-left default-font">
           "register": {{ register }} <br />
@@ -30,25 +32,25 @@
 </template>
 
 <script>
-import PryvInput from "../shared/PryvInput";
+import PryvBtn from "../shared/PryvBtn";
 import { constants } from "../../utilities/constants";
 export default {
   name: "APILogin",
-  components: { PryvInput },
+  components: { PryvBtn },
   computed: {
-    serviceInfo: {
+    serviceInfoMap: {
       get() {
-        return this.$store.state.serviceInfo;
+        return this.$store.state.serviceInfoMap;
       },
       set(value) {
-        this.$store.commit("UPDATE_SERVICE_INFO", value);
+        this.$store.commit("UPDATE_SERVICE_INFO_MAP", value);
       },
     },
   },
   data() {
     return {
-      endpoint: constants.DEFAULT_SERVICE_INFO_URL,
-      ServiceInfo: "Service Info",
+      serviceInfoUrl : this.id === "manual_login" ? this.$store.state.serviceInfoMap["manual"]: this.$store.state.serviceInfoMap["web"],
+      ServiceInfoLabel: "Service Info",
       register: "",
       access: "",
       api: "",
@@ -66,22 +68,78 @@ export default {
     },
   },
   async created() {
+    console.log("created service info")
+    console.log(this.id)
+    console.log(this.serviceInfoMap)
+    let service =null
+    let serviceInfoVar = null
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {
-      const serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
-      if (serviceInfoUrl) this.serviceInfo = serviceInfoUrl;
+      this.serviceInfoUrl = this.$route.query.pryvServiceInfoUrl;
     }
-    const service = new this.$pryv.Service(this.serviceInfo);
-    const serviceInfoVar = await service.info();
-    this.register = serviceInfoVar.register;
-    this.access = serviceInfoVar.access;
-    this.api = serviceInfoVar.api;
-    this.name = serviceInfoVar.name;
-    this.home = serviceInfoVar.home;
-    this.support = serviceInfoVar.support;
-    this.terms = serviceInfoVar.terms;
-    this.eventTypes = serviceInfoVar.eventTypes;
-    this.assets = serviceInfoVar.assets;
+    try{
+      service = new this.$pryv.Service(this.serviceInfoUrl);
+      serviceInfoVar = await service.info();
+    }
+    catch (e) {
+      this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+      this.$route.query.pryvServiceInfoUrl = this.serviceInfoUrl
+      service = new this.$pryv.Service(this.serviceInfoUrl);
+      serviceInfoVar = await service.info();
+    }
+    finally {
+      if(this.id === "manual_login")
+        this.serviceInfoMap.manual = this.serviceInfoUrl;
+      else if(this.id === "web_login")
+        this.serviceInfoMap.web = this.serviceInfoUrl;
+      //this.serviceInfo = this.serviceInfoUrl
+      this.register = serviceInfoVar.register;
+      this.access = serviceInfoVar.access;
+      this.api = serviceInfoVar.api;
+      this.name = serviceInfoVar.name;
+      this.home = serviceInfoVar.home;
+      this.support = serviceInfoVar.support;
+      this.terms = serviceInfoVar.terms;
+      this.eventTypes = serviceInfoVar.eventTypes;
+      this.assets = serviceInfoVar.assets;
+    }
   },
+  methods:{
+    setServiceInfo(value)
+    {
+      this.serviceInfoUrl = value
+    },
+    async fetchServiceInfo(){
+      let service = null;
+      let serviceInfoVar = null;
+      try{
+        service = new this.$pryv.Service(this.serviceInfoUrl);
+        serviceInfoVar = await service.info();
+      }
+      catch (e) {
+        this.serviceInfoUrl = constants.DEFAULT_SERVICE_INFO_URL
+        service = new this.$pryv.Service(this.serviceInfoUrl);
+        serviceInfoVar = await service.info();
+      }
+      finally {
+        if(this.id === "manual_login")
+          this.serviceInfoMap.manual = this.serviceInfoUrl;
+        else if(this.id === "web_login")
+          this.serviceInfoMap.web = this.serviceInfoUrl;
+        console.log("fianall service info")
+        console.log(this.serviceInfo)
+        this.register = serviceInfoVar.register;
+        this.access = serviceInfoVar.access;
+        this.api = serviceInfoVar.api;
+        this.name = serviceInfoVar.name;
+        this.home = serviceInfoVar.home;
+        this.support = serviceInfoVar.support;
+        this.terms = serviceInfoVar.terms;
+        this.eventTypes = serviceInfoVar.eventTypes;
+        this.assets = serviceInfoVar.assets;
+      }
+
+    }
+  }
 };
 </script>
 <style scoped>

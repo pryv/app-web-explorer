@@ -5,10 +5,8 @@
     @hidden="resetModal"
     @ok="handleOk"
     @show="resetModal"
+    title="Add a new event"
   >
-    <template v-slot:modal-header>
-      <h5>Add a new event</h5>
-    </template>
     <template v-slot:default>
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group
@@ -126,13 +124,12 @@
             ></b-form-input>
           </b-form-group>
         </div>
-        <b-form-group label="Time" label-for="input-time">
-          <b-form-input
-            type="text"
-            v-model="selectedTime"
-            id="input-time"
-            placeholder="Enter Time"
-          ></b-form-input>
+        <b-form-group label="Time" label-for="input-time-pick">
+          <date-picker
+            aria-placeholder="Enter Time"
+            v-model="selectedTimeStamp"
+            :config="options"
+          ></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -213,10 +210,17 @@ export default {
       typeState: null,
       contentStatesCheck: [],
       selectedTime: null,
+      selectedTimeStamp: new Date(),
+      options: {
+        format: "MM/DD/YYYY h:mm:ss",
+        useCurrent: false,
+        showClear: true,
+        showClose: true,
+      },
       selectedDuration: null,
       selectedDescription: null,
       clientData: null,
-      okDisable:false
+      okDisable: false,
     };
   },
   computed: {
@@ -433,7 +437,8 @@ export default {
               {
                 type: this.selectedType.toLowerCase(),
                 streamId: this.selectedStream
-                  .split(" ")[1]
+                  .split(" ")
+                  .slice(-1)[0]
                   .replace(/[[\]]/g, ""),
               },
               formData
@@ -452,18 +457,24 @@ export default {
             );
         } else {
           apiObj[0].params = {
-            streamId: this.selectedStream.split(" ")[1].replace(/[[\]]/g, ""),
+            streamId: this.selectedStream
+              .split(" ")
+              .slice(-1)[0]
+              .replace(/[[\]]/g, ""),
             type: this.selectedType.toLowerCase(),
             content: content,
           };
-          if (!(this.selectedTime === null || this.selectedTime === ""))
-            apiObj[0].params["time"] = +this.selectedTime;
+          if (
+            !(this.selectedTimeStamp === null || this.selectedTimeStamp === "")
+          )
+            apiObj[0].params["time"] =
+              new Date(this.selectedTimeStamp).getTime() / 1000;
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
             apiObj[0].params["duration"] = +this.selectedDuration;
           if (this.selectedDescription !== null)
             apiObj[0].params["description"] = this.selectedDescription;
           if (this.clientData !== null)
-            apiObj[0].params["clientData"] = JSON.parse(this.clientData);;
+            apiObj[0].params["clientData"] = JSON.parse(this.clientData);
           const result = await connection.api(apiObj);
           if (result && result[0] && result[0].error) {
             alert(result[0].error.id + " - " + result[0].error.message);
@@ -489,10 +500,10 @@ export default {
       this.selectedStream = null;
       this.selectedType = null;
       this.selectedTypeObject = null;
-      this.selectedTime = null;
+      this.selectedTimeStamp = new Date();
       this.selectedDuration = null;
       this.selectedDescription = null;
-      this.clientData = null
+      this.clientData = null;
       //reset states
       this.connectionState = null;
       this.streamState = null;

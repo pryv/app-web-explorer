@@ -1,5 +1,5 @@
 <template>
-  <div class="max-width">
+  <div class="sidebar">
     <b-row align-v="center" class="pt-2">
       <b-img
         alt="Responsive image"
@@ -23,8 +23,8 @@ export default {
 };
 </script>
 <style>
-  .max-width{
-    max-width: 100%;
-    min-width: 100%;
-  }
+.sidebar {
+  max-width: 100%;
+  min-width: 100%;
+}
 </style>

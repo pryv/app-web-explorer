@@ -7,7 +7,7 @@
 }
 
 .default-font {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif, FontAwesome;
   font-size: 12px;
   line-height: 20px;
 }
@@ -15,7 +15,6 @@
 .text-danger {
   color: #bd1727 !important;
 }
-
 
 .w-80 {
   width: 80%;

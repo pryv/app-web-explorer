@@ -29,11 +29,12 @@
             @change="checkBoxClicked($event, endpoint, endpoint)"
             class="font-weight-bold main text-left access_font"
             @click.stop
-            >{{ accessInfoName }}
+          >
+            {{ accessInfoName }}
           </b-form-checkbox>
         </b-col>
         <b-col cols="2">
-          <span :endpoint="endpoint" @click="viewAccessInfoFunc(endpoint)">
+          <span :endpoint="endpoint" @click="setAccessInfo(endpoint)">
             <b-icon-info-square-fill variant="secondary" class="info-btn">
             </b-icon-info-square-fill
           ></span>
@@ -43,7 +44,7 @@
             <b-card>
               <RecursiveCheckbox
                 :endpoint="endpoint"
-                @viewStreamInfo="viewStreamInfoFunc"
+                @viewStreamInfo="setStreamInfo"
                 @checkBoxClicked="$emit('checkBoxClicked', $event)"
                 :displayStreams="displayStreams"
               ></RecursiveCheckbox>
@@ -131,13 +132,13 @@ export default {
       };
       this.$emit("checkBoxClicked", payload);
     },
-    viewAccessInfoFunc(endpoint) {
+    setAccessInfo(endpoint) {
       if (this.currentRouteName !== "Info") {
         this.$router.push("info");
       }
       this.viewAccessInfo = endpoint;
     },
-    viewStreamInfoFunc(payload) {
+    setStreamInfo(payload) {
       let streamId = payload.streamId;
       let endpoint = payload.endpoint;
       const obj = {

@@ -127,7 +127,11 @@
           </b-form-group>
         </div>
         <b-form-group label="Time" label-for="input-time-pick">
-          <date-picker aria-placeholder="Enter Time" v-model="selectedTimeStamp" :config="options"></date-picker>
+          <date-picker
+            aria-placeholder="Enter Time"
+            v-model="selectedTimeStamp"
+            :config="options"
+          ></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -208,7 +212,7 @@ export default {
       typeState: null,
       contentStatesCheck: [],
       selectedTime: null,
-      selectedTimeStamp : new Date(),
+      selectedTimeStamp: new Date(),
       options: {
         format: "MM/DD/YYYY h:mm:ss",
         useCurrent: false,
@@ -462,8 +466,11 @@ export default {
             type: this.selectedType.toLowerCase(),
             content: content,
           };
-          if (!(this.selectedTimeStamp === null || this.selectedTimeStamp === ""))
-            apiObj[0].params["time"] = new Date(this.selectedTimeStamp).getTime()/1000;
+          if (
+            !(this.selectedTimeStamp === null || this.selectedTimeStamp === "")
+          )
+            apiObj[0].params["time"] =
+              new Date(this.selectedTimeStamp).getTime() / 1000;
           if (!(this.selectedDuration === null || this.selectedDuration === ""))
             apiObj[0].params["duration"] = +this.selectedDuration;
           if (this.selectedDescription !== null)

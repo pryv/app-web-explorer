@@ -97,14 +97,6 @@
             ></b-form-input>
           </b-form-group>
         </div>
-        <!-- <b-form-group label="Time" label-for="input-time">
-          <b-form-input
-            type="text"
-            v-model="selectedTimeComputed"
-            id="input-time"
-            placeholder="Enter Time"
-          ></b-form-input>
-        </b-form-group>-->
         <b-form-group label="Time" label-for="input-time-pick">
           <date-picker
             id="input-time"

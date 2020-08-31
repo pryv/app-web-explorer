@@ -158,7 +158,7 @@ export default {
     },
     createPayload(accessInfo, stream, key) {
       const payload = {
-        accessInfoName: accessInfo.name,
+        accessUserName: accessInfo.user.username,
         accessInfoType: accessInfo.type,
         streamId: stream.id,
         streamName: stream.name,

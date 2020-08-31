@@ -97,7 +97,7 @@
             ></b-form-input>
           </b-form-group>
         </div>
-       <!-- <b-form-group label="Time" label-for="input-time">
+        <!-- <b-form-group label="Time" label-for="input-time">
           <b-form-input
             type="text"
             v-model="selectedTimeComputed"
@@ -106,7 +106,12 @@
           ></b-form-input>
         </b-form-group>-->
         <b-form-group label="Time" label-for="input-time-pick">
-          <date-picker id="input-time" aria-placeholder="Enter Time" v-model="selectedTimeComputed" :config="options"></date-picker>
+          <date-picker
+            id="input-time"
+            aria-placeholder="Enter Time"
+            v-model="selectedTimeComputed"
+            :config="options"
+          ></date-picker>
         </b-form-group>
         <b-form-group label="Duration" label-for="input-duration">
           <b-form-input
@@ -262,7 +267,9 @@ export default {
     },
     selectedTimeComputed: {
       get() {
-        return this.selectedTime ? this.selectedTime : new Date(this.data.time*1000);
+        return this.selectedTime
+          ? this.selectedTime
+          : new Date(this.data.time * 1000);
       },
       set(value) {
         this.selectedTime = value;
@@ -363,7 +370,9 @@ export default {
           this.selectedTypeObjectComputed.attachmentRequired
         ) {
           const payload = {
-            label: "Attachment",
+            label: `Attachment ${
+              this.selectedTypeObjectComputed.required ? "*" : ""
+            }`,
             type: "attachment",
             val: null,
             required: !!this.selectedTypeObjectComputed.required,
@@ -385,12 +394,10 @@ export default {
           arr.push(payload);
         } else if (this.selectedTypeObjectComputed.type === "number") {
           const payload = {
-            label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
-            }`,
+            label: "Content *",
             type: this.selectedTypeObjectComputed.type,
             val: null,
-            required: !!this.selectedTypeObjectComputed.required,
+            required: true,
             labelFor: "input-content-Content",
             feedback: "Content is required",
           };
@@ -461,9 +468,7 @@ export default {
           arr.push(payload);
         } else if (this.selectedTypeObjectComputed.type === "number") {
           const payload = {
-            label: `Content ${
-              this.selectedTypeObjectComputed.required ? "*" : ""
-            }`,
+            label: "Content *",
             type: this.selectedTypeObjectComputed.type,
             val: this.data.content.toString(),
             required: true,
@@ -599,7 +604,7 @@ export default {
           });
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
-        } else if (this.selectedTypeObjectComputed.type === null) {
+        } else if (this.selectedTypeObjectComputed.type === "null") {
           content = null;
         }
         if (typeof content === "object" && content !== null) {
@@ -640,16 +645,15 @@ export default {
           }
         } else if (this.selectedTypeObjectComputed.type === "attachment") {
           content = null;
-        } else if (this.selectedTypeObjectComputed.type === null) {
+        } else if (this.selectedTypeObjectComputed.type === "null") {
           content = null;
         }
         if (typeof content === "object" && content !== null) {
           if (Object.keys(content).length > 0) obj["content"] = content;
         } else if (content !== null) obj["content"] = content;
-        if (new Date(this.data.time*1000) !== this.selectedTimeComputed) {
-          if (!(this.selectedTime === null || this.selectedTime === ""))
-          {
-            obj["time"] = new Date(this.selectedTimeComputed).getTime()/1000;
+        if (new Date(this.data.time * 1000) !== this.selectedTimeComputed) {
+          if (!(this.selectedTime === null || this.selectedTime === "")) {
+            obj["time"] = new Date(this.selectedTimeComputed).getTime() / 1000;
           }
         }
         if (this.data.duration !== this.selectedDurationComputed) {
@@ -722,7 +726,7 @@ export default {
             this.contentNames[0] = this.data.content;
         }
       }
-      this.selectedTime = new Date(this.data.time*1000);
+      this.selectedTime = new Date(this.data.time * 1000);
       this.selectedDuration = this.data.duration;
       this.selectedDescription = this.data.description;
       this.clientData = this.data.clientData;

@@ -213,15 +213,30 @@ export default {
       const obj = {};
       Object.keys(this.viewStreamInfoObj).forEach(k => {
         if (k in this.computedStreamInfo)
-          if (this.viewStreamInfoObj[k] !== this.computedStreamInfo[k])
-            if (k !== "children") obj[k] = this.computedStreamInfo[k];
+          if (this.viewStreamInfoObj[k] !== this.computedStreamInfo[k]) {
+            if (
+              typeof this.viewStreamInfoObj[k] === "object" &&
+              k !== "children"
+            ) {
+              if (
+                JSON.stringify(this.viewStreamInfoObj[k]) !==
+                JSON.stringify(this.computedStreamInfo[k])
+              ) {
+                obj[k] = this.computedStreamInfo[k];
+              }
+            } else {
+              if (k !== "children") obj[k] = this.computedStreamInfo[k];
+            }
+          }
       });
       return obj;
     },
     async save() {
       const updateObj = this.getUpdatedProps();
       if (Object.keys(updateObj).length === 0) {
-        alert("No changes for the existing stream is detected");
+        alert(
+          "No changes for the existing stream is detected. Note : Child streams are not editable"
+        );
         return;
       }
       const endpoint = this.viewStreamInfo.endpoint;

@@ -217,8 +217,6 @@ export default {
         cookie: cookie,
       });
       this.$sessionStorage.endpoint_arr = JSON.stringify(existing);
-      console.log("session endpoint array")
-      console.log(this.$sessionStorage.endpoint_arr )
       return true;
     },
     addConnectionToStore(connection) {

@@ -1,5 +1,6 @@
-# app-web-skeleton
-VueJS skeleton app for bootstrapping Pryv.io web applications.
+# app-web-explorer
+
+VueJS web app for browsing Pryv.io data.
 
 _Prerequisites:_ 
 - Node v12+

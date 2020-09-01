@@ -30,7 +30,7 @@
             class="font-weight-bold main text-left access_font"
             @click.stop
           >
-            {{ accessInfoName }}
+            {{ accessUserName }} <br />[{{ endpoint }}]
           </b-form-checkbox>
         </b-col>
         <b-col cols="2">
@@ -75,9 +75,9 @@ export default {
   },
   computed: {
     ...mapState(["streamsMap"]),
-    accessInfoName() {
+    accessUserName() {
       if (this.streamObjectArray && this.streamObjectArray[0]) {
-        return this.streamObjectArray[0].accessInfoName;
+        return this.streamObjectArray[0].accessUserName;
       } else return "";
     },
     displayStreams: function() {

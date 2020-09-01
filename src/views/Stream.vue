@@ -126,6 +126,7 @@
       <LoadStreamsForConnection
         ref="reloadStreams"
         class="invisible"
+        :merge="merge"
       ></LoadStreamsForConnection>
     </div>
   </div>
@@ -261,7 +262,8 @@ export default {
       }
     },
     async addStreamsToStore(endpoint, stream, action) {
-      stream.children = this.viewStreamInfoObj.children;
+      if (this.viewStreamInfoObj.children)
+        stream.children = this.viewStreamInfoObj.children;
       const clonedStreams = Object.assign({}, this.streamsMap);
       const streamIndex = clonedStreams[this.viewStreamInfo.endpoint].findIndex(
         key => key.id === this.viewStreamInfo.id
@@ -312,14 +314,12 @@ export default {
       const parentIndex = this.getParentIndex(clonedStreams, stream);
       const parentStream = this.getParent(clonedStreams, parentIndex);
       if (parentStream.children) {
-        parentStream.children
-          .filter(child => child.id === stream.id)
-          .map(
-            (child, id) =>
-              (clonedStreams[this.viewStreamInfo.endpoint][
-                parentIndex
-              ].children[id] = stream)
-          );
+        let childIndex = parentStream.children.findIndex(
+          child => child.id === stream.id
+        );
+        clonedStreams[this.viewStreamInfo.endpoint][parentIndex].children[
+          childIndex
+        ] = stream;
       }
     },
     getParentIndex(clonedStreams, stream) {
@@ -340,7 +340,6 @@ export default {
           id: this.viewStreamInfoObj.id,
           mergeEventsWithParent: this.merge === "accepted",
         };
-
         const result = await connection.api(apiObj);
         if (result && result[0] && result[0].stream) {
           const stream = result[0].stream;

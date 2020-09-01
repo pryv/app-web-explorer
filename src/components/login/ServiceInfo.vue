@@ -68,9 +68,6 @@ export default {
     },
   },
   async created() {
-    console.log("created service info")
-    console.log(this.id)
-    console.log(this.serviceInfoMap)
     let service =null
     let serviceInfoVar = null
     if (this.$route.query && this.$route.query.pryvServiceInfoUrl) {

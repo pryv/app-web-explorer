@@ -1,0 +1,64 @@
+.dropbox-filter {
+  font-size: 0.75rem;
+  border-radius: 0;
+}
+.text-left {
+  text-align: left;
+}
+
+.default-font {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif, FontAwesome;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.text-danger {
+  color: #bd1727 !important;
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.w-95{
+  width: 95%;
+}
+
+.w-3 {
+  width: 3%;
+}
+
+.pryv-btn-style {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  padding: 2px 6px;
+  margin-bottom: 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.btn-danger{
+  background-color: #bd1727;
+  border: 1px solid #9d0717;
+}
+.jsoneditor{
+  border: thin solid darkgray !important;
+}
+
+.jsoneditor-menu
+{
+  background-color: darkgray !important;
+}
+
+.jsoneditor-menu a.jsoneditor-poweredBy
+{
+  display: none !important;
+}
